@@ -4,6 +4,6 @@
     "start": "amok --browser chrome --interactive --hot index.js"
   },
   "dependencies": {
-    "amok": "file:../.."
+    "amok": "^1.1.2"
   }
 }
