@@ -1,4 +1,4 @@
-var rate = 100 / 100;
+var rate = 1000 / 60;
 var start = Date.now();
 
 
@@ -22,34 +22,52 @@ var buffer = {
 };
 
 var canvas = document.createElement('canvas');
+var map = document.createElement('canvas');
 
-canvas.width = 800;
-canvas.height = 600;
+canvas.width = map.width = 800;
+canvas.height = map.height = 600;
 
 document.body.appendChild(canvas);
 
 var context = canvas.getContext('2d');
+var mapContext = map.getContext('2d');
 var baddies = [];
-
-Dungeon.Generate();
 
 var defaultChar = new Char('~', '#DCBB88');
 var oneChar = new Char('G', ROOM, ROOM_D);
 var twoChar = new Char('F', WALL, WALL_D);
 var threeChar = new Char('F', WALL_D, WALL_D);
 
+Dungeon.Generate();
+
+for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
+{
+  for(j=1; j < Math.ceil(canvas.height/CHAR_HEIGHT) + 1; j++)
+  {
+    var tile = Dungeon.map[i][j];
+    if(tile == 1)
+      oneChar.render(i, j, mapContext);
+    else if(tile == 2)
+      twoChar.render(i, j, mapContext);
+    else
+      threeChar.render(i, j, mapContext);
+  }
+}
+
 window.addEventListener('click', function (event) {
-  var baddie = new Baddie((event.clientX/CHAR_WIDTH) - 1, event.clientY/CHAR_HEIGHT, new Renderer([[new Char('@', '#EB7F98')]]));
+  var baddie = new Baddie((event.clientX/CHAR_WIDTH) - 1, (event.clientY/CHAR_HEIGHT) - 1, new Renderer([[new Char('@', '#EB7F98')]]));
   baddies.push(baddie);
 });
+
+context.fillStyle = '#28322A';
+context.fillRect(0, 0, canvas.width, canvas.height);
 
 setTimeout(function update() {
 
   buffer.clear();
-
-  context.fillStyle = '#28322A';
-  context.fillRect(0, 0, canvas.width, canvas.height);
   context.font = FONT;
+
+  context.drawImage(map, 0, 0, 800, 600);
 
   baddies.forEach(function(baddie){
     baddie.update();
@@ -61,17 +79,7 @@ setTimeout(function update() {
     {
       var char = buffer.getItem(i, j);
       if(char !== null)
-        char.render(i, j);
-      else
-      {
-        var tile = Dungeon.map[i][j];
-        if(tile == 1)
-          oneChar.render(i, j);
-        else if(tile == 2)
-          twoChar.render(i, j);
-        else
-          threeChar.render(i, j);
-      }
+        char.render(i, j, context);
     }
   }
   var gravity = [0, 0];

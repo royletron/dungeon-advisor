@@ -3,9 +3,9 @@ function Char (symbol, color, bg) {
     this.color = color;
     this.bg = bg;
     this._old = {};
-    this.canvas = document.createElement('canvas')
+    this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
-    this.render = function(x, y) {
+    this.render = function(x, y, to) {
       if((this.symbol != this._old.s) || (this.color != this._old.c) || (this.bg != this._old.b))
       {
         //We need to draw the canvas;
@@ -17,9 +17,13 @@ function Char (symbol, color, bg) {
         }
         this.context.fillStyle = this.color;
         this.context.fillText(this.symbol, 0, CHAR_HEIGHT);
-        this._old = {s: this.symbol, c: this.color, bg: this.bg}
+        this._old = {s: this.symbol, c: this.color, b: this.bg};
       }
-      context.drawImage(this.canvas, x * CHAR_WIDTH, y * CHAR_HEIGHT);
+      
+      if(to === undefined)
+        to = content;
+
+      to.drawImage(this.canvas, x * CHAR_WIDTH, y * CHAR_HEIGHT);
     };
 }
 
