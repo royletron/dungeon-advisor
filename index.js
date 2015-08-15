@@ -42,7 +42,7 @@ Dungeon.Generate();
 
 for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
 {
-  for(j=1; j < Math.ceil(canvas.height/CHAR_HEIGHT) + 1; j++)
+  for(j=0; j < Math.ceil(canvas.height/CHAR_HEIGHT) + 1; j++)
   {
     var tile = Dungeon.map[i][j];
     if(tile == 1)
@@ -55,7 +55,7 @@ for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
 }
 
 window.addEventListener('click', function (event) {
-  var baddie = new Baddie((event.clientX/CHAR_WIDTH) - 1, (event.clientY/CHAR_HEIGHT) - 1, new Renderer([[new Char('@', '#EB7F98')]]));
+  var baddie = new Baddie((event.clientX/CHAR_WIDTH) - 1, (event.clientY/CHAR_HEIGHT) - 1, new Renderer([[new Char('@', '#EB7F98', '#0DF3F3')]]));
   baddies.push(baddie);
 });
 
@@ -75,7 +75,7 @@ setTimeout(function update() {
 
   for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
   {
-    for(j=1; j < Math.ceil(canvas.height/CHAR_HEIGHT) + 1; j++)
+    for(j=0; j < Math.ceil(canvas.height/CHAR_HEIGHT) + 1; j++)
     {
       var char = buffer.getItem(i, j);
       if(char !== null)

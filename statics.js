@@ -2,9 +2,9 @@ var ROOM = '#8B9899';
 var WALL = '#6D7A80';
 var WALL_D = '#626E72';
 var ROOM_D = '#7D8989';
-var FONT = '16px Courier New';
-var CHAR_WIDTH = 10;
-var CHAR_HEIGHT = 12;
+var FONT = '24px Courier New';
+var CHAR_WIDTH = 15;
+var CHAR_HEIGHT = 17;
 
 var Helpers = {
     GetRandom: function (low, high) {

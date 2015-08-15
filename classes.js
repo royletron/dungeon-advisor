@@ -16,10 +16,12 @@ function Char (symbol, color, bg) {
           this.context.fillRect(0, 0, CHAR_WIDTH, CHAR_HEIGHT);
         }
         this.context.fillStyle = this.color;
+        this.context.align = 'center';
+        this.context.font = FONT;
         this.context.fillText(this.symbol, 0, CHAR_HEIGHT);
         this._old = {s: this.symbol, c: this.color, b: this.bg};
       }
-      
+
       if(to === undefined)
         to = content;
 
