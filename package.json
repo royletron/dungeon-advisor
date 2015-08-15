@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "amok --browser chrome --interactive --hot statics.js classes.js index.js"
+    "start": "amok --browser chrome --interactive --hot statics.js classes.js index.js dev-libs/stats.min.js dev-libs/stats.js"
   },
   "dependencies": {
     "amok": "^1.1.2"

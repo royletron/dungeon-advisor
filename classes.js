@@ -2,14 +2,24 @@ function Char (symbol, color, bg) {
     this.symbol = symbol;
     this.color = color;
     this.bg = bg;
+    this._old = {};
+    this.canvas = document.createElement('canvas')
+    this.context = this.canvas.getContext('2d');
     this.render = function(x, y) {
-      if(this.bg !== undefined)
+      if((this.symbol != this._old.s) || (this.color != this._old.c) || (this.bg != this._old.b))
       {
-        context.fillStyle = this.bg;
-        context.fillRect(x * CHAR_WIDTH, (y-1) * CHAR_HEIGHT, CHAR_WIDTH, CHAR_HEIGHT);
+        //We need to draw the canvas;
+
+        if(this.bg !== undefined)
+        {
+          this.context.fillStyle = this.bg;
+          this.context.fillRect(0, 0, CHAR_WIDTH, CHAR_HEIGHT);
+        }
+        this.context.fillStyle = this.color;
+        this.context.fillText(this.symbol, 0, CHAR_HEIGHT);
+        this._old = {s: this.symbol, c: this.color, bg: this.bg}
       }
-      context.fillStyle = this.color;
-      context.fillText(this.symbol, x * CHAR_WIDTH, y * CHAR_HEIGHT);
+      context.drawImage(this.canvas, x * CHAR_WIDTH, y * CHAR_HEIGHT);
     };
 }
 
