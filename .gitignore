@@ -1,1 +1,4 @@
 node_modules
+.DS_Store
+game.min.js
+game.min.js.gz

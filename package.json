@@ -1,9 +1,15 @@
 {
   "private": true,
   "scripts": {
-    "start": "amok --browser chrome --interactive --hot dev-libs/stats.min.js dev-libs/stats.js statics.js classes.js index.js"
+    "start": "amok --browser chrome --interactive --hot dev-libs/stats.min.js dev-libs/stats.js src/statics.js src/classes.js src/index.js"
   },
   "dependencies": {
     "amok": "^1.1.2"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-gzip": "^1.2.0",
+    "gulp-uglify": "^1.2.0"
   }
 }

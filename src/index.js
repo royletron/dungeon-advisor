@@ -36,6 +36,13 @@ var baddies = [];
 var defaultChar = new Char('~', '#DCBB88');
 var floorChar = new Char('∵', FLOOR, FLOOR_D);
 var wallChar = new Char('⊡', WALL, WALL_D);
+var tbChar = new Char('┃', WALL, WALL_D);
+var lrChar = new Char('━', WALL, WALL_D);
+var trChar = new Char('┗', WALL, WALL_D);
+var tlChar = new Char('┛', WALL, WALL_D);
+var blChar = new Char('┓', WALL, WALL_D);
+var brChar = new Char('┏', WALL, WALL_D);
+
 var voidChar = new Char('F', WALL_D, WALL_D);
 
 Dungeon.Generate();
@@ -48,7 +55,32 @@ for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
     if(tile == 1)
       floorChar.render(i, j, mapContext);
     else if(tile == 2)
-      wallChar.render(i, j, mapContext);
+    {
+      var t = Dungeon.map[i][j-1] == 2 || false, b = Dungeon.map[i][j+1] == 2 || false, l = false, r = false;
+      if(Dungeon.map[i-1] !== undefined)
+        l = Dungeon.map[i-1][j] == 2;
+      if(Dungeon.map[i+1] !== undefined)
+        r = Dungeon.map[i+1][j] == 2;
+
+      if((t || b) && !r && !l)
+        tbChar.render(i, j, mapContext);
+
+      if(!t && !b && (r || l))
+        lrChar.render(i, j, mapContext);
+
+      if(t && r)
+        trChar.render(i, j, mapContext);
+      if(t && l)
+        tlChar.render(i, j, mapContext);
+      if(b && l)
+        blChar.render(i, j, mapContext);
+      if(b && r)
+        brChar.render(i, j, mapContext);
+      if(l && r)
+        lrChar.render(i, j, mapContext);
+      if(t && b)
+        tbChar.render(i, j, mapContext);
+    }
     else
       voidChar.render(i, j, mapContext);
   }

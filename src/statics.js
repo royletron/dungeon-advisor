@@ -2,13 +2,19 @@ var FLOOR = '#8B9899';
 var WALL = '#6D7A80';
 var WALL_D = '#626E72';
 var FLOOR_D = '#7D8989';
-var FONT = '24px Courier New';
+var FONT = '24px Courier';
 var CHAR_WIDTH = 16;
 var CHAR_HEIGHT = 17;
 
 var Helpers = {
     GetRandom: function (low, high) {
         return~~ (Math.random() * (high - low)) + low;
+    },
+    BufferToCoords: function(x, y) {
+      return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
+    },
+    CoordsToBuffer: function(x, y) {
+      return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
     }
 };
 
@@ -25,7 +31,7 @@ var Dungeon = {
             }
         }
 
-        var room_count = Helpers.GetRandom(10, 20);
+        var room_count = Helpers.GetRandom(10, 50);
         var min_size = 5;
         var max_size = 15;
 
@@ -143,7 +149,7 @@ var Dungeon = {
         for (var i = 0; i < this.rooms.length; i++) {
             if (i == ignore) continue;
             var check = this.rooms[i];
-            if (!((room.x + room.w < check.x) || (room.x > check.x + check.w) || (room.y + room.h < check.y) || (room.y > check.y + check.h))) return true;
+            if (!((room.x + room.w + 1 < check.x) || (room.x - 1 > check.x + check.w) || (room.y + room.h + 1 < check.y) || (room.y - 1 > check.y + check.h))) return true;
         }
 
         return false;
