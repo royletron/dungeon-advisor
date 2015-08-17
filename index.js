@@ -34,9 +34,9 @@ var mapContext = map.getContext('2d');
 var baddies = [];
 
 var defaultChar = new Char('~', '#DCBB88');
-var oneChar = new Char('G', ROOM, ROOM_D);
-var twoChar = new Char('F', WALL, WALL_D);
-var threeChar = new Char('F', WALL_D, WALL_D);
+var floorChar = new Char('∵', FLOOR, FLOOR_D);
+var wallChar = new Char('⊡', WALL, WALL_D);
+var voidChar = new Char('F', WALL_D, WALL_D);
 
 Dungeon.Generate();
 
@@ -46,11 +46,11 @@ for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
   {
     var tile = Dungeon.map[i][j];
     if(tile == 1)
-      oneChar.render(i, j, mapContext);
+      floorChar.render(i, j, mapContext);
     else if(tile == 2)
-      twoChar.render(i, j, mapContext);
+      wallChar.render(i, j, mapContext);
     else
-      threeChar.render(i, j, mapContext);
+      voidChar.render(i, j, mapContext);
   }
 }
 
@@ -62,7 +62,13 @@ window.addEventListener('click', function (event) {
 context.fillStyle = '#28322A';
 context.fillRect(0, 0, canvas.width, canvas.height);
 
-setTimeout(function update() {
+var last_stamp = 0;
+function update(timestamp) {
+  if(stats)
+    stats.begin();
+
+  var dt = (timestamp - last_stamp)/1000;
+  last_stamp = timestamp;
 
   buffer.clear();
   context.font = FONT;
@@ -70,7 +76,7 @@ setTimeout(function update() {
   context.drawImage(map, 0, 0, 800, 600);
 
   baddies.forEach(function(baddie){
-    baddie.update();
+    baddie.update(dt);
   });
 
   for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
@@ -82,7 +88,10 @@ setTimeout(function update() {
         char.render(i, j, context);
     }
   }
-  var gravity = [0, 0];
+  window.requestAnimationFrame(update);
 
-  setTimeout(update, rate);
-}, 0);
+  if(stats)
+    stats.end();
+}
+
+window.requestAnimationFrame(update);

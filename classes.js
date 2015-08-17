@@ -47,7 +47,8 @@ function Baddie(x, y, renderer) {
   this.x = x;
   this.y = y;
   this.renderer = renderer;
-  this.update = function() {
+  this.update = function(dt) {
+    this.x += 0.5 * dt;
     this.renderer.update(Math.floor(this.x), Math.floor(this.y));
   };
 }
