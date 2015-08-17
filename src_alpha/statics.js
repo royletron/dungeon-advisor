@@ -1,21 +1,14 @@
+var FLOOR = '#8B9899';
+var WALL = '#6D7A80';
+var WALL_D = '#626E72';
+var FLOOR_D = '#7D8989';
+var CURSOR = '#2D4787';
+var CURSOR_D = '#00CCFF';
 var FONT = '14px Courier';
 var CHAR_WIDTH = 14;
 var CHAR_HEIGHT = 13;
-var WALL = '6D7A80';
-var WALL_D = '626E72';
 
-var P = {
-  FLOOR_TILE: new Char('∵', '8B9899', '7D8989'),
-  WALL_TB: new Char('┃', WALL, WALL_D),
-  WALL_LR: new Char('━', WALL, WALL_D),
-  WALL_TR: new Char('┗', WALL, WALL_D),
-  WALL_TL: new Char('┛', WALL, WALL_D),
-  WALL_BL: new Char('┓', WALL, WALL_D),
-  WALL_BR: new Char('┏', WALL, WALL_D),
-  VOID: new Char(' ', WALL_D, WALL_D)
-};
-
-var H = {
+var Helpers = {
     GetRandom: function (low, high) {
         return~~ (Math.random() * (high - low)) + low;
     },
@@ -61,7 +54,8 @@ var H = {
     }
 };
 
-var D = {
+// '┏━━━━━━ MENU ━━━━━━┓ \n┃                  ┃ \n\n\n\n\n\n\n\n
+var Dungeon = {
     map: null,
     map_size: 164,
     rooms: [],
@@ -74,17 +68,17 @@ var D = {
             }
         }
 
-        var room_count = H.GetRandom(10, 50);
+        var room_count = Helpers.GetRandom(10, 50);
         var min_size = 5;
         var max_size = 15;
 
         for (var i = 0; i < room_count; i++) {
             var room = {};
 
-            room.x = H.GetRandom(1, this.map_size - max_size - 1);
-            room.y = H.GetRandom(1, this.map_size - max_size - 1);
-            room.w = H.GetRandom(min_size, max_size);
-            room.h = H.GetRandom(min_size, max_size);
+            room.x = Helpers.GetRandom(1, this.map_size - max_size - 1);
+            room.y = Helpers.GetRandom(1, this.map_size - max_size - 1);
+            room.w = Helpers.GetRandom(min_size, max_size);
+            room.h = Helpers.GetRandom(min_size, max_size);
 
             if (this.DoesCollide(room)) {
                 i--;
@@ -103,12 +97,12 @@ var D = {
             var roomB = this.FindClosestRoom(roomA);
 
             pointA = {
-                x: H.GetRandom(roomA.x, roomA.x + roomA.w),
-                y: H.GetRandom(roomA.y, roomA.y + roomA.h)
+                x: Helpers.GetRandom(roomA.x, roomA.x + roomA.w),
+                y: Helpers.GetRandom(roomA.y, roomA.y + roomA.h)
             };
             pointB = {
-                x: H.GetRandom(roomB.x, roomB.x + roomB.w),
-                y: H.GetRandom(roomB.y, roomB.y + roomB.h)
+                x: Helpers.GetRandom(roomB.x, roomB.x + roomB.w),
+                y: Helpers.GetRandom(roomB.y, roomB.y + roomB.h)
             };
 
             while ((pointB.x != pointA.x) || (pointB.y != pointA.y)) {
@@ -196,48 +190,5 @@ var D = {
         }
 
         return false;
-    },
-    Draw: function (canvas, context) {
-      if(this.map === null)
-        this.Generate();
-
-      for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
-      {
-        for(j=0; j < Math.ceil(canvas.height/CHAR_HEIGHT) + 1; j++)
-        {
-          var tile = this.map[i][j];
-          if(tile == 1)
-            P.FLOOR_TILE.stamp(context, i, j);
-          else if(tile == 2)
-          {
-            var t = this.map[i][j-1] == 2 || false, b = this.map[i][j+1] == 2 || false, l = false, r = false;
-            if(this.map[i-1] !== undefined)
-              l = this.map[i-1][j] == 2;
-            if(this.map[i+1] !== undefined)
-              r = this.map[i+1][j] == 2;
-
-            if((t || b) && !r && !l)
-              P.WALL_TB.stamp(context, i, j);
-
-            if(!t && !b && (r || l))
-              P.WALL_LR.stamp(context, i, j);
-
-            if(t && r)
-              P.WALL_TR.stamp(context, i, j);
-            if(t && l)
-              P.WALL_TL.stamp(context, i, j);
-            if(b && l)
-              P.WALL_BL.stamp(context, i, j);
-            if(b && r)
-              P.WALL_BR.stamp(context, i, j);
-            if(l && r)
-              P.WALL_LR.stamp(context, i, j);
-            if(t && b)
-              P.WALL_TB.stamp(context, i, j);
-          }
-          else
-            P.VOID.stamp(context, i, j);
-        }
-      }
     }
 };
