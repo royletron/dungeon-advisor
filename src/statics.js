@@ -2,9 +2,11 @@ var FLOOR = '#8B9899';
 var WALL = '#6D7A80';
 var WALL_D = '#626E72';
 var FLOOR_D = '#7D8989';
-var FONT = '24px Courier';
-var CHAR_WIDTH = 16;
-var CHAR_HEIGHT = 17;
+var CURSOR = '#2D4787';
+var CURSOR_D = '#00CCFF';
+var FONT = '14px Courier';
+var CHAR_WIDTH = 14;
+var CHAR_HEIGHT = 13;
 
 var Helpers = {
     GetRandom: function (low, high) {
@@ -15,9 +17,44 @@ var Helpers = {
     },
     CoordsToBuffer: function(x, y) {
       return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
+    },
+    MakeBox: function(title, width, height){
+      var str = '';
+      title = ' '+title+' ';
+      var ts = ((width - title.length)/2);
+      for(var i=0; i < width; i++){
+        console.log(i);
+        if(i === 0)
+          str += '┏';
+        else if(i === (width - 1))
+          str = str + '┓';
+        else if(i < ts)
+          str = str + '━';
+        else if(i > (ts + title.length - 1))
+          str = str + '━';
+        else
+          str = str + title[i-ts];
+      }
+      for(var j = 0; j < height; j++)
+      {
+        str = str+'\n';
+        for(var k = 0; k < width; k++)
+        {
+          if((k === 0) || (k === (width - 1)) && (j != (height-1)))
+            str = str + '┃';
+          else if((k === (width - 1)) && (j === (height - 1)))
+            str = str + '┛';
+          else if((k === 0) && (j === (height-1)))
+            str = str + '┗';
+          else
+            str = str + ' ';
+        }
+      }
+      return str;
     }
 };
 
+// '┏━━━━━━ MENU ━━━━━━┓ \n┃                  ┃ \n\n\n\n\n\n\n\n
 var Dungeon = {
     map: null,
     map_size: 164,

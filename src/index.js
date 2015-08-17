@@ -24,7 +24,7 @@ var buffer = {
 var canvas = document.createElement('canvas');
 var map = document.createElement('canvas');
 
-canvas.width = map.width = 800;
+canvas.width = map.width = 1024;
 canvas.height = map.height = 600;
 
 document.body.appendChild(canvas);
@@ -44,6 +44,10 @@ var blChar = new Char('┓', WALL, WALL_D);
 var brChar = new Char('┏', WALL, WALL_D);
 
 var voidChar = new Char('F', WALL_D, WALL_D);
+
+var cursorChar = new Char('⨁', CURSOR, CURSOR_D, 0.2);
+
+var MENU = new Menu();
 
 Dungeon.Generate();
 
@@ -86,9 +90,28 @@ for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
   }
 }
 
-window.addEventListener('click', function (event) {
-  var baddie = new Baddie((event.clientX/CHAR_WIDTH) - 1, (event.clientY/CHAR_HEIGHT) - 1, new Renderer([[new Char('@', '#EB7F98', '#0DF3F3')]]));
+function getMousePos(canvas, evt) {
+  var rect = canvas.getBoundingClientRect();
+  return {
+    x: Math.floor((evt.clientX - rect.left) / CHAR_WIDTH),
+    y: Math.floor((evt.clientY - rect.top) / CHAR_HEIGHT)
+  };
+}
+
+canvas.addEventListener('click', function (event) {
+  var mousePos = getMousePos(canvas, event);
+  var baddie = new Baddie(mousePos.x, mousePos.y, new Renderer([[new Char('@', '#EB7F98', '#0DF3F3')]]));
   baddies.push(baddie);
+});
+
+var movePos;
+
+canvas.addEventListener('mousemove', function(event) {
+  movePos = getMousePos(canvas, event);
+});
+
+canvas.addEventListener('mouseout', function(event) {
+  movePos = null;
 });
 
 context.fillStyle = '#28322A';
@@ -96,6 +119,7 @@ context.fillRect(0, 0, canvas.width, canvas.height);
 
 var last_stamp = 0;
 function update(timestamp) {
+  context.clearRect(0, 0, canvas.width, canvas.height);
   if(stats)
     stats.begin();
 
@@ -105,25 +129,31 @@ function update(timestamp) {
   buffer.clear();
   context.font = FONT;
 
-  context.drawImage(map, 0, 0, 800, 600);
+  context.drawImage(map, 0, 0);
 
   baddies.forEach(function(baddie){
-    baddie.update(dt);
+    baddie.update(dt, context);
   });
+
+  MENU.render(context);
 
   for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
   {
-    for(j=0; j < Math.ceil(canvas.height/CHAR_HEIGHT) + 1; j++)
+    for(j=0; j < Math.ceil(canvas.height/CHAR_HEIGHT); j++)
     {
       var char = buffer.getItem(i, j);
       if(char !== null)
         char.render(i, j, context);
     }
   }
-  window.requestAnimationFrame(update);
+
+  if(movePos)
+    cursorChar.render(movePos.x, movePos.y, context);
 
   if(stats)
     stats.end();
+
+  window.requestAnimationFrame(update);
 }
 
 window.requestAnimationFrame(update);
