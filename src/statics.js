@@ -1,6 +1,6 @@
 global.FONT = '25px Courier New';
 global.CHAR_WIDTH = 25;
-global.CHAR_HEIGHT = 22;
+global.CHAR_HEIGHT = 20;
 global.WALL = '6D7A80';
 global.WALL_B = '626E72';
 global.BOX = '102E34';

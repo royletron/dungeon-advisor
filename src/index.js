@@ -14,6 +14,7 @@ var m_ctx = map.getContext('2d');
 D.Draw(map, m_ctx);
 
 var menu = new Menu();
+var hero = new Hero(3, 4);
 
 var last_stamp = 0;
 
@@ -29,18 +30,20 @@ stats.domElement.style.top = '0px';
 document.body.appendChild( stats.domElement );
 
 function update(timestamp) {
-  g_ctx.clearRect(0, 0, game.width, game.height);
   if(stats)
     stats.begin();
 
+  
+  var dt = (timestamp - last_stamp)/1000;
+  last_stamp = timestamp;
+
+  g_ctx.clearRect(0, 0, game.width, game.height);
   g_ctx.drawImage(map, 0, 0);
+  hero.stamp(g_ctx);
 
   // P.FLOOR_TILE.stamp(g_ctx, 10, 10);
 
   menu.stamp(g_ctx, 27, 0);
-
-  var dt = (timestamp - last_stamp)/1000;
-  last_stamp = timestamp;
 
   if(stats)
     stats.end();
