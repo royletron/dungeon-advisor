@@ -24,8 +24,6 @@ function update(timestamp) {
   var dt = (timestamp - last_stamp)/1000;
   last_stamp = timestamp;
 
-  g_ctx.font = FONT;
-
   if(stats)
     stats.end();
 

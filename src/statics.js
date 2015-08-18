@@ -1,6 +1,6 @@
-var FONT = '14px Courier';
-var CHAR_WIDTH = 14;
-var CHAR_HEIGHT = 13;
+var FONT = '25px Courier New';
+var CHAR_WIDTH = 21;
+var CHAR_HEIGHT = 17;
 var WALL = '6D7A80';
 var WALL_D = '626E72';
 

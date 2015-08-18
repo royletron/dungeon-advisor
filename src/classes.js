@@ -4,6 +4,8 @@ function Char(symbol, color, bg, alpha) {
   this.bg = bg;
   this.alpha = alpha || 1;
   this._canvas = document.createElement('canvas');
+  this._canvas.width = CHAR_WIDTH;
+  this._canvas.height = CHAR_HEIGHT;
   this._context = this._canvas.getContext('2d');
   this._context.globalAlpha = this.alpha;
   if(this.bg !== undefined)
@@ -14,7 +16,7 @@ function Char(symbol, color, bg, alpha) {
   this._context.fillStyle = '#'+this.color;
   this._context.textAlign = 'center';
   this._context.font = FONT;
-  this._context.fillText(this.symbol, CHAR_WIDTH/2, CHAR_HEIGHT-1);
+  this._context.fillText(this.symbol, CHAR_WIDTH/2, CHAR_HEIGHT);
   this.stamp = function(toCanvas, x, y){
     var coords = H.BufferToCoords(x || 0, y || 0);
     toCanvas.drawImage(this._canvas, coords.x, coords.y);
