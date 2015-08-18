@@ -1,21 +1,35 @@
-var FONT = '25px Courier New';
-var CHAR_WIDTH = 21;
-var CHAR_HEIGHT = 17;
-var WALL = '6D7A80';
-var WALL_D = '626E72';
+global.FONT = '25px Courier New';
+global.CHAR_WIDTH = 25;
+global.CHAR_HEIGHT = 22;
+global.WALL = '6D7A80';
+global.WALL_B = '626E72';
+global.BOX = '102E34';
+global.BOX_B = '9BC955';
 
-var P = {
-  FLOOR_TILE: new Char('∵', '8B9899', '7D8989'),
-  WALL_TB: new Char('┃', WALL, WALL_D),
-  WALL_LR: new Char('━', WALL, WALL_D),
-  WALL_TR: new Char('┗', WALL, WALL_D),
-  WALL_TL: new Char('┛', WALL, WALL_D),
-  WALL_BL: new Char('┓', WALL, WALL_D),
-  WALL_BR: new Char('┏', WALL, WALL_D),
-  VOID: new Char(' ', WALL_D, WALL_D)
+global.P = {
+  randomFloorTile: function(){
+    return this.FLOOR_TILES[Math.floor(Math.random()*this.FLOOR_TILES.length)];
+  },
+  FLOOR_TILES: [new Char('∵', '8B9899', '7D8989'), new Char('#', '838F8F', '7D8989'), new Char('*', '859394', '7D8989')],
+  WALL_TB: new Char('┃', WALL, WALL_B),
+  WALL_LR: new Char('━', WALL, WALL_B),
+  WALL_TR: new Char('┗', WALL, WALL_B),
+  WALL_TL: new Char('┛', WALL, WALL_B),
+  WALL_BL: new Char('┓', WALL, WALL_B),
+  WALL_BR: new Char('┏', WALL, WALL_B),
+
+  BOX_TB: new Char('┃', BOX, BOX_B),
+  BOX_LR: new Char('━', BOX, BOX_B),
+  BOX_TR: new Char('┗', BOX, BOX_B),
+  BOX_TL: new Char('┛', BOX, BOX_B),
+  BOX_BL: new Char('┓', BOX, BOX_B),
+  BOX_BR: new Char('┏', BOX, BOX_B),
+  BOX_MD: new Char(' ', BOX, BOX_B),
+
+  VOID: new Char(' ', WALL_B, WALL_B)
 };
 
-var H = {
+global.H = {
     GetRandom: function (low, high) {
         return~~ (Math.random() * (high - low)) + low;
     },
@@ -25,43 +39,72 @@ var H = {
     CoordsToBuffer: function(x, y) {
       return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
     },
-    MakeBox: function(title, width, height){
-      var str = '';
-      title = ' '+title+' ';
-      var ts = ((width - title.length)/2);
-      for(var i=0; i < width; i++){
-        console.log(i);
-        if(i === 0)
-          str += '┏';
-        else if(i === (width - 1))
-          str = str + '┓';
-        else if(i < ts)
-          str = str + '━';
-        else if(i > (ts + title.length - 1))
-          str = str + '━';
-        else
-          str = str + title[i-ts];
-      }
-      for(var j = 0; j < height; j++)
+    MakeBox: function(width, height, context){
+      for(var x=0; x < width; x++)
       {
-        str = str+'\n';
-        for(var k = 0; k < width; k++)
+        for(var y=0; y < height; y++)
         {
-          if((k === 0) || (k === (width - 1)) && (j != (height-1)))
-            str = str + '┃';
-          else if((k === (width - 1)) && (j === (height - 1)))
-            str = str + '┛';
-          else if((k === 0) && (j === (height-1)))
-            str = str + '┗';
+          if(y === 0)
+            if(x === 0)
+              P.BOX_BR.stamp(context, x, y);
+            else if(x == (width-1))
+              P.BOX_BL.stamp(context, x, y);
+            else
+              P.BOX_LR.stamp(context, x, y);
+          else if(y == (height-1))
+            if(x === 0)
+              P.BOX_TR.stamp(context, x, y);
+            else if(x == (width-1))
+              P.BOX_TL.stamp(context, x, y);
+            else
+              P.BOX_LR.stamp(context, x, y);
           else
-            str = str + ' ';
+            if((x === 0) || (x == (width-1)))
+              P.BOX_TB.stamp(context, x, y);
+            else
+              P.BOX_MD.stamp(context, x, y);
         }
       }
-      return str;
     }
 };
 
-var D = {
+
+// MakeBox: function(title, width, height){
+//   var str = '';
+//   title = ' '+title+' ';
+//   var ts = ((width - title.length)/2);
+//   for(var i=0; i < width; i++){
+//     console.log(i);
+//     if(i === 0)
+//       str += '┏';
+//     else if(i === (width - 1))
+//       str = str + '┓';
+//     else if(i < ts)
+//       str = str + '━';
+//     else if(i > (ts + title.length - 1))
+//       str = str + '━';
+//     else
+//       str = str + title[i-ts];
+//   }
+//   for(var j = 0; j < height; j++)
+//   {
+//     str = str+'\n';
+//     for(var k = 0; k < width; k++)
+//     {
+//       if((k === 0) || (k === (width - 1)) && (j != (height-1)))
+//         str = str + '┃';
+//       else if((k === (width - 1)) && (j === (height - 1)))
+//         str = str + '┛';
+//       else if((k === 0) && (j === (height-1)))
+//         str = str + '┗';
+//       else
+//         str = str + ' ';
+//     }
+//   }
+//   return str;
+// }
+
+global.D = {
     map: null,
     map_size: 164,
     rooms: [],
@@ -207,7 +250,7 @@ var D = {
         {
           var tile = this.map[i][j];
           if(tile == 1)
-            P.FLOOR_TILE.stamp(context, i, j);
+            P.randomFloorTile().stamp(context, i, j);
           else if(tile == 2)
           {
             var t = this.map[i][j-1] == 2 || false, b = this.map[i][j+1] == 2 || false, l = false, r = false;

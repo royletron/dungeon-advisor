@@ -48,19 +48,6 @@ function Renderer (chars, to) {
   };
 }
 
-function TextToRenderer(string, fg, bg, alpha, to) {
-  var arr = [];
-  string.split('\n').forEach(function(rowStr){
-    var row = [];
-    console.log(rowStr);
-    rowStr.split('').forEach(function(colStr){
-      row.push(new Char(colStr, fg, bg, alpha));
-    });
-    arr.push(row);
-  });
-  return new Renderer(arr, to);
-}
-
 function Menu() {
   this.x = Math.floor(canvas.width/CHAR_WIDTH) - 20;
   this.y = 0;
