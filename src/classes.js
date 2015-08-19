@@ -2,7 +2,7 @@ global.Char = function(symbol, color, bg, alpha) {
   this.symbol = symbol;
   this.color = color;
   this.bg = bg;
-  this.renderer = new Renderer(CHAR_WIDTH, CHAR_HEIGHT, alpha)
+  this.renderer = new Renderer(CHAR_WIDTH, CHAR_HEIGHT, alpha);
   if(this.bg !== undefined)
   {
     this.renderer.context.fillStyle = '#'+this.bg;
@@ -11,7 +11,7 @@ global.Char = function(symbol, color, bg, alpha) {
   this.renderer.context.fillStyle = '#'+this.color;
   this.renderer.context.textAlign = 'center';
   this.renderer.context.font = FONT;
-  this.renderer.context.fillText(this.symbol, CHAR_WIDTH/2, CHAR_HEIGHT);
+  this.renderer.context.fillText(this.symbol, CHAR_WIDTH/2, CHAR_HEIGHT -1);
   this.stamp = function(toCanvas, x, y){
     this.renderer.stamp(toCanvas, x, y);
   };
@@ -32,14 +32,14 @@ global.Body = function(x, y, width, height, fixed) {
       this.x += this.velocity.x * dt;
       this.y += this.velocity.y * dt;
     }
-  }
+  };
   // this.impact = function
-}
+};
 
 global.Physics = {
   _bodies: [],
   createBody: function(entity, x, y, width, height, fixed) {
-    var body = new Body(x, y, width, height, fixed)
+    var body = new Body(x, y, width, height, fixed);
     this._bodies.push({body: body, entity: entity});
     return body;
   },
@@ -48,9 +48,9 @@ global.Physics = {
       item.body.update(dt);
       item.entity.x = item.body.x;
       item.entity.y = item.body.y;
-    })
+    });
   }
-}
+};
 
 global.Renderer = function(width, height, alpha) {
   this._can = document.createElement('canvas');
@@ -63,7 +63,7 @@ global.Renderer = function(width, height, alpha) {
     var coords = H.BufferToCoords(x || 0, y || 0);
     toCanvas.drawImage(this._can, coords.x, coords.y);
   };
-}
+};
 
 global.Hero = function(x, y) {
   this.renderer = new Char('@', 'FF0000');
@@ -72,16 +72,19 @@ global.Hero = function(x, y) {
   this.body = Physics.createBody(this, x, y, CHAR_WIDTH, CHAR_HEIGHT);
   this.stamp = function(toCanvas) {
     this.renderer.stamp(toCanvas, this.x, this.y);
-  }
-}
+  };
+};
 
-global.Menu = function() {
-  this.renderer = new Renderer(CHAR_WIDTH * 20, 600, 0.8);
+global.Menu = function(title) {
+  this.width = 20;
+  this.renderer = new Renderer(CHAR_WIDTH * this.width, 600, 1);
+  this.title = title;
   this.generate = function(){
     H.MakeBox(14, 30, this.renderer.context);
+    H.StampText(this.renderer.context, 1, 0, this.title, BOX, BOX_B);
   };
   this.generate();
   this.stamp = function(toCanvas, x, y){
     this.renderer.stamp(toCanvas, x, y);
-  }
+  };
 };

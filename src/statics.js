@@ -1,6 +1,6 @@
-global.FONT = '25px Courier New';
-global.CHAR_WIDTH = 25;
-global.CHAR_HEIGHT = 20;
+global.FONT = '16px Courier';
+global.CHAR_WIDTH = 9;
+global.CHAR_HEIGHT = 14;
 global.WALL = '6D7A80';
 global.WALL_B = '626E72';
 global.BOX = '102E34';
@@ -12,7 +12,7 @@ global.P = {
   },
   FLOOR_TILES: [new Char('∵', '8B9899', '7D8989'), new Char('#', '838F8F', '7D8989'), new Char('*', '859394', '7D8989')],
   WALL_TB: new Char('┃', WALL, WALL_B),
-  WALL_LR: new Char('━', WALL, WALL_B),
+  WALL_LR: new Char('▓', WALL, WALL_B),
   WALL_TR: new Char('┗', WALL, WALL_B),
   WALL_TL: new Char('┛', WALL, WALL_B),
   WALL_BL: new Char('┓', WALL, WALL_B),
@@ -28,6 +28,10 @@ global.P = {
 
   VOID: new Char(' ', WALL_B, WALL_B)
 };
+
+global.S = {
+  ENTRANCE: {p: '63545E 302222', d: '═01╦01═01═01═01╦01═01═01═01╦01═01═01═01╦01═01═01═01═01═01╦01░01╎01░01░01░01╎01░01░01░╎01░01░01░01╎01░01░01░01░01░01║01◌01 01░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01 01◌01 01░01 01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01 01◌01 01░01 01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01 01◌01 01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01║01░01░01░01◬01░01░01░01◬01░01░01░01◬01░01░01░01◬01░01░01░01 01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01 01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01', w: 20, h:10}
+}
 
 global.H = {
     GetRandom: function (low, high) {
@@ -65,6 +69,29 @@ global.H = {
               P.BOX_MD.stamp(context, x, y);
         }
       }
+    },
+    GenerateStamp: function(spr) {
+      var renderer = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
+      this.StampSprite(renderer.context, 0, 0, spr);
+      return renderer;
+    },
+    StampSprite: function(renderer, x, y, spr) {
+      var d = spr.d.split('');
+      var p = spr.p.split(' ');
+      for(var tx=0; tx < spr.w; tx++) {
+        for(var ty=0; ty < spr.h; ty++) {
+          var l = (ty*spr.w*3) + (tx*3);
+          var c = new Char(d[l], p[parseInt(d[l+1])], p[parseInt(d[l+2])]);
+          c.stamp(renderer, x + tx, y + ty);
+        }
+      }
+    },
+    StampText: function(renderer, x, y, text, color, bg, alpha) {
+      text.split("").forEach(function(symbol, index){
+        var char = new Char(symbol, color, bg, alpha);
+        char.stamp(renderer, x+index, y);
+        char = null;
+      });
     }
 };
 
