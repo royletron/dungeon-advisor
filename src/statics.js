@@ -34,7 +34,7 @@ global.H = {
         return~~ (Math.random() * (high - low)) + low;
     },
     BufferToCoords: function(x, y) {
-      return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
+      return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
     },
     CoordsToBuffer: function(x, y) {
       return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};

@@ -15,6 +15,7 @@ D.Draw(map, m_ctx);
 
 var menu = new Menu();
 var hero = new Hero(3, 4);
+hero.body.velocity.y = 1;
 
 var last_stamp = 0;
 
@@ -37,6 +38,7 @@ function update(timestamp) {
   var dt = (timestamp - last_stamp)/1000;
   last_stamp = timestamp;
 
+  Physics.update(dt);
   g_ctx.clearRect(0, 0, game.width, game.height);
   g_ctx.drawImage(map, 0, 0);
   hero.stamp(g_ctx);
