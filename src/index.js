@@ -1,25 +1,24 @@
 var Stats = require('../dev-libs/stats.min.js');
 
-var game = document.createElement('canvas');
 var map = document.createElement('canvas');
 
-game.width = map.width = 1024;
-game.height = map.height = 600;
+GAME.width = map.width = 1026;
+GAME.height = map.height = 602;
 
-document.body.appendChild(game);
+document.body.appendChild(GAME);
 
-var g_ctx = game.getContext('2d');
-var m_ctx = map.getContext('2d');
+global.g_ctx = GAME.getContext('2d');
+global.m_ctx = map.getContext('2d');
 
-D.Draw(map, m_ctx);
+H.GenerateStamps();
+
+// D.Draw(map, m_ctx);
+
+UI.init(m_ctx);
 
 var menu = new Menu(' OBJECTS ');
-var hero = new Hero(3, 4);
-hero.body.velocity.y = 1;
 
 var last_stamp = 0;
-
-var test = H.GenerateStamp(S.ENTRANCE);
 
 var stats = new Stats();
 stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
@@ -35,19 +34,18 @@ function update(timestamp) {
   if(stats)
     stats.begin();
 
-
+  g_ctx.fillStyle = '#25989B';
+  g_ctx.fillRect(0, 0, GAME.width, GAME.height);
   var dt = (timestamp - last_stamp)/1000;
   last_stamp = timestamp;
 
   Physics.update(dt);
-  g_ctx.clearRect(0, 0, game.width, game.height);
-  g_ctx.drawImage(map, 0, 0);
-  hero.stamp(g_ctx);
-  test.stamp(g_ctx, 0);
-
+  UI.renderer.stamp(g_ctx);
+  UI.update(dt);
+  //g_ctx.drawImage(map, 0, 0);
   // P.FLOOR_TILE.stamp(g_ctx, 10, 10);
 
-  menu.stamp(g_ctx, 27, 0);
+  // menu.stamp(g_ctx, 27, 0);
 
   if(stats)
     stats.end();

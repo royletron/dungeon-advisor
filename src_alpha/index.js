@@ -114,12 +114,12 @@ canvas.addEventListener('mouseout', function(event) {
   movePos = null;
 });
 
-context.fillStyle = '#28322A';
-context.fillRect(0, 0, canvas.width, canvas.height);
+
 
 var last_stamp = 0;
 function update(timestamp) {
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = '#2CA9AD';
+  context.fillRect(0, 0, canvas.width, canvas.height);
   if(stats)
     stats.begin();
 

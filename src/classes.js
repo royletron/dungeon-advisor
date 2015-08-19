@@ -44,7 +44,7 @@ global.Physics = {
     return body;
   },
   update: function(dt) {
-    this._bodies.every(function(item){
+    this._bodies.forEach(function(item, idx){
       item.body.update(dt);
       item.entity.x = item.body.x;
       item.entity.y = item.body.y;
@@ -65,8 +65,8 @@ global.Renderer = function(width, height, alpha) {
   };
 };
 
-global.Hero = function(x, y) {
-  this.renderer = new Char('@', 'FF0000');
+global.Sprite = function(x, y, renderer) {
+  this.renderer = renderer;
   this.x = x;
   this.y = y;
   this.body = Physics.createBody(this, x, y, CHAR_WIDTH, CHAR_HEIGHT);
@@ -81,7 +81,7 @@ global.Menu = function(title) {
   this.title = title;
   this.generate = function(){
     H.MakeBox(14, 30, this.renderer.context);
-    H.StampText(this.renderer.context, 1, 0, this.title, BOX, BOX_B);
+    H.StampText(this.renderer.context, 0, 0, this.title, BOX, BOX_B);
   };
   this.generate();
   this.stamp = function(toCanvas, x, y){

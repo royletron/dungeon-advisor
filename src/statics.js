@@ -6,17 +6,11 @@ global.WALL_B = '626E72';
 global.BOX = '102E34';
 global.BOX_B = '9BC955';
 
+global.GAME = document.createElement('canvas');
+
 global.P = {
-  randomFloorTile: function(){
-    return this.FLOOR_TILES[Math.floor(Math.random()*this.FLOOR_TILES.length)];
-  },
-  FLOOR_TILES: [new Char('∵', '8B9899', '7D8989'), new Char('#', '838F8F', '7D8989'), new Char('*', '859394', '7D8989')],
-  WALL_TB: new Char('┃', WALL, WALL_B),
-  WALL_LR: new Char('▓', WALL, WALL_B),
-  WALL_TR: new Char('┗', WALL, WALL_B),
-  WALL_TL: new Char('┛', WALL, WALL_B),
-  WALL_BL: new Char('┓', WALL, WALL_B),
-  WALL_BR: new Char('┏', WALL, WALL_B),
+  randomSolid: function(){ return H.GetRandomEntry(this.SOLID_TILES); },
+  SOLID_TILES: [new Char('∵', '84596F', '594B54'), new Char('#', '84596F', '594B54'), new Char('*', '84596F', '594B54')],
 
   BOX_TB: new Char('┃', BOX, BOX_B),
   BOX_LR: new Char('━', BOX, BOX_B),
@@ -26,288 +20,112 @@ global.P = {
   BOX_BR: new Char('┏', BOX, BOX_B),
   BOX_MD: new Char(' ', BOX, BOX_B),
 
-  VOID: new Char(' ', WALL_B, WALL_B)
+  VOID: new Char(' ', '302222', '302222')
 };
 
 global.S = {
-  ENTRANCE: {p: '63545E 302222', d: '═01╦01═01═01═01╦01═01═01═01╦01═01═01═01╦01═01═01═01═01═01╦01░01╎01░01░01░01╎01░01░01░╎01░01░01░01╎01░01░01░01░01░01║01◌01 01░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01 01◌01 01░01 01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01 01◌01 01░01 01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01 01◌01 01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01║01░01░01░01◬01░01░01░01◬01░01░01░01◬01░01░01░01◬01░01░01░01 01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01 01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01', w: 20, h:10}
-}
-
-global.H = {
-    GetRandom: function (low, high) {
-        return~~ (Math.random() * (high - low)) + low;
-    },
-    BufferToCoords: function(x, y) {
-      return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
-    },
-    CoordsToBuffer: function(x, y) {
-      return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
-    },
-    MakeBox: function(width, height, context){
-      for(var x=0; x < width; x++)
-      {
-        for(var y=0; y < height; y++)
-        {
-          if(y === 0)
-            if(x === 0)
-              P.BOX_BR.stamp(context, x, y);
-            else if(x == (width-1))
-              P.BOX_BL.stamp(context, x, y);
-            else
-              P.BOX_LR.stamp(context, x, y);
-          else if(y == (height-1))
-            if(x === 0)
-              P.BOX_TR.stamp(context, x, y);
-            else if(x == (width-1))
-              P.BOX_TL.stamp(context, x, y);
-            else
-              P.BOX_LR.stamp(context, x, y);
-          else
-            if((x === 0) || (x == (width-1)))
-              P.BOX_TB.stamp(context, x, y);
-            else
-              P.BOX_MD.stamp(context, x, y);
-        }
-      }
-    },
-    GenerateStamp: function(spr) {
-      var renderer = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
-      this.StampSprite(renderer.context, 0, 0, spr);
-      return renderer;
-    },
-    StampSprite: function(renderer, x, y, spr) {
-      var d = spr.d.split('');
-      var p = spr.p.split(' ');
-      for(var tx=0; tx < spr.w; tx++) {
-        for(var ty=0; ty < spr.h; ty++) {
-          var l = (ty*spr.w*3) + (tx*3);
-          var c = new Char(d[l], p[parseInt(d[l+1])], p[parseInt(d[l+2])]);
-          c.stamp(renderer, x + tx, y + ty);
-        }
-      }
-    },
-    StampText: function(renderer, x, y, text, color, bg, alpha) {
-      text.split("").forEach(function(symbol, index){
-        var char = new Char(symbol, color, bg, alpha);
-        char.stamp(renderer, x+index, y);
-        char = null;
-      });
-    }
+  ENTRANCE: {p: '63545E 302222 C3F83C', d: '═01╦01═01═01═01╦01═01═01═01╦01═01═01═01╦01═01═01═01═01═01╦01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01 01◌01 01░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01 01◌01 01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01 01◌01 01░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01 01◌01 01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01║01░01░01░01◬21░01░01░01◬21░01░01░01◬21░01░01░01◬21░01░01░01 01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01 01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01', w: 20, h:10},
+  OUTDOOR: {p: '2CA9AD 25989B ADDADE FFFFFF 9BC560', d: ' 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11╱31╲31 11 11 11 11 11 11 11 11 11 11 11╱31 33 33╲31╱31╲31 11 11 11 11 11 11 11╱31 33 33 33 33 33 33╲31 11 11 11 11 11╱31 33 33 33 33 33 33 33 33 33╲31 11╥41 11', w:14, h:5}
 };
 
 
-// MakeBox: function(title, width, height){
-//   var str = '';
-//   title = ' '+title+' ';
-//   var ts = ((width - title.length)/2);
-//   for(var i=0; i < width; i++){
-//     console.log(i);
-//     if(i === 0)
-//       str += '┏';
-//     else if(i === (width - 1))
-//       str = str + '┓';
-//     else if(i < ts)
-//       str = str + '━';
-//     else if(i > (ts + title.length - 1))
-//       str = str + '━';
-//     else
-//       str = str + title[i-ts];
-//   }
-//   for(var j = 0; j < height; j++)
-//   {
-//     str = str+'\n';
-//     for(var k = 0; k < width; k++)
-//     {
-//       if((k === 0) || (k === (width - 1)) && (j != (height-1)))
-//         str = str + '┃';
-//       else if((k === (width - 1)) && (j === (height - 1)))
-//         str = str + '┛';
-//       else if((k === 0) && (j === (height-1)))
-//         str = str + '┗';
-//       else
-//         str = str + ' ';
-//     }
-//   }
-//   return str;
-// }
+function getMousePos(canvas, evt) {
+  var rect = canvas.getBoundingClientRect();
+  return H.CoordsToBuffer(evt.clientX - rect.left, evt.clientY - rect.top);
+}
 
-global.D = {
-    map: null,
-    map_size: 164,
-    rooms: [],
-    Generate: function () {
-        this.map = [];
-        for (var x = 0; x < this.map_size; x++) {
-            this.map[x] = [];
-            for (var y = 0; y < this.map_size; y++) {
-                this.map[x][y] = 0;
-            }
-        }
+GAME.addEventListener('mousemove', function(event) {
+  H.MouseCoords = getMousePos(GAME, event);
+});
 
-        var room_count = H.GetRandom(10, 50);
-        var min_size = 5;
-        var max_size = 15;
+GAME.addEventListener('mouseout', function(event) {
+  H.MouseCoords = null;
+  H.MouseDown = false;
+});
 
-        for (var i = 0; i < room_count; i++) {
-            var room = {};
+GAME.addEventListener('mousedown', function(event) {
+  H.MouseDown = true;
+});
 
-            room.x = H.GetRandom(1, this.map_size - max_size - 1);
-            room.y = H.GetRandom(1, this.map_size - max_size - 1);
-            room.w = H.GetRandom(min_size, max_size);
-            room.h = H.GetRandom(min_size, max_size);
+GAME.addEventListener('mouseup', function(event) {
+  H.MouseDown = false;
+});
 
-            if (this.DoesCollide(room)) {
-                i--;
-                continue;
-            }
-            room.w--;
-            room.h--;
-
-            this.rooms.push(room);
-        }
-
-        this.SquashRooms();
-
-        for (i = 0; i < room_count; i++) {
-            var roomA = this.rooms[i];
-            var roomB = this.FindClosestRoom(roomA);
-
-            pointA = {
-                x: H.GetRandom(roomA.x, roomA.x + roomA.w),
-                y: H.GetRandom(roomA.y, roomA.y + roomA.h)
-            };
-            pointB = {
-                x: H.GetRandom(roomB.x, roomB.x + roomB.w),
-                y: H.GetRandom(roomB.y, roomB.y + roomB.h)
-            };
-
-            while ((pointB.x != pointA.x) || (pointB.y != pointA.y)) {
-                if (pointB.x != pointA.x) {
-                    if (pointB.x > pointA.x) pointB.x--;
-                    else pointB.x++;
-                } else if (pointB.y != pointA.y) {
-                    if (pointB.y > pointA.y) pointB.y--;
-                    else pointB.y++;
-                }
-
-                this.map[pointB.x][pointB.y] = 1;
-            }
-        }
-
-        for (i = 0; i < room_count; i++) {
-            var room = this.rooms[i];
-            for (var x = room.x; x < room.x + room.w; x++) {
-                for (var y = room.y; y < room.y + room.h; y++) {
-                    this.map[x][y] = 1;
-                }
-            }
-        }
-
-        for (var x = 0; x < this.map_size; x++) {
-            for (var y = 0; y < this.map_size; y++) {
-                if (this.map[x][y] == 1) {
-                    for (var xx = x - 1; xx <= x + 1; xx++) {
-                        for (var yy = y - 1; yy <= y + 1; yy++) {
-                            if (this.map[xx][yy] == 0) this.map[xx][yy] = 2;
-                        }
-                    }
-                }
-            }
-        }
-    },
-    FindClosestRoom: function (room) {
-        var mid = {
-            x: room.x + (room.w / 2),
-            y: room.y + (room.h / 2)
-        };
-        var closest = null;
-        var closest_distance = 1000;
-        for (var i = 0; i < this.rooms.length; i++) {
-            var check = this.rooms[i];
-            if (check == room) continue;
-            var check_mid = {
-                x: check.x + (check.w / 2),
-                y: check.y + (check.h / 2)
-            };
-            var distance = Math.min(Math.abs(mid.x - check_mid.x) - (room.w / 2) - (check.w / 2), Math.abs(mid.y - check_mid.y) - (room.h / 2) - (check.h / 2));
-            if (distance < closest_distance) {
-                closest_distance = distance;
-                closest = check;
-            }
-        }
-        return closest;
-    },
-    SquashRooms: function () {
-        for (var i = 0; i < 10; i++) {
-            for (var j = 0; j < this.rooms.length; j++) {
-                var room = this.rooms[j];
-                while (true) {
-                    var old_position = {
-                        x: room.x,
-                        y: room.y
-                    };
-                    if (room.x > 1) room.x--;
-                    if (room.y > 1) room.y--;
-                    if ((room.x == 1) && (room.y == 1)) break;
-                    if (this.DoesCollide(room, j)) {
-                        room.x = old_position.x;
-                        room.y = old_position.y;
-                        break;
-                    }
-                }
-            }
-        }
-    },
-    DoesCollide: function (room, ignore) {
-        for (var i = 0; i < this.rooms.length; i++) {
-            if (i == ignore) continue;
-            var check = this.rooms[i];
-            if (!((room.x + room.w + 1 < check.x) || (room.x - 1 > check.x + check.w) || (room.y + room.h + 1 < check.y) || (room.y - 1 > check.y + check.h))) return true;
-        }
-
-        return false;
-    },
-    Draw: function (canvas, context) {
-      if(this.map === null)
-        this.Generate();
-
-      for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
+global.H = {
+  MouseCoords: null,
+  MouseDown: false,
+  CharToNum: function(char) {
+    var c = char.charCodeAt(0) - 48;
+    if(c > 9) c = c - 7;
+    return c;
+  },
+  GetRandomEntry: function(arr) {
+    return arr[Math.floor(Math.random()*arr.length)];
+  },
+  GetRandom: function (low, high) {
+      return~~ (Math.random() * (high - low)) + low;
+  },
+  BufferToCoords: function(x, y) {
+    return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
+  },
+  CoordsToBuffer: function(x, y) {
+    return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
+  },
+  MakeBox: function(width, height, context){
+    for(var x=0; x < width; x++)
+    {
+      for(var y=0; y < height; y++)
       {
-        for(j=0; j < Math.ceil(canvas.height/CHAR_HEIGHT) + 1; j++)
-        {
-          var tile = this.map[i][j];
-          if(tile == 1)
-            P.randomFloorTile().stamp(context, i, j);
-          else if(tile == 2)
-          {
-            var t = this.map[i][j-1] == 2 || false, b = this.map[i][j+1] == 2 || false, l = false, r = false;
-            if(this.map[i-1] !== undefined)
-              l = this.map[i-1][j] == 2;
-            if(this.map[i+1] !== undefined)
-              r = this.map[i+1][j] == 2;
-
-            if((t || b) && !r && !l)
-              P.WALL_TB.stamp(context, i, j);
-
-            if(!t && !b && (r || l))
-              P.WALL_LR.stamp(context, i, j);
-
-            if(t && r)
-              P.WALL_TR.stamp(context, i, j);
-            if(t && l)
-              P.WALL_TL.stamp(context, i, j);
-            if(b && l)
-              P.WALL_BL.stamp(context, i, j);
-            if(b && r)
-              P.WALL_BR.stamp(context, i, j);
-            if(l && r)
-              P.WALL_LR.stamp(context, i, j);
-            if(t && b)
-              P.WALL_TB.stamp(context, i, j);
-          }
+        if(y === 0)
+          if(x === 0)
+            P.BOX_BR.stamp(context, x, y);
+          else if(x == (width-1))
+            P.BOX_BL.stamp(context, x, y);
           else
-            P.VOID.stamp(context, i, j);
-        }
+            P.BOX_LR.stamp(context, x, y);
+        else if(y == (height-1))
+          if(x === 0)
+            P.BOX_TR.stamp(context, x, y);
+          else if(x == (width-1))
+            P.BOX_TL.stamp(context, x, y);
+          else
+            P.BOX_LR.stamp(context, x, y);
+        else
+          if((x === 0) || (x == (width-1)))
+            P.BOX_TB.stamp(context, x, y);
+          else
+            P.BOX_MD.stamp(context, x, y);
       }
     }
+  },
+  GenerateStamp: function(spr) {
+    var renderer = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
+    this.StampSprite(renderer.context, 0, 0, spr);
+    return renderer;
+  },
+  GenerateStamps: function() {
+    for (var key in S) {
+      if (S.hasOwnProperty(key)) {
+        S[key].stamp = this.GenerateStamp(S[key]);
+      }
+     }
+  },
+  StampSprite: function(renderer, x, y, spr) {
+    var d = spr.d.split('');
+    var p = spr.p.split(' ');
+    for(var tx=0; tx < spr.w; tx++) {
+      for(var ty=0; ty < spr.h; ty++) {
+        var l = (ty*spr.w*3) + (tx*3);
+        var c = new Char(d[l], p[this.CharToNum(d[l+1])], p[this.CharToNum(d[l+2])]);
+        c.stamp(renderer, x + tx, y + ty);
+      }
+    }
+  },
+  StampText: function(renderer, x, y, text, color, bg, alpha) {
+    text.split("").forEach(function(symbol, index){
+      var char = new Char(symbol, color, bg, alpha);
+      char.stamp(renderer, x+index, y);
+      char = null;
+    });
+  }
 };
