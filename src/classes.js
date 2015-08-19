@@ -52,6 +52,12 @@ global.Physics = {
   }
 };
 
+global.Room = function(type) {
+  this.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
+  this.type = type;
+  type.stamp.stamp.stamp(this.renderer.context);
+}
+
 global.Renderer = function(width, height, alpha) {
   this._can = document.createElement('canvas');
   this._can.width = width;
@@ -75,13 +81,14 @@ global.Sprite = function(x, y, renderer) {
   };
 };
 
-global.Menu = function(title) {
-  this.width = 20;
-  this.renderer = new Renderer(CHAR_WIDTH * this.width, 600, 1);
+global.Menu = function(title, width, height) {
+  this.width = width;
+  this.height = height;
+  this.renderer = new Renderer(CHAR_WIDTH * this.width, CHAR_HEIGHT * this.height, 1);
   this.title = title;
   this.generate = function(){
-    H.MakeBox(14, 30, this.renderer.context);
-    H.StampText(this.renderer.context, 0, 0, this.title, BOX, BOX_B);
+    H.MakeBox(this.width, this.height, this.renderer.context);
+    H.StampText(this.renderer.context, 2, 0, this.title, BOX, BOX_B);
   };
   this.generate();
   this.stamp = function(toCanvas, x, y){
