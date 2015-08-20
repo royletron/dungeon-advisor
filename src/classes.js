@@ -56,7 +56,7 @@ global.Room = function(type) {
   this.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   this.type = type;
   type.stamp.stamp.stamp(this.renderer.context);
-}
+};
 
 global.Renderer = function(width, height, alpha) {
   this._can = document.createElement('canvas');
@@ -64,9 +64,9 @@ global.Renderer = function(width, height, alpha) {
   this._can.height = height;
   this.context = this._can.getContext('2d');
   this.context.globalAlpha = this.alpha = alpha || 1;
-
+  this.whole = true;
   this.stamp = function(toCanvas, x, y){
-    var coords = H.BufferToCoords(x || 0, y || 0);
+    var coords = H.BufferToCoords(x || 0, y || 0, this.whole);
     toCanvas.drawImage(this._can, coords.x, coords.y);
   };
 };
@@ -80,6 +80,20 @@ global.Sprite = function(x, y, renderer) {
     this.renderer.stamp(toCanvas, this.x, this.y);
   };
 };
+
+global.Hero = function(x, y, symbol) {
+  this.sprite = new Sprite(x, y, new Char(symbol, 'FF0000'));
+  this.body = Physics.createBody(this.sprite, x, y, CHAR_WIDTH, CHAR_HEIGHT);
+  console.log('hero joined');
+  this.sprite.renderer.renderer.whole = false;
+  this.body.velocity.x = H.GetRandom(90, 130)/100;
+  this.stamp = function(toCanvas) {
+    this.sprite.stamp(toCanvas);
+  };
+  this.end = function() {
+    console.log('hero left');
+  }
+}
 
 global.Menu = function(title, width, height) {
   this.width = width;

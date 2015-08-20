@@ -71,8 +71,11 @@ global.H = {
   GetRandom: function (low, high) {
       return~~ (Math.random() * (high - low)) + low;
   },
-  BufferToCoords: function(x, y) {
-    return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
+  BufferToCoords: function(x, y, whole) {
+    if(whole || (whole == undefined))
+      return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
+    else
+      return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
   },
   CoordsToBuffer: function(x, y) {
     return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
