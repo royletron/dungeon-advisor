@@ -5,33 +5,34 @@ global.ROOM_WIDTH = 20;
 global.ROOM_HEIGHT = 10;
 global.WALL = '6D7A80';
 global.WALL_B = '626E72';
-global.BOX = 'FFFFFF';
-global.BOX_B = '00000';
+global.BOX = 'FFE9EB';
+global.BOX_B = '594B54';
 
 global.GAME = document.createElement('canvas');
 
 global.E = {
   weapons: [
-    {name: 'Sword', symbol: '|', damage: 3, range: 1, code: 's'}
+    {name: 'Sword', symbol: '|', strike: '/', damage: 3, range: 1, code: 's', color: 'A7FBEB', offsetx: 0.7, top: - 0.45, bottom: -0.2}
   ],
   heroes: [
-    {name: 'Knight', symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['s'], speed: {t: 1.5, b: 0.7}}
+    {name: 'Knight', symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['s'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'}
   ],
   enemies: {
 
   },
   GetRandomWeapon: function(choice) {
     var w = [];
-    var _this = this;
     choice.forEach(function (c){
-      w.push(_this.GetWeapon(c))
-    });
+      w.push(this.GetWeapon(c))
+    }.bind(this));
     return H.GetRandomEntry(w);
   },
   GetWeapon: function(code) {
-    this.weapons.forEach(function(w){
-      if(w.code == code) return w;
+    var w;
+    this.weapons.forEach(function(c){
+      if(c.code == code) w = c;
     });
+    return w;
   },
   GetRandomHero: function(lvl) {
     var h = [];
@@ -59,12 +60,14 @@ global.P = {
 };
 
 global.S = {
-  ENTRANCE: {p: '63545E 302222 C3F83C', d: '═01╦01═01═01═01╦01═01═01═01╦01═01═01═01╦01═01═01═01═01═01╦01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01 01◌01 01░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01 01◌01 01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01 01◌01 01░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01 01◌01 01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01║01░01░01░01◬21░01░01░01◬21░01░01░01◬21░01░01░01◬21░01░01░01 01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01 01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01', w: 20, h:10},
+  ENTRANCE: {p: '63545E 302222 C3F83C 493B23 998D2D FEF441', d: '═01╦01═01═01═01╦01═01═01═01╦01═01═01═01╦01═01═01═01═01═01╦01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░03◌54░03░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░03░01░01░03◌54░03░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░03░01░01░03◌54░03░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░03░01░01░03◌54░03░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01░01░03░01░01░01░01░01║01░01░01░01◬21░01░01░01◬21░01░01░01◬21░01░01░01◬21░01░01░01 01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01░01 01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01', w: 20, h:10},
+  SEWER: {p: '63545E 302222 9AE2A8 374332 58442C 794425 FEF441', d:'═01═01═01═01═01═01═01═01═01═01═01═01═01┉01═01═01═01═01═01╤01▙01 01 01 01 01 01 01 01◌51 01 01 01 01◜51◝51 01 01 01▜01│01 01 01 01◎16 01 01 01 01▒21 01 01 01 01◟51◞51 01 01◎16 01│01 01 01 01▼51 01 01 01 01▒21 01◉06 01 01▞01 01 01 01▼51 01│01 01 01 01 01 01 01 01 01▒21 01▼51 01 01▚01 01 01 01 01 01│01 01 01▞01 01 01 01 01 01░21 01 01 01 01 01▚01 01▞01 01 01│01 01▞01 01 01 01 01 01 01░21 01 01 01 01 01 01▛01 01 01 01┆01 01 01 01 01 01 01 01 01░21 01 01 01 01 01▞01 01 01 01 01 01 01 01 01 01 01 01 01 01◒21 01 01 01 01 01 01 01 01 01 01 01┄01┅01┄01┉01┅01┉01┄01┉01┄01┉01┅01┈01┄01┉01┅01┉01┄01┉01┉01┈01', w: 20, h:10},
   OUTDOOR: {p: '2CA9AD 25989B ADDADE FFFFFF 9BC560', d: ' 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11╱31╲31 11 11 11 11 11 11 11 11 11 11 11╱31 33 33╲31╱31╲31 11 11 11 11 11 11 11╱31 33 33 33 33 33 33╲31 11 11 11 11 11╱31 33 33 33 33 33 33 33 33 33╲31 11╥41 11', w:14, h:5}
 };
 
 global.R = {
-  ENTRANCE: {cost: 100, stamp: S.ENTRANCE}
+  ENTRANCE: {cost: 100, stamp: S.ENTRANCE},
+  SEWER: {cost: 70, stamp: S.SEWER}
 }
 
 
@@ -98,17 +101,34 @@ global.H = {
     if(c > 9) c = c - 7;
     return c;
   },
+  Null: function(item) {
+    item = null;
+  },
   GetRandomEntry: function(arr) {
     return arr[Math.floor(Math.random()*arr.length)];
   },
   GetRandom: function (low, high) {
       return~~ (Math.random() * (high - low)) + low;
   },
+  EachValueKey: function(obj, cb){
+    for(var k in obj)
+    {
+      if(obj.hasOwnProperty(k))
+        cb(k);
+    }
+  },
   BufferToCoords: function(x, y, whole) {
-    if(whole || (whole == undefined))
+    if(whole || (whole === undefined))
       return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
     else
       return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
+  },
+  RemoveFromArray: function(arr, item) {
+    var _tmp = [];
+    arr.forEach(function(a){
+      if (a !== item) _tmp.push(a);
+    });
+    return _tmp;
   },
   CoordsToBuffer: function(x, y) {
     return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
@@ -141,14 +161,19 @@ global.H = {
     }
   },
   GenerateStamp: function(spr) {
-    var renderer = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
-    this.StampSprite(renderer.context, 0, 0, spr);
-    return renderer;
+    var original = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
+    var reverse = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
+    this.StampSprite(original.context, 0, 0, spr);
+    reverse.context.scale(-1, 1);
+    this.StampSprite(reverse.context, -20, 0, spr);
+    return {original: original, reverse: reverse};
   },
   GenerateStamps: function() {
     for (var key in S) {
       if (S.hasOwnProperty(key)) {
-        S[key].stamp = this.GenerateStamp(S[key]);
+        var stamp = this.GenerateStamp(S[key]);
+        S[key].stamp = stamp.original;
+        S[key].reverse = stamp.reverse;
       }
      }
   },

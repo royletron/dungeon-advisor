@@ -5,6 +5,8 @@ var map = document.createElement('canvas');
 GAME.width = map.width = 1026;
 GAME.height = map.height = 602;
 
+global.TIME = 1;
+
 document.body.appendChild(GAME);
 
 global.g_ctx = GAME.getContext('2d');
@@ -17,6 +19,16 @@ H.GenerateStamps();
 UI.init(m_ctx);
 
 var menu = new Menu(' OBJECTS ');
+
+global.CALLBACKS = [];
+
+global.PUSH_CALLBACK = function(cb) {
+  CALLBACKS.push(cb);
+};
+
+global.POP_CALLBACK = function(cb) {
+  CALLBACKS = H.RemoveFromArray(CALLBACKS, cb);
+};
 
 var last_stamp = 0;
 
@@ -39,9 +51,15 @@ function update(timestamp) {
   var dt = (timestamp - last_stamp)/1000;
   last_stamp = timestamp;
 
+  dt = dt * TIME;
+  CALLBACKS.forEach(function(cb){
+    cb(dt);
+  });
+
   Physics.update(dt);
-  UI.renderer.stamp(g_ctx);
   UI.update(dt);
+
+  UI.draw();
   //g_ctx.drawImage(map, 0, 0);
   // P.FLOOR_TILE.stamp(g_ctx, 10, 10);
 

@@ -26,12 +26,16 @@ global.Body = function(x, y, width, height, fixed) {
   this.acceleration = {x: 0, y: 0};
   this.iscolliding = false;
   this.bounciness = 0.8;
+  this.callbacks = [];
   this.update = function(dt) {
     this._lastposition = {x: this.x, y: this.y};
     if(!this.fixed) {
       this.x += this.velocity.x * dt;
       this.y += this.velocity.y * dt;
     }
+    this.callbacks.forEach(function(cb){
+      cb(this);
+    }.bind(this));
   };
   // this.impact = function
 };
@@ -43,6 +47,9 @@ global.Physics = {
     this._bodies.push({body: body, entity: entity});
     return body;
   },
+  removeBody: function(body) {
+    this._bodies = H.RemoveFromArray(this._bodies, body);
+  },
   update: function(dt) {
     this._bodies.forEach(function(item, idx){
       item.body.update(dt);
@@ -52,10 +59,13 @@ global.Physics = {
   }
 };
 
-global.Room = function(type) {
+global.Room = function(type, flipped) {
   this.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   this.type = type;
-  type.stamp.stamp.stamp(this.renderer.context);
+  if(flipped)
+    type.stamp.reverse.stamp(this.renderer.context);
+  else
+    type.stamp.stamp.stamp(this.renderer.context);
 };
 
 global.Renderer = function(width, height, alpha) {
@@ -81,20 +91,80 @@ global.Sprite = function(x, y, renderer) {
   };
 };
 
+global.Tween = function(entity, values, time, cb) {
+  this.current = 0;
+  this.entity = entity;
+  this.values = values;
+  this.start_values = {};
+  H.EachValueKey(entity, function(k){
+    this.start_values[k] = entity[k];
+  }.bind(this));
+  this.cb = cb;
+  this.time = time;
+  this.function = function(dt){
+    this.current += dt;
+    H.EachValueKey(this.values, function(k){
+      var diff = this.values[k] - this.start_values[k];
+      this.entity[k] = this.start_values[k] + (diff * (this.current/this.time))
+      if(this.entity[k] > this.values[k]) this.entity[k] = this.values[k];
+    }.bind(this));
+    if(this.current > this.time)
+    {
+      if(this.cb != undefined)
+        this.cb();
+
+      POP_CALLBACK(this.function);
+      H.Null(this);
+    }
+  }.bind(this);
+  PUSH_CALLBACK(this.function);
+};
+
 global.Hero = function(x, y, type) {
   this.type = type;
-  this.sprite = new Sprite(x, y, new Char(type.symbol, 'FF0000'));
+  this.sprite = new Sprite(x, y, new Char(type.symbol, type.color));
   this.body = Physics.createBody(this.sprite, x, y, CHAR_WIDTH, CHAR_HEIGHT);
-  this.weapon = E.GetRandomWeapon(type.weapons);
-  this.sprite.renderer.renderer.whole = false;
+  this.weapon = {type: E.GetRandomWeapon(type.weapons), d:true};
+  this.weapon.x = x + this.weapon.type.offsetx;
+  this.weapon.y = y + this.weapon.type.top;
+  this.weapon.spr = new Char(this.weapon.type.symbol, this.weapon.type.color);
+  this.sprite.renderer.renderer.whole = this.weapon.spr.renderer.whole = false;
+  this.body.callbacks.push(function(b){
+    var add = this.weapon.type.offsetx;
+    if(this.facing == 'l')
+      add = -add;
+    this.weapon.x = b.x + add;
+  }.bind(this));
   this.body.velocity.x = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
+  this.speed = this.body.velocity.x;
+  this.update = function(dt) {
+    var m = (this.speed/3) * dt;
+    if(this.weapon.d)
+      this.weapon.y += m;
+    else
+      this.weapon.y += -m;
+    if(this.weapon.y > (this.body.y +  this.weapon.type.bottom))
+    {
+      this.weapon.y = this.body.y + this.weapon.type.bottom;
+      this.weapon.d = false;
+    }
+    else if (this.weapon.y < (this.body.y + this.weapon.type.top))
+    {
+      this.weapon.y = this.body.y + this.weapon.type.top;
+      this.weapon.d = true;
+    }
+  };
   this.stamp = function(toCanvas) {
     this.sprite.stamp(toCanvas);
+    this.weapon.spr.stamp(toCanvas, this.weapon.x, this.weapon.y);
   };
   this.end = function() {
-    console.log('hero left');
-  }
-}
+    Physics.removeBody(this.body);
+    this.sprite = null;
+    this.weapon.spr = null;
+    H.Null(this);
+  };
+};
 
 global.Menu = function(title, width, height) {
   this.width = width;
