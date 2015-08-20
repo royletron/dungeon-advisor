@@ -10,6 +10,39 @@ global.BOX_B = '00000';
 
 global.GAME = document.createElement('canvas');
 
+global.E = {
+  weapons: [
+    {name: 'Sword', symbol: '|', damage: 3, range: 1, code: 's'}
+  ],
+  heroes: [
+    {name: 'Knight', symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['s'], speed: {t: 1.5, b: 0.7}}
+  ],
+  enemies: {
+
+  },
+  GetRandomWeapon: function(choice) {
+    var w = [];
+    var _this = this;
+    choice.forEach(function (c){
+      w.push(_this.GetWeapon(c))
+    });
+    return H.GetRandomEntry(w);
+  },
+  GetWeapon: function(code) {
+    this.weapons.forEach(function(w){
+      if(w.code == code) return w;
+    });
+  },
+  GetRandomHero: function(lvl) {
+    var h = [];
+    this.heroes.forEach(function(c){
+      if(c.lvl_range.b <= lvl)
+        h.push(c)
+    })
+    return new Hero(UI.spawn_point.x, UI.spawn_point.y, H.GetRandomEntry(h));
+  }
+}
+
 global.P = {
   randomSolid: function(){ return H.GetRandomEntry(this.SOLID_TILES); },
   SOLID_TILES: [new Char('∵', '84596F', '594B54'), new Char('#', '84596F', '594B54'), new Char('*', '84596F', '594B54')],

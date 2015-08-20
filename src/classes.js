@@ -81,12 +81,13 @@ global.Sprite = function(x, y, renderer) {
   };
 };
 
-global.Hero = function(x, y, symbol) {
-  this.sprite = new Sprite(x, y, new Char(symbol, 'FF0000'));
+global.Hero = function(x, y, type) {
+  this.type = type;
+  this.sprite = new Sprite(x, y, new Char(type.symbol, 'FF0000'));
   this.body = Physics.createBody(this.sprite, x, y, CHAR_WIDTH, CHAR_HEIGHT);
-  console.log('hero joined');
+  this.weapon = E.GetRandomWeapon(type.weapons);
   this.sprite.renderer.renderer.whole = false;
-  this.body.velocity.x = H.GetRandom(90, 130)/100;
+  this.body.velocity.x = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
   this.stamp = function(toCanvas) {
     this.sprite.stamp(toCanvas);
   };

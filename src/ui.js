@@ -8,6 +8,7 @@ global.UI = {
   clouds: [],
   spawn_counter: 0,
   spawn_wait: 10,
+  spawn_point: {x: 3, y: 17},
   heroes: [],
   ctx: null,
   init: function(ctx){
@@ -51,7 +52,7 @@ global.UI = {
     }
   },
   spawnHero: function() {
-    this.heroes.push(new Hero(3, 16, '$'))
+    this.heroes.push(E.GetRandomHero(1));
   },
   update: function(dt){
     var _this = this;
