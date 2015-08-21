@@ -39,7 +39,7 @@ global.E = {
     {name: 'Crucifix', symbol: '†', damage: 4, range: 1, code: 'cf', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
     {name: 'Wand', symbol: '⊸', damage: 4, range: 1, code: 'wd', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
     {name: 'Staff', symbol: '∣', damage: 4, range: 1, code: 'st', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
-    {name: 'Knife', symbol: '†', damage: 4, range: 1, code: 'st', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
+    {name: 'Knife', symbol: '†', damage: 4, range: 1, code: 'kn', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
     {name: 'Lute', symbol: '∝', damage: 4, range: 1, code: 'lt', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3}
   ],
   heroes: [
