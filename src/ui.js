@@ -54,10 +54,7 @@ global.UI = {
     this.bg.context.fillText('advisor', 135, 44);
     this.renderer.stamp(ctx);
     for(var i=0; i < 20; i++)
-      if(Math.random() > 0.5)
-        this.addRoom(R.ENTRANCE);
-      else
-        this.addRoom(R.SEWER);
+      this.addRoom(R.random());
 
     // this.menu.stamp(this.renderer.context, this.w-27, 19);
   },
@@ -127,7 +124,7 @@ global.UI = {
       hero.current_floor = 1;
     else
       hero.current_floor += 1;
-    hero.body.y += 10;
+    hero.body.y += ROOM_HEIGHT;
     hero.turnAround();
     return hero;
   },
