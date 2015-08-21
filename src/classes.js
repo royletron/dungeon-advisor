@@ -216,6 +216,32 @@ global.Tween = function(entity, values, time, cb) {
   PUSH_CALLBACK(this.function);
 };
 
+global.Counter = function(symbol, object, value) {
+  this.renderer = new Renderer(CHAR_WIDTH * 10, CHAR_HEIGHT);
+  console.log(this.symbol);
+  this.symbol = symbol;
+  this.object = object;
+  this.value = value;
+  this.previous;
+  this.draw = function(){
+    this.previous = this.object[value];
+    var txt = this.previous;
+    if(txt > 3000)
+      txt = Math.floor(txt/1000) +'k'+((txt%1000)!= 0? '+': '');
+    this.renderer.context.clearRect(0, 0, CHAR_WIDTH * 10, CHAR_HEIGHT);
+    this.renderer.context.font = FONT;
+    this.renderer.context.fillStyle = '#000000';
+    this.renderer.context.fillText(txt, CHAR_WIDTH+4, CHAR_HEIGHT - 1);
+    this.symbol.stamp(this.renderer.context);
+  };
+  this.draw();
+  this.stamp = function(toCanvas, x, y){
+    if(this.object[value] != this.previous)
+      this.draw();
+    this.renderer.stamp(toCanvas, x, y);
+  };
+};
+
 global.Hero = function(x, y, type) {
   this.type = type;
   this.sprite = new Sprite(x, y, new Char(type.symbol, type.color));

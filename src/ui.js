@@ -1,5 +1,6 @@
 global.UI = {
   renderer: null,
+  gold: 100,
   w: null,
   h: null,
   floors: [[], []],
@@ -15,6 +16,7 @@ global.UI = {
   fg: null,
   ctx: null,
   statuses: [],
+  counters: [],
   init: function(ctx){
     this.ctx = ctx;
     this.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -53,6 +55,9 @@ global.UI = {
     this.bg.context.strokeText('advisor', 135, 44);
     this.bg.context.fillText('advisor', 135, 44);
     this.renderer.stamp(ctx);
+
+    this.counters.push(new Counter(new Char('●', 'C79C00'), this, 'gold'));
+
     for(var i=0; i < 20; i++)
       this.addRoom(R.random());
 
@@ -148,6 +153,10 @@ global.UI = {
 
     this.statuses.forEach(function(status, y){
       status.stamp(ctx, this.w-27, 8 + (y * 4));
+    }.bind(this));
+
+    this.counters.forEach(function (counter, x){
+      counter.stamp(ctx, 3, 4);
     }.bind(this));
 
     this.fg.stamp(ctx);
