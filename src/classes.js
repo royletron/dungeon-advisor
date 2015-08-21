@@ -225,9 +225,7 @@ global.Counter = function(symbol, object, value) {
   this.previous;
   this.draw = function(){
     this.previous = this.object[this.value];
-    var txt = this.previous;
-    if(txt > 3000)
-      txt = Math.floor(txt/1000) +'k'+((txt%1000)!= 0? '+': '');
+    var txt = H.NumToText(this.previous);
     this.renderer.context.clearRect(0, 0, CHAR_WIDTH * 10, CHAR_HEIGHT);
     this.renderer.context.font = FONT;
     this.renderer.context.fillStyle = '#000000';

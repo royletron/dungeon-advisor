@@ -145,6 +145,11 @@ global.H = {
     if(c > 9) c = c - 7;
     return c;
   },
+  NumToText: function(txt) {
+    if(txt > 3000)
+      txt = Math.floor(txt/1000) +'k'+((txt%1000)!== 0 ? '+' : '');
+    return txt;
+  },
   Null: function(item) {
     item = null;
   },
