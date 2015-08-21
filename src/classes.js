@@ -224,7 +224,7 @@ global.Counter = function(symbol, object, value) {
   this.value = value;
   this.previous;
   this.draw = function(){
-    this.previous = this.object[value];
+    this.previous = this.object[this.value];
     var txt = this.previous;
     if(txt > 3000)
       txt = Math.floor(txt/1000) +'k'+((txt%1000)!= 0? '+': '');
@@ -236,7 +236,7 @@ global.Counter = function(symbol, object, value) {
   };
   this.draw();
   this.stamp = function(toCanvas, x, y){
-    if(this.object[value] != this.previous)
+    if(this.object[this.value] != this.previous)
       this.draw();
     this.renderer.stamp(toCanvas, x, y);
   };

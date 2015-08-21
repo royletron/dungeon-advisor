@@ -12,6 +12,7 @@ global.UI = {
   spawn_wait: 0,
   spawn_point: {x: 2, y: 14.5},
   heroes: [],
+  num_heroes: 0,
   bg: null,
   fg: null,
   ctx: null,
@@ -56,8 +57,8 @@ global.UI = {
     this.bg.context.fillText('advisor', 135, 44);
     this.renderer.stamp(ctx);
 
-    this.counters.push(new Counter(new Char('●', 'C79C00'), this, 'gold'));
-
+    this.counters.push(new Counter(new Char('●', 'FFE545'), this, 'gold'));
+    this.counters.push(new Counter(new Char('∓', 'FA6728'), this, 'num_heroes'));
     for(var i=0; i < 20; i++)
       this.addRoom(R.random());
 
@@ -91,6 +92,13 @@ global.UI = {
   },
   spawnHero: function() {
     this.heroes.push(E.GetRandomHero(1));
+    this.num_heroes = this.heroes.length;
+  },
+  removeHero: function(hero) {
+    H.RemoveFromArray(this.heroes, hero);
+    this.num_heroes = this.heroes.length;
+    hero.end();
+    H.Null(hero);
   },
   update: function(dt){
     this.clouds.forEach(function(cloud, idx){
@@ -119,7 +127,7 @@ global.UI = {
         if((hero.current_floor === undefined) || (hero.current_floor < this.floors.length))
           _tmp.push(this.flipHero(hero));
         else
-          hero.end();
+          this.removeHero(hero);
     }.bind(this));
     this.heroes = _tmp;
 
@@ -156,7 +164,7 @@ global.UI = {
     }.bind(this));
 
     this.counters.forEach(function (counter, x){
-      counter.stamp(ctx, 3, 4);
+      counter.stamp(ctx, 3 + (x*7), 4);
     }.bind(this));
 
     this.fg.stamp(ctx);
