@@ -9,7 +9,7 @@ global.UI = {
   clouds: [],
   spawn_counter: 0,
   spawn_wait: 0,
-  spawn_point: {x: 2, y: 16.5},
+  spawn_point: {x: 2, y: 14.5},
   heroes: [],
   bg: null,
   fg: null,
@@ -36,9 +36,9 @@ global.UI = {
         S.OUTDOOR.stamp.stamp(this.bg.context, x, 0);
       for(var y=0; y < this.h; y++) {
         if(y > 4)
-          if((x > this.w-29) && (x < this.w-3) && (y > 7) && (y < this.h - 2))
+          if((x > this.w-29) && (x < this.w-3) && (y > 6) && (y < this.h - 2))
             P.BOX_MD.stamp(this.bg.context, x, y);
-          else if((x < 3) || (x > (this.w-32)) || (y < 8))
+          else if((x < 3) || (x > (this.w-32)) || (y < 7))
             P.randomSolid().stamp(this.fg.context, x, y);
           else
             P.VOID.stamp(this.bg.context, x, y);
@@ -68,7 +68,7 @@ global.UI = {
       tmp.push(status);
     });
     if(tmp.length > 5)
-      tmp.pop();
+      tmp.pop().kill  ();
     this.statuses = tmp;
   },
   addRoom: function(type){
@@ -142,7 +142,7 @@ global.UI = {
     });
     this.floors.forEach(function(floor, y) {
       floor.forEach(function(room, x) {
-        room.renderer.stamp(ctx, 3 + (x * ROOM_WIDTH), 8 + (y * ROOM_HEIGHT));
+        room.renderer.stamp(ctx, 3 + (x * ROOM_WIDTH), 7 + (y * ROOM_HEIGHT));
       });
     });
     this.heroes.forEach(function(hero) {
@@ -150,7 +150,7 @@ global.UI = {
     });
 
     this.statuses.forEach(function(status, y){
-      status.stamp(ctx, this.w-27, 9 + (y * 4));
+      status.stamp(ctx, this.w-27, 8 + (y * 4));
     }.bind(this));
 
     this.fg.stamp(ctx);

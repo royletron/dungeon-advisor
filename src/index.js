@@ -7,6 +7,15 @@ GAME.height = map.height = 602;
 
 global.TIME = 1;
 
+window.addEventListener('focus', function() {
+  global.TIME = 1;
+});
+
+window.addEventListener('blur', function() {
+  global.TIME = 0;
+});
+
+
 document.body.appendChild(GAME);
 
 global.g_ctx = GAME.getContext('2d');

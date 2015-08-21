@@ -18,6 +18,10 @@ global.Char = function(symbol, color, bg, alpha) {
   this.flip = function(){
     this.renderer.flip();
   }
+  this.kill = function(){
+    this.renderer.kill();
+    H.Null(this);
+  }
 };
 
 global.Avatar = function(hero) {
@@ -34,6 +38,10 @@ global.Avatar = function(hero) {
   this.stamp = function(toCanvas, x, y){
     this.renderer.stamp(toCanvas, x, y);
   }
+  this.kill = function(){
+    this.renderer.kill();
+    H.Null(this);
+  }
 }
 
 global.StatusUpdate = function(hero, title, text) {
@@ -42,14 +50,20 @@ global.StatusUpdate = function(hero, title, text) {
   this.typewriter = new TypeWriter(text, 21, 4);
   this.typewriter.run();
   this.renderer = new Renderer(21 * CHAR_WIDTH, CHAR_HEIGHT);
-  this.renderer.context.font = FONT;
+  this.renderer.context.font = STATUS_FONT;
   this.renderer.context.fillStyle = '#FFFFFF';
-  this.renderer.context.fillText(title, 0, CHAR_HEIGHT);
+  this.renderer.context.fillText(title, 0, CHAR_HEIGHT-2);
   this.stamp = function(toCanvas, x, y){
     // this.avatar.stamp(toCanvas, x, y);
     this.hero.stamp(toCanvas, x, y);
     this.renderer.stamp(toCanvas, x+2, y);
     this.typewriter.stamp(toCanvas, x+2, y+1);
+  }
+  this.kill = function(){
+    this.avatar.kill();
+    this.typewriter.kill();
+    this.renderer.kill();
+    H.Null(this);
   }
 }
 
@@ -63,27 +77,32 @@ global.TypeWriter = function(text, width, height, fixed) {
     var i = 0;
     var cursorX = 0; var cursorY = 0; var lineHeight = CHAR_HEIGHT;
     this.interval = setInterval(function(){
-        var rem = this.text.substr(i);
-        var space = rem.indexOf(' ');
-        space = (space === -1)?this.text.length:space;
-        var wordwidth = this.renderer.context.measureText(rem.substring(0, space)).width;
-        var w = this.renderer.context.measureText(this.text.charAt(i)).width;
-        if(cursorX + wordwidth >= this.renderer.canvas.width) {
-            cursorX = 0;
-            cursorY += lineHeight;
-            this.height += 1;
-        }
-        this.renderer.context.font = FONT;
-        this.renderer.context.fillStyle = '#25989B';
-        this.renderer.context.fillText(this.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT);
-        i++;
-        cursorX += w;
-        if(i === this.text.length)
-          clearInterval(this.interval);
+      var rem = this.text.substr(i);
+      var space = rem.indexOf(' ');
+      space = (space === -1)?this.text.length:space;
+      var wordwidth = this.renderer.context.measureText(rem.substring(0, space)).width;
+      var w = this.renderer.context.measureText(this.text.charAt(i)).width;
+      if(cursorX + wordwidth >= this.renderer.canvas.width) {
+          cursorX = 0;
+          cursorY += lineHeight;
+          this.height += 1;
+      }
+      this.renderer.context.font = STATUS_FONT;
+      this.renderer.context.fillStyle = '#25989B';
+      this.renderer.context.fillText(this.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT);
+      i++;
+      cursorX += w;
+      if(i === this.text.length)
+        clearInterval(this.interval);
     }.bind(this), 110);
   };
   this.stamp = function(toCanvas, x, y) {
     this.renderer.stamp(toCanvas, x, y);
+  }
+  this.kill = function(){
+    clearInterval(this.interval);
+    this.renderer.kill();
+    H.Null(this);
   }
 }
 
@@ -152,6 +171,10 @@ global.Renderer = function(width, height, alpha) {
   this.flip = function(){
     H.FlipCanvas(this.canvas);
   };
+  this.kill = function() {
+    this.canvas = null;
+    H.Null(this);
+  }
 };
 
 global.Sprite = function(x, y, renderer) {
@@ -212,7 +235,7 @@ global.Hero = function(x, y, type) {
   this.facing = RIGHT;
   this.speed = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
   this.body.velocity.x = this.speed;
-  UI.addStatus(this, this.name+" has entered!", "A "+this.type.name+" from ...");
+  UI.addStatus(this, this.name+" has entered!", "A "+this.type.name.toLowerCase()+" from ...");
   this.update = function(dt) {
     var m = (this.speed/3) * dt;
     if(this.weapon.d)
@@ -246,8 +269,11 @@ global.Hero = function(x, y, type) {
     var wx, wy;
     if(x != undefined) wx = x + this.weapon.type.offsetx;
     if(y != undefined) wy = y + this.weapon.type.top;
-    this.sprite.stamp(toCanvas, x, y);
-    this.weapon.spr.stamp(toCanvas, wx || this.weapon.x, wy || this.weapon.y);
+    if(this.sprite)
+    {
+      this.sprite.stamp(toCanvas, x, y);
+      this.weapon.spr.stamp(toCanvas, wx || this.weapon.x, wy || this.weapon.y);
+    }
   };
   this.end = function() {
     Physics.removeBody(this.body);
