@@ -15,7 +15,43 @@ global.Char = function(symbol, color, bg, alpha) {
   this.stamp = function(toCanvas, x, y){
     this.renderer.stamp(toCanvas, x, y);
   };
+  this.flip = function(){
+    this.renderer.flip();
+  }
 };
+
+global.TypeWriter = function(text, width, height, fixed) {
+  this.fixed = fixed || false;
+  this.text = text;
+  this.renderer = new Renderer(width * CHAR_WIDTH, height * CHAR_HEIGHT);
+  this.interval;
+  this.height = 1;
+  this.run = function() {
+    var i = 0;
+    var cursorX = 0; var cursorY = 0; var lineHeight = CHAR_HEIGHT;
+    this.interval = setInterval(function(){
+        var rem = this.text.substr(i);
+        var space = rem.indexOf(' ');
+        space = (space === -1)?this.text.length:space;
+        var wordwidth = this.renderer.context.measureText(rem.substring(0, space)).width;
+        var w = this.renderer.context.measureText(this.text.charAt(i)).width;
+        if(cursorX + wordwidth >= this.renderer.canvas.width) {
+            cursorX = 0;
+            cursorY += lineHeight;
+            this.height += 1;
+        }
+        this.renderer.context.font = FONT;
+        this.renderer.context.fillText(this.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT);
+        i++;
+        cursorX += w;
+        if(i === this.text.length)
+          clearInterval(this.interval);
+    }.bind(this), 75);
+  };
+  this.stamp = function(toCanvas, x, y) {
+    this.renderer.stamp(toCanvas, x, y);
+  }
+}
 
 global.Body = function(x, y, width, height, fixed) {
   this.x = x; this.y = y; this.width = width; this.height = height;
@@ -69,15 +105,18 @@ global.Room = function(type, flipped) {
 };
 
 global.Renderer = function(width, height, alpha) {
-  this._can = document.createElement('canvas');
-  this._can.width = width;
-  this._can.height = height;
-  this.context = this._can.getContext('2d');
+  this.canvas = document.createElement('canvas');
+  this.canvas.width = width;
+  this.canvas.height = height;
+  this.context = this.canvas.getContext('2d');
   this.context.globalAlpha = this.alpha = alpha || 1;
   this.whole = true;
   this.stamp = function(toCanvas, x, y){
     var coords = H.BufferToCoords(x || 0, y || 0, this.whole);
-    toCanvas.drawImage(this._can, coords.x, coords.y);
+    toCanvas.drawImage(this.canvas, coords.x, coords.y);
+  };
+  this.flip = function(){
+    H.FlipCanvas(this.canvas);
   };
 };
 
@@ -132,12 +171,13 @@ global.Hero = function(x, y, type) {
   this.sprite.renderer.renderer.whole = this.weapon.spr.renderer.whole = false;
   this.body.callbacks.push(function(b){
     var add = this.weapon.type.offsetx;
-    if(this.facing == 'l')
+    if(this.facing == LEFT)
       add = -add;
     this.weapon.x = b.x + add;
   }.bind(this));
-  this.body.velocity.x = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
-  this.speed = this.body.velocity.x;
+  this.facing = RIGHT;
+  this.speed = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
+  this.body.velocity.x = this.speed;
   this.update = function(dt) {
     var m = (this.speed/3) * dt;
     if(this.weapon.d)
@@ -153,6 +193,18 @@ global.Hero = function(x, y, type) {
     {
       this.weapon.y = this.body.y + this.weapon.type.top;
       this.weapon.d = true;
+    }
+  };
+  this.turnAround = function() {
+    this.sprite.renderer.flip();
+    this.weapon.spr.renderer.flip();
+    if(this.facing == RIGHT) {
+      this.facing = LEFT;
+      this.body.velocity.x = -this.speed;
+    }
+    else{
+      this.facing = RIGHT;
+      this.body.velocity.x = this.speed;
     }
   };
   this.stamp = function(toCanvas) {

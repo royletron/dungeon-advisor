@@ -1,4 +1,5 @@
 global.FONT = '16px Courier';
+global.HEADING_FONT = '30px Courier'
 global.CHAR_WIDTH = 9;
 global.CHAR_HEIGHT = 14;
 global.ROOM_WIDTH = 20;
@@ -7,6 +8,17 @@ global.WALL = '6D7A80';
 global.WALL_B = '626E72';
 global.BOX = 'FFE9EB';
 global.BOX_B = '594B54';
+global.RIGHT = 'r';
+global.LEFT = 'l';
+
+var buffer = document.createElement('canvas');
+
+global.TMP_BUFFER = function(width, height) {
+  buffer.width = width; buffer.heigth = height;
+  buffer.getContext('2d').clearRect(0, 0, buffer.width, buffer.height);
+  buffer.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
+  return buffer;
+};
 
 global.GAME = document.createElement('canvas');
 
@@ -126,6 +138,15 @@ global.H = {
       if(obj.hasOwnProperty(k))
         cb(k);
     }
+  },
+  FlipCanvas: function(canvas) {
+    var tmp = TMP_BUFFER(canvas.width, canvas.height);
+    var tctx = tmp.getContext('2d');
+    tctx.scale(-1, 1);
+    tctx.drawImage(canvas, -canvas.width, 0);
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(tmp, 0, 0);
   },
   BufferToCoords: function(x, y, whole) {
     if(whole || (whole === undefined))

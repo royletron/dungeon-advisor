@@ -14,6 +14,7 @@ global.UI = {
   bg: null,
   fg: null,
   ctx: null,
+  type: null,
   init: function(ctx){
     this.ctx = ctx;
     this.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -22,6 +23,10 @@ global.UI = {
     this.renderer = new Renderer(GAME.width, GAME.height, 1);
     this.bg = new Renderer(GAME.width, GAME.height, 1);
     this.fg = new Renderer(GAME.width, GAME.height, 1);
+
+    this.type = new TypeWriter('Hello universe, how are you doing?', 24, 4);
+    this.type.run();
+
     for(var x=0; x < this.w; x++) {
       if(Math.random() > 0.95)
       {
@@ -29,7 +34,7 @@ global.UI = {
         c.body.velocity.x = 1;
         this.clouds.push(c);
       }
-      if((x%14 === 0) && (Math.random() > 0.5))
+      if((x%14 === 0) && (Math.random() > 0.5) && (x > 20))
         S.OUTDOOR.stamp.stamp(this.bg.context, x, 0);
       for(var y=0; y < this.h; y++) {
         if(y > 4)
@@ -41,6 +46,14 @@ global.UI = {
             P.VOID.stamp(this.bg.context, x, y);
       }
     }
+    this.bg.context.font = HEADING_FONT;
+    this.bg.context.strokeStyle = 'white';
+    this.bg.context.lineWidth = 5;
+    this.bg.context.strokeText('dungeon', 10, 44);
+    this.bg.context.fillText('dungeon', 10, 44);
+    this.bg.context.fillStyle = '#579441';
+    this.bg.context.strokeText('advisor', 135, 44);
+    this.bg.context.fillText('advisor', 135, 44);
     this.renderer.stamp(ctx);
     for(var i=0; i < 20; i++)
       if(Math.random() > 0.5)
@@ -107,8 +120,7 @@ global.UI = {
     else
       hero.current_floor += 1;
     hero.body.y += 10;
-    hero.facing = 'l';
-    hero.body.velocity.x = -hero.body.velocity.x;
+    hero.turnAround();
     return hero;
   },
   draw: function() {
@@ -130,6 +142,8 @@ global.UI = {
     });
 
     this.fg.stamp(ctx);
+
+    this.type.stamp(ctx, this.w-27, 9);
 
     this.renderer.stamp(g_ctx);
   }
