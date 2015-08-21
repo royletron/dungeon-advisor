@@ -125,6 +125,7 @@ global.Hero = function(x, y, type) {
   this.sprite = new Sprite(x, y, new Char(type.symbol, type.color));
   this.body = Physics.createBody(this.sprite, x, y, CHAR_WIDTH, CHAR_HEIGHT);
   this.weapon = {type: E.GetRandomWeapon(type.weapons), d:true};
+  this.name = N.Random();
   this.weapon.x = x + this.weapon.type.offsetx;
   this.weapon.y = y + this.weapon.type.top;
   this.weapon.spr = new Char(this.weapon.type.symbol, this.weapon.type.color);

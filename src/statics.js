@@ -10,12 +10,22 @@ global.BOX_B = '594B54';
 
 global.GAME = document.createElement('canvas');
 
+global.N = {
+  names: ['Tom', 'Thomas', 'Brian', 'Bobby', 'Boromir', 'Budgergy', 'Bobbin', 'Bilbo', 'Bonzo', 'Bongo', 'Calvin', 'Capitan', 'Mr White', 'Jack', 'John', 'Shirley', 'Jonty', 'Monty', 'Cresswell', 'Burgermeister', 'Royletron', 'Timon', 'Aladdin', 'Adolf', 'Tony', 'Antony', 'Finn', 'Jake', 'Peter', 'Pete', 'Pele', 'Persius', 'Ponyo', 'Pogo', 'Serj', 'Sergey', 'Samir', 'Todmorden', 'Kevin'],
+  Random: function() {
+    return H.GetRandomEntry(this.names);
+  }
+}
+
 global.E = {
   weapons: [
-    {name: 'Sword', symbol: '|', strike: '/', damage: 3, range: 1, code: 's', color: 'A7FBEB', offsetx: 0.7, top: - 0.45, bottom: -0.2}
+    {name: 'Shortsword', symbol: '}', damage: 3, range: 3, code: 'ss', color: '00FF00', offsetx: 0.6, top: -0.5, bottom: -0.35},
+    {name: 'Longsword', symbol: '|', strike: '/', damage: 4, range: 3, code: 'ls', color: 'A7FBEB', offsetx: 0.7, top: - 0.45, bottom: -0.2},
+    {name: 'Small Axe', symbol: '>', damage: 4, range: 1, code: 'sa', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3}
   ],
   heroes: [
-    {name: 'Knight', symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['s'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'}
+    {name: 'Knight', symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
+    {name: 'Dwarf', symbol: 'D', lvl_range: {t: 55, b: 1}, weapons: ['sa'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'}
   ],
   enemies: {
 
