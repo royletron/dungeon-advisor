@@ -62,8 +62,14 @@ global.UI = {
     // this.menu.stamp(this.renderer.context, this.w-27, 19);
   },
   addStatus: function(hero, title, text){
-    var num = statuses.length;
-    if(num > 5) num = 5;
+    var tmp = [];
+    tmp.push(new StatusUpdate(hero, title, text));
+    this.statuses.forEach(function(status){
+      tmp.push(status);
+    });
+    if(tmp.length > 5)
+      tmp.pop();
+    this.statuses = tmp;
   },
   addRoom: function(type){
     var added = false;
@@ -142,6 +148,10 @@ global.UI = {
     this.heroes.forEach(function(hero) {
       hero.stamp(ctx);
     });
+
+    this.statuses.forEach(function(status, y){
+      status.stamp(ctx, this.w-27, 9 + (y * 4));
+    }.bind(this));
 
     this.fg.stamp(ctx);
 

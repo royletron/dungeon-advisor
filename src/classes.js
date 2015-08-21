@@ -37,6 +37,7 @@ global.Avatar = function(hero) {
 }
 
 global.StatusUpdate = function(hero, title, text) {
+  this.hero = hero;
   this.avatar = new Avatar(hero);
   this.typewriter = new TypeWriter(text, 21, 4);
   this.typewriter.run();
@@ -45,9 +46,10 @@ global.StatusUpdate = function(hero, title, text) {
   this.renderer.context.fillStyle = '#FFFFFF';
   this.renderer.context.fillText(title, 0, CHAR_HEIGHT);
   this.stamp = function(toCanvas, x, y){
-    this.avatar.stamp(toCanvas, x, y);
-    this.renderer.stamp(toCanvas, x+3, y);
-    this.typewriter.stamp(toCanvas, x+3, y+1);  
+    // this.avatar.stamp(toCanvas, x, y);
+    this.hero.stamp(toCanvas, x, y);
+    this.renderer.stamp(toCanvas, x+2, y);
+    this.typewriter.stamp(toCanvas, x+2, y+1);
   }
 }
 
@@ -210,6 +212,7 @@ global.Hero = function(x, y, type) {
   this.facing = RIGHT;
   this.speed = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
   this.body.velocity.x = this.speed;
+  UI.addStatus(this, this.name+" has entered!", "A "+this.type.name+" from ...");
   this.update = function(dt) {
     var m = (this.speed/3) * dt;
     if(this.weapon.d)
@@ -240,8 +243,11 @@ global.Hero = function(x, y, type) {
     }
   };
   this.stamp = function(toCanvas, x, y) {
+    var wx, wy;
+    if(x != undefined) wx = x + this.weapon.type.offsetx;
+    if(y != undefined) wy = y + this.weapon.type.top;
     this.sprite.stamp(toCanvas, x, y);
-    this.weapon.spr.stamp(toCanvas, x || this.weapon.x, y || this.weapon.y);
+    this.weapon.spr.stamp(toCanvas, wx || this.weapon.x, wy || this.weapon.y);
   };
   this.end = function() {
     Physics.removeBody(this.body);
