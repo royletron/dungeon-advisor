@@ -14,7 +14,7 @@ global.UI = {
   bg: null,
   fg: null,
   ctx: null,
-  type: null,
+  statuses: [],
   init: function(ctx){
     this.ctx = ctx;
     this.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -24,8 +24,6 @@ global.UI = {
     this.bg = new Renderer(GAME.width, GAME.height, 1);
     this.fg = new Renderer(GAME.width, GAME.height, 1);
 
-    this.type = new TypeWriter('Hello universe, how are you doing?', 24, 4);
-    this.type.run();
 
     for(var x=0; x < this.w; x++) {
       if(Math.random() > 0.95)
@@ -62,6 +60,10 @@ global.UI = {
         this.addRoom(R.SEWER);
 
     // this.menu.stamp(this.renderer.context, this.w-27, 19);
+  },
+  addStatus: function(hero, title, text){
+    var num = statuses.length;
+    if(num > 5) num = 5;
   },
   addRoom: function(type){
     var added = false;
@@ -143,7 +145,7 @@ global.UI = {
 
     this.fg.stamp(ctx);
 
-    this.type.stamp(ctx, this.w-27, 9);
+    // this.type.stamp(ctx, this.w-27, 9);
 
     this.renderer.stamp(g_ctx);
   }

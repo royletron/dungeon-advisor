@@ -20,6 +20,37 @@ global.Char = function(symbol, color, bg, alpha) {
   }
 };
 
+global.Avatar = function(hero) {
+  this.color = '#25989B';
+  this.hero = hero;
+  this.renderer = new Renderer(2 *CHAR_WIDTH, 2 * CHAR_HEIGHT);
+  this.gen = function(){
+    this.renderer.context.font = FONT;
+    this.renderer.context.fillStyle = this.color;
+    this.renderer.context.fillText('◜◝', 0, CHAR_HEIGHT);
+    this.renderer.context.fillText('◟◞', 0, CHAR_HEIGHT*2);
+  }
+  this.gen();
+  this.stamp = function(toCanvas, x, y){
+    this.renderer.stamp(toCanvas, x, y);
+  }
+}
+
+global.StatusUpdate = function(hero, title, text) {
+  this.avatar = new Avatar(hero);
+  this.typewriter = new TypeWriter(text, 21, 4);
+  this.typewriter.run();
+  this.renderer = new Renderer(21 * CHAR_WIDTH, CHAR_HEIGHT);
+  this.renderer.context.font = FONT;
+  this.renderer.context.fillStyle = '#FFFFFF';
+  this.renderer.context.fillText(title, 0, CHAR_HEIGHT);
+  this.stamp = function(toCanvas, x, y){
+    this.avatar.stamp(toCanvas, x, y);
+    this.renderer.stamp(toCanvas, x+3, y);
+    this.typewriter.stamp(toCanvas, x+3, y+1);  
+  }
+}
+
 global.TypeWriter = function(text, width, height, fixed) {
   this.fixed = fixed || false;
   this.text = text;
@@ -41,12 +72,13 @@ global.TypeWriter = function(text, width, height, fixed) {
             this.height += 1;
         }
         this.renderer.context.font = FONT;
+        this.renderer.context.fillStyle = '#25989B';
         this.renderer.context.fillText(this.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT);
         i++;
         cursorX += w;
         if(i === this.text.length)
           clearInterval(this.interval);
-    }.bind(this), 75);
+    }.bind(this), 110);
   };
   this.stamp = function(toCanvas, x, y) {
     this.renderer.stamp(toCanvas, x, y);
@@ -125,8 +157,8 @@ global.Sprite = function(x, y, renderer) {
   this.x = x;
   this.y = y;
   this.body = Physics.createBody(this, x, y, CHAR_WIDTH, CHAR_HEIGHT);
-  this.stamp = function(toCanvas) {
-    this.renderer.stamp(toCanvas, this.x, this.y);
+  this.stamp = function(toCanvas, x, y) {
+    this.renderer.stamp(toCanvas, x || this.x, y || this.y);
   };
 };
 
@@ -207,9 +239,9 @@ global.Hero = function(x, y, type) {
       this.body.velocity.x = this.speed;
     }
   };
-  this.stamp = function(toCanvas) {
-    this.sprite.stamp(toCanvas);
-    this.weapon.spr.stamp(toCanvas, this.weapon.x, this.weapon.y);
+  this.stamp = function(toCanvas, x, y) {
+    this.sprite.stamp(toCanvas, x, y);
+    this.weapon.spr.stamp(toCanvas, x || this.weapon.x, y || this.weapon.y);
   };
   this.end = function() {
     Physics.removeBody(this.body);
