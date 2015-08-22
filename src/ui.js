@@ -58,7 +58,7 @@ global.UI = {
     this.renderer.stamp(ctx);
 
     this.counters.push(new Counter(new Char('●', 'FFE545'), this, 'gold'));
-    this.counters.push(new Counter(new Char('∓', 'FA6728'), this, 'num_heroes'));
+    this.counters.push(new Counter(new Char('#', 'FA6728'), this, 'num_heroes'));
     for(var i=0; i < 20; i++)
       this.addRoom(R.random());
 
@@ -95,10 +95,11 @@ global.UI = {
     this.num_heroes = this.heroes.length;
   },
   removeHero: function(hero) {
-    H.RemoveFromArray(this.heroes, hero);
-    this.num_heroes = this.heroes.length;
+    // this.heroes = H.RemoveFromArray(this.heroes, hero);
+    var tmp = [];
     hero.end();
     H.Null(hero);
+    this.num_heroes = this.heroes.length;
   },
   update: function(dt){
     this.clouds.forEach(function(cloud, idx){

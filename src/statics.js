@@ -181,10 +181,15 @@ global.H = {
     else
       return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
   },
-  RemoveFromArray: function(arr, item) {
+  RemoveFromArray: function(arr, item, val) {
     var _tmp = [];
     arr.forEach(function(a){
-      if (a !== item) _tmp.push(a);
+      if(val)
+        if(a[val] != item[val])
+          _tmp.push(a);
+      else
+        if (a !== item)
+          _tmp.push(a);
     });
     return _tmp;
   },

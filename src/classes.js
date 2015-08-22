@@ -148,9 +148,13 @@ global.Physics = {
   }
 };
 
+var roomID = 1;
+
 global.Room = function(type, flipped) {
   this.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   this.type = type;
+  this.id = roomID;
+  roomID++;
   if(flipped)
     type.stamp.reverse.stamp(this.renderer.context);
   else
@@ -240,6 +244,8 @@ global.Counter = function(symbol, object, value) {
   };
 };
 
+var heroId = 1;
+
 global.Hero = function(x, y, type) {
   this.type = type;
   this.sprite = new Sprite(x, y, new Char(type.symbol, type.color));
@@ -250,6 +256,8 @@ global.Hero = function(x, y, type) {
   this.weapon.y = y + this.weapon.type.top;
   this.weapon.spr = new Char(this.weapon.type.symbol, this.weapon.type.color);
   this.sprite.renderer.renderer.whole = this.weapon.spr.renderer.whole = false;
+  this.id = heroId;
+  heroId ++;
   this.body.callbacks.push(function(b){
     var add = this.weapon.type.offsetx;
     if(this.facing == LEFT)
@@ -276,7 +284,22 @@ global.Hero = function(x, y, type) {
       this.weapon.y = this.body.y + this.weapon.type.top;
       this.weapon.d = true;
     }
-  };
+    var c = this.getCurrentRoom();
+    if((this.currentRoom == undefined) || (c.id != this.currentRoom.id))
+      this.roomChanged(c);
+  },
+  this.roomChanged = function(c) {
+    this.currentRoom = c;
+  },
+  this.getCurrentRoom = function() {
+    var x = this.body.x - UI.spawn_point.x;
+    var y = this.body.y - UI.spawn_point.y;
+    var r = UI.floors[Math.floor(y/ROOM_HEIGHT)];
+    if(r !== undefined)
+      r = r[Math.floor(x/ROOM_WIDTH)];
+    if(r === undefined) return this.currentRoom;
+    else return r;
+  },
   this.turnAround = function() {
     this.sprite.renderer.flip();
     this.weapon.spr.renderer.flip();
