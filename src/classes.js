@@ -24,6 +24,21 @@ global.Char = function(symbol, color, bg, alpha) {
   }
 };
 
+global.Button = function(text, click) {
+  this.renderer = new Renderer((text.length + 3) * CHAR_WIDTH, CHAR_HEIGHT*2)
+  this.renderer.whole = false;
+  this.renderer.context.font = FONT;
+  this.renderer.context.fillStyle = '#FF0000';
+  this.renderer.context.fillRect(3, 3, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
+  this.renderer.context.fillStyle = '#FFFFFF';
+  this.renderer.context.fillRect(0, 0, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
+  this.renderer.context.fillStyle = '#000000';
+  this.renderer.context.fillText(text, CHAR_WIDTH-1.5, CHAR_WIDTH*1.8);
+  this.stamp = function(toCanvas, x, y) {
+    this.renderer.stamp(toCanvas, x, y);
+  }
+}
+
 global.Avatar = function(hero) {
   this.color = '#25989B';
   this.hero = hero;

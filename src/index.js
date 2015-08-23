@@ -55,12 +55,13 @@ document.body.appendChild( stats.domElement );
 function update(timestamp) {
   if(stats)
     stats.begin();
+    
+  var dt = (timestamp - last_stamp)/1000;
+  last_stamp = timestamp;
 
   if(ACTIVE) {
     g_ctx.fillStyle = '#25989B';
     g_ctx.fillRect(0, 0, GAME.width, GAME.height);
-    var dt = (timestamp - last_stamp)/1000;
-    last_stamp = timestamp;
 
     dt = dt * TIME;
     CALLBACKS.forEach(function(cb){

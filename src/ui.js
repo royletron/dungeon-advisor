@@ -16,6 +16,9 @@ global.UI = {
   bg: null,
   fg: null,
   ctx: null,
+  add_floor_button: new Button('Add Floor', function(){
+    console.log('you clicked me');
+  }),
   statuses: [],
   counters: [],
   init: function(ctx){
@@ -169,8 +172,8 @@ global.UI = {
       counter.stamp(ctx, 3 + (x*7), 4);
     }.bind(this));
 
+    this.add_floor_button.stamp(ctx, 1, 1);
     this.fg.stamp(ctx);
-
     // this.type.stamp(ctx, this.w-27, 9);
 
     this.renderer.stamp(g_ctx);
