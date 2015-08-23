@@ -24,7 +24,7 @@ global.Char = function(symbol, color, bg, alpha) {
   }
 };
 
-global.Button = function(text, click, x, y) {
+global.Button = function(text, cb, x, y) {
   this.renderer = new Renderer((text.length + 3) * CHAR_WIDTH, CHAR_HEIGHT*2)
   this.renderer.whole = false;
   this.renderer.context.font = FONT;
@@ -40,12 +40,19 @@ global.Button = function(text, click, x, y) {
   this.renderer.x = x*CHAR_WIDTH;
   this.y = y;
   this.renderer.y = y*CHAR_HEIGHT;
+  this._clicked = false;
+  this.cb = cb;
   this.stamp = function(toCanvas, x, y) {
     this.renderer.stamp(toCanvas, this.x, this.y);
   }
   this.update = function(dt) {
-    if(H.MouseDown)
-      console.log(H.HitTestPoint(H.MouseCoords, this.renderer))
+    if(H.MouseDown && !this._clicked)
+      if(H.HitTestPoint(H.MouseCoords, this.renderer)) {
+        this._clicked = true;
+        this.cb();
+      }
+    if(!H.MouseDown && this._clicked)
+      this._clicked = false;
   }
 }
 

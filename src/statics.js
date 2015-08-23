@@ -134,15 +134,18 @@ GAME.addEventListener('mouseout', function(event) {
 
 GAME.addEventListener('mousedown', function(event) {
   H.MouseDown = true;
+  H.MouseUp = false;
 });
 
 GAME.addEventListener('mouseup', function(event) {
   H.MouseDown = false;
+  H.MouseUp = true;
 });
 
 global.H = {
   MouseCoords: null,
   MouseDown: false,
+  MouseUp: false,
   CharToNum: function(char) {
     var c = char.charCodeAt(0) - 48;
     if(c > 9) c = c - 7;
