@@ -6,13 +6,14 @@ GAME.width = map.width = 1026;
 GAME.height = map.height = 602;
 
 global.TIME = 1;
+global.ACTIVE = true;
 
 window.addEventListener('focus', function() {
-  global.TIME = 1;
+  ACTIVE = true;
 });
 
 window.addEventListener('blur', function() {
-  global.TIME = 0;
+  ACTIVE = false;
 });
 
 
@@ -55,24 +56,26 @@ function update(timestamp) {
   if(stats)
     stats.begin();
 
-  g_ctx.fillStyle = '#25989B';
-  g_ctx.fillRect(0, 0, GAME.width, GAME.height);
-  var dt = (timestamp - last_stamp)/1000;
-  last_stamp = timestamp;
+  if(ACTIVE) {
+    g_ctx.fillStyle = '#25989B';
+    g_ctx.fillRect(0, 0, GAME.width, GAME.height);
+    var dt = (timestamp - last_stamp)/1000;
+    last_stamp = timestamp;
 
-  dt = dt * TIME;
-  CALLBACKS.forEach(function(cb){
-    cb(dt);
-  });
+    dt = dt * TIME;
+    CALLBACKS.forEach(function(cb){
+      cb(dt);
+    });
 
-  Physics.update(dt);
-  UI.update(dt);
+    Physics.update(dt);
+    UI.update(dt);
 
-  UI.draw();
-  //g_ctx.drawImage(map, 0, 0);
-  // P.FLOOR_TILE.stamp(g_ctx, 10, 10);
+    UI.draw();
+    //g_ctx.drawImage(map, 0, 0);
+    // P.FLOOR_TILE.stamp(g_ctx, 10, 10);
 
-  // menu.stamp(g_ctx, 27, 0);
+    // menu.stamp(g_ctx, 27, 0);
+  }
 
   if(stats)
     stats.end();

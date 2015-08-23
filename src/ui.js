@@ -61,8 +61,6 @@ global.UI = {
     this.counters.push(new Counter(new Char('#', 'FA6728'), this, 'num_heroes'));
     for(var i=0; i < 20; i++)
       this.addRoom(R.random());
-
-    // this.menu.stamp(this.renderer.context, this.w-27, 19);
   },
   addStatus: function(hero, title, text){
     var tmp = [];
@@ -95,8 +93,7 @@ global.UI = {
     this.num_heroes = this.heroes.length;
   },
   removeHero: function(hero) {
-    // this.heroes = H.RemoveFromArray(this.heroes, hero);
-    var tmp = [];
+    this.heroes = H.RemoveFromArray(this.heroes, hero, 'id');
     hero.end();
     H.Null(hero);
     this.num_heroes = this.heroes.length;
