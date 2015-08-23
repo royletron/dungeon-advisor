@@ -38,6 +38,8 @@ global.Avatar = function(hero) {
     this.hero.stamp(this.renderer.context, 0.3, 0.65);
     this.stamped = true;
   }
+  if(this.hero.stamp != null)
+    this.gen();
   this.stamp = function(toCanvas, x, y){
     if(!this.stamped) this.gen();
     this.renderer.stamp(toCanvas, x, y);
@@ -227,7 +229,6 @@ global.Tween = function(entity, values, time, cb) {
 
 global.Counter = function(symbol, object, value) {
   this.renderer = new Renderer(CHAR_WIDTH * 10, CHAR_HEIGHT);
-  console.log(this.symbol);
   this.symbol = symbol;
   this.object = object;
   this.value = value;
@@ -330,6 +331,7 @@ global.Hero = function(x, y, type) {
   };
   this.end = function() {
     // Physics.removeBody(this.body);
+    UI.addStatus(this, this.name+" has left!", "A "+this.type.name.toLowerCase()+" from ...");
     this.active = false;
     this.sprite.kill();
     this.weapon.spr.kill();

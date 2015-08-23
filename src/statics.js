@@ -76,7 +76,7 @@ global.E = {
     })
     return new Hero(UI.spawn_point.x, UI.spawn_point.y, H.GetRandomEntry(h));
   }
-}
+};
 
 global.P = {
   randomSolid: function(){ return H.GetRandomEntry(this.SOLID_TILES); },
@@ -89,6 +89,9 @@ global.P = {
   BOX_BL: new Char('┓', BOX, BOX_B),
   BOX_BR: new Char('┏', BOX, BOX_B),
   BOX_MD: new Char(' ', BOX, BOX_B),
+
+  FLOOR: new Char('┈', '63545E', '302222'),
+  OFF_FLOOR: new Char('┈', '3b3539', '302222'),
 
   VOID: new Char(' ', '302222', '302222')
 };

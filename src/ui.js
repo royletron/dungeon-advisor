@@ -3,9 +3,9 @@ global.UI = {
   gold: 100,
   w: null,
   h: null,
-  floors: [[], []],
+  floors: [[]],
   max_rooms: 4,
-  max_floors: 8,
+  max_floors: 1,
   change: false,
   clouds: [],
   spawn_counter: 0,
@@ -27,7 +27,6 @@ global.UI = {
     this.bg = new Renderer(GAME.width, GAME.height, 1);
     this.fg = new Renderer(GAME.width, GAME.height, 1);
 
-
     for(var x=0; x < this.w; x++) {
       if(Math.random() > 0.95)
       {
@@ -44,7 +43,13 @@ global.UI = {
           else if((x < 3) || (x > (this.w-32)) || (y < 7))
             P.randomSolid().stamp(this.fg.context, x, y);
           else
-            P.VOID.stamp(this.bg.context, x, y);
+            if((y%ROOM_HEIGHT) == 6)
+              if(Math.ceil(y/ROOM_HEIGHT)-1 > (this.floors.length))
+                P.OFF_FLOOR.stamp(this.bg.context, x, y);
+              else
+                P.FLOOR.stamp(this.bg.context, x, y);
+            else
+              P.VOID.stamp(this.bg.context, x, y);
       }
     }
     this.bg.context.font = HEADING_FONT;
@@ -59,8 +64,7 @@ global.UI = {
 
     this.counters.push(new Counter(new Char('●', 'FFE545'), this, 'gold'));
     this.counters.push(new Counter(new Char('#', 'FA6728'), this, 'num_heroes'));
-    for(var i=0; i < 20; i++)
-      this.addRoom(R.random());
+    this.addRoom(R.ENTRANCE);
   },
   addStatus: function(hero, title, text){
     var tmp = [];
@@ -69,7 +73,7 @@ global.UI = {
       tmp.push(status);
     });
     if(tmp.length > 5)
-      tmp.pop().kill  ();
+      tmp.pop().kill();
     this.statuses = tmp;
   },
   addRoom: function(type){
@@ -115,14 +119,14 @@ global.UI = {
       hero.update(dt);
       if(hero.sprite.x < (this.w - 31))
         if(hero.sprite.x < (this.spawn_point.x - 1))
-          if((hero.current_floor === undefined) || (hero.current_floor < this.floors.length))
+          if((hero.current_floor === undefined) && (hero.current_floor < this.floors.length))
             _tmp.push(this.flipHero(hero));
           else
             _tmp.push(hero);
         else
           _tmp.push(hero);
       else
-        if((hero.current_floor === undefined) || (hero.current_floor < this.floors.length))
+        if((hero.current_floor === undefined) && (hero.current_floor < this.floors.length))
           _tmp.push(this.flipHero(hero));
         else
           this.removeHero(hero);
