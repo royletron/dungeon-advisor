@@ -3,9 +3,11 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var gzip = require('gulp-gzip');
 var tar = require('gulp-tar');
+var replace = require('gulp-replace');
 
 gulp.task('concat', function() {
-  return gulp.src('./src/*.js')
+  return gulp.src(['src/classes.js', 'src/statics.js', 'src/ui.js', 'src/index.js'])
+    .pipe(replace('global.', ''))
     .pipe(concat('game.min.js'))
     .pipe(uglify())
     .pipe(gulp.dest('./'));

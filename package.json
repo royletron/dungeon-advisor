@@ -4,7 +4,8 @@
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot"
   },
   "dependencies": {
-    "amok": "^1.1.2"
+    "amok": "^1.1.2",
+    "gulp-replace": "^0.5.4"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
