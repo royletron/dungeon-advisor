@@ -24,7 +24,7 @@ global.Char = function(symbol, color, bg, alpha) {
   }
 };
 
-global.Button = function(text, click) {
+global.Button = function(text, click, x, y) {
   this.renderer = new Renderer((text.length + 3) * CHAR_WIDTH, CHAR_HEIGHT*2)
   this.renderer.whole = false;
   this.renderer.context.font = FONT;
@@ -34,8 +34,18 @@ global.Button = function(text, click) {
   this.renderer.context.fillRect(0, 0, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
   this.renderer.context.fillStyle = '#000000';
   this.renderer.context.fillText(text, CHAR_WIDTH-1.5, CHAR_WIDTH*1.8);
+  this.width = text.length + 3;
+  this.height = 2;
+  this.x = x;
+  this.renderer.x = x*CHAR_WIDTH;
+  this.y = y;
+  this.renderer.y = y*CHAR_HEIGHT;
   this.stamp = function(toCanvas, x, y) {
-    this.renderer.stamp(toCanvas, x, y);
+    this.renderer.stamp(toCanvas, this.x, this.y);
+  }
+  this.update = function(dt) {
+    if(H.MouseDown)
+      console.log(H.HitTestPoint(H.MouseCoords, this.renderer))
   }
 }
 
@@ -181,8 +191,8 @@ global.Room = function(type, flipped) {
 
 global.Renderer = function(width, height, alpha) {
   this.canvas = document.createElement('canvas');
-  this.canvas.width = width;
-  this.canvas.height = height;
+  this.canvas.width = this.width = width;
+  this.canvas.height = this.height = height;
   this.context = this.canvas.getContext('2d');
   this.context.globalAlpha = this.alpha = alpha || 1;
   this.whole = true;

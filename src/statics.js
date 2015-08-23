@@ -120,7 +120,7 @@ global.R = {
 
 function getMousePos(canvas, evt) {
   var rect = canvas.getBoundingClientRect();
-  return H.CoordsToBuffer(evt.clientX - rect.left, evt.clientY - rect.top);
+  return {x: evt.clientX - rect.left, y: evt.clientY - rect.top};
 }
 
 GAME.addEventListener('mousemove', function(event) {
@@ -152,6 +152,12 @@ global.H = {
     if(txt > 3000)
       txt = Math.floor(txt/1000) +'k'+((txt%1000)!== 0 ? '+' : '');
     return txt;
+  },
+  HitTestPoint: function(objA, objB) {
+    if((objA.x >= objB.x) && (objA.x <= (objB.x + objB.width)) && (objA.y >= objB.y) && (objA.y < (objB.y + objB.height)))
+      return true;
+    else
+      return false;
   },
   Null: function(item) {
     item = null;

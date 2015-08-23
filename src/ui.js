@@ -18,7 +18,7 @@ global.UI = {
   ctx: null,
   add_floor_button: new Button('Add Floor', function(){
     console.log('you clicked me');
-  }),
+  },1, 1),
   statuses: [],
   counters: [],
   init: function(ctx){
@@ -117,25 +117,20 @@ global.UI = {
       this.spawn_wait = H.GetRandom(8, 14);
       this.spawnHero();
     }
-    var _tmp = [];
     this.heroes.forEach(function(hero) {
       hero.update(dt);
       if(hero.sprite.x < (this.w - 31))
         if(hero.sprite.x < (this.spawn_point.x - 1))
           if((hero.current_floor === undefined) && (hero.current_floor < this.floors.length))
-            _tmp.push(this.flipHero(hero));
-          else
-            _tmp.push(hero);
-        else
-          _tmp.push(hero);
+            this.flipHero(hero);
       else
         if((hero.current_floor === undefined) && (hero.current_floor < this.floors.length))
-          _tmp.push(this.flipHero(hero));
+          this.flipHero(hero);
         else
           this.removeHero(hero);
     }.bind(this));
-    this.heroes = _tmp;
 
+    this.add_floor_button.update(dt);
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)
