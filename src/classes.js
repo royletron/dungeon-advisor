@@ -24,30 +24,37 @@ global.Char = function(symbol, color, bg, alpha) {
   }
 };
 
-global.Button = function(text, cb, x, y) {
-  this.renderer = new Renderer((text.length + 3) * CHAR_WIDTH, CHAR_HEIGHT*2)
+global.Button = function(text, cb, x, y, cost) {
+  this.width = ((text.length + 3) + (cost != undefined ? cost.toString().length + 3 : 0)) * CHAR_WIDTH;
+  this.height = CHAR_HEIGHT*2;
+  this.renderer = new Renderer(this.width, this.height);
   this.renderer.whole = false;
+  this.cost = cost;
   this.renderer.context.font = FONT;
   this.renderer.context.fillStyle = '#FF0000';
   this.renderer.context.fillRect(3, 3, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
   this.renderer.context.fillStyle = '#FFFFFF';
   this.renderer.context.fillRect(0, 0, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
   this.renderer.context.fillStyle = '#000000';
-  this.renderer.context.fillText(text, CHAR_WIDTH-1.5, CHAR_WIDTH*1.8);
-  this.width = text.length + 3;
-  this.height = 2;
+  this.renderer.context.fillText(text, CHAR_WIDTH, CHAR_HEIGHT*1.2);
+  if(cost != undefined) {
+    this.renderer.context.fillText(cost.toString(), (text.length+4.5)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
+    P.GOLD.renderer.whole = false;
+    P.GOLD.stamp(this.renderer.context, text.length+3, 0.2);
+  }
   this.x = x;
-  this.renderer.x = x*CHAR_WIDTH;
   this.y = y;
-  this.renderer.y = y*CHAR_HEIGHT;
   this._clicked = false;
   this.cb = cb;
+  this.getHitArea = function() {
+    return {x: this.x*CHAR_WIDTH, y: this.y*CHAR_HEIGHT, width: this.renderer.width, height: this.renderer.height};
+  }
   this.stamp = function(toCanvas, x, y) {
     this.renderer.stamp(toCanvas, this.x, this.y);
   }
   this.update = function(dt) {
     if(H.MouseDown && !this._clicked)
-      if(H.HitTestPoint(H.MouseCoords, this.renderer)) {
+      if(H.HitTestPoint(H.MouseCoords, this.getHitArea())) {
         this._clicked = true;
         this.cb();
       }
@@ -62,6 +69,7 @@ global.Avatar = function(hero) {
   this.renderer = new Renderer(3 *CHAR_WIDTH, 3 * CHAR_HEIGHT);
   this.renderer.whole = false;
   this.stamped = false;
+  this.current_floor=0
   this.gen = function(){
     this.renderer.context.font = FONT;
     this.renderer.context.fillStyle = this.color;

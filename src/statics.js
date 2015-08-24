@@ -92,6 +92,7 @@ global.P = {
 
   FLOOR: new Char('┈', '63545E', '302222'),
   OFF_FLOOR: new Char('┈', '3b3539', '302222'),
+  GOLD: new Char('●', 'FFE545'),
 
   VOID: new Char(' ', '302222', '302222')
 };

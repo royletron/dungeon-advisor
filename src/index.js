@@ -1,4 +1,4 @@
-// var Stats = require('../dev-libs/stats.min.js');
+var Stats = require('../dev-libs/stats.min.js');
 
 var map = document.createElement('canvas');
 
@@ -41,14 +41,14 @@ global.POP_CALLBACK = function(cb) {
 };
 
 var last_stamp = 0;
-//
-// var stats = new Stats();
-// stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
-//
-// // align top-left
-// stats.domElement.style.position = 'absolute';
-// stats.domElement.style.left = '0px';
-// stats.domElement.style.top = '0px';
+
+var stats = new Stats();
+stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+
+// align top-left
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.left = '0px';
+stats.domElement.style.top = '0px';
 
 document.body.appendChild( stats.domElement );
 

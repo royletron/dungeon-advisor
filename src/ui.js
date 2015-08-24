@@ -18,7 +18,7 @@ global.UI = {
   ctx: null,
   add_floor_button: new Button('Add Floor', function(){
     console.log('you clicked me');
-  },1, 1),
+  },1, 1, 80),
   statuses: [],
   counters: [],
   init: function(ctx){
@@ -65,9 +65,12 @@ global.UI = {
     this.bg.context.fillText('advisor', 135, 44);
     this.renderer.stamp(ctx);
 
-    this.counters.push(new Counter(new Char('●', 'FFE545'), this, 'gold'));
+    this.add_floor_button.y = 10 + (this.floors.length * ROOM_HEIGHT);
+    this.add_floor_button.x =((this.w-29)/2) - 8;
+
+    this.counters.push(new Counter(P.GOLD, this, 'gold'));
     this.counters.push(new Counter(new Char('#', 'FA6728'), this, 'num_heroes'));
-    this.addRoom(R.ENTRANCE);
+    this.addRoom(R.CHURCH);
   },
   addStatus: function(hero, title, text){
     var tmp = [];
@@ -120,14 +123,20 @@ global.UI = {
     this.heroes.forEach(function(hero) {
       hero.update(dt);
       if(hero.sprite.x < (this.w - 31))
-        if(hero.sprite.x < (this.spawn_point.x - 1))
-          if((hero.current_floor === undefined) && (hero.current_floor < this.floors.length))
+      {
+        if(hero.sprite.x < (this.spawn_point.x - 2))
+          if(hero.current_floor < this.floors.length)
             this.flipHero(hero);
+          else
+            this.removeHero(hero);
+      }
       else
-        if((hero.current_floor === undefined) && (hero.current_floor < this.floors.length))
+      {
+        if(hero.current_floor < (this.floors.length))
           this.flipHero(hero);
         else
           this.removeHero(hero);
+      }
     }.bind(this));
 
     this.add_floor_button.update(dt);
