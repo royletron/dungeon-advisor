@@ -272,18 +272,21 @@ global.S = {
 };
 
 global.R = {
-  ENTRANCE: {cost: 100, stamp: S.ENTRANCE},
-  SEWER: {cost: 70, stamp: S.SEWER},
-  CHURCH: {cost: 140, stamp: S.CHURCH},
+  ENTRANCE: {name: 'Entrance', cost: 100, stamp: S.ENTRANCE},
+  SEWER: {name: 'Sewer', cost: 70, stamp: S.SEWER},
+  CHURCH: {name: 'Church', cost: 140, stamp: S.CHURCH},
   random: function(){
-    var sel = []
+    return R[H.GetRandomEntry(this.all())];
+  },
+  all: function() {
+    var sel = [];
     H.EachValueKey(R, function(k){
-      if(k != 'random')
+      if((k != 'random') && (k !='all'))
         sel.push(k);
     });
-    return R[H.GetRandomEntry(sel)];
+    return sel;
   }
-}
+};
 
 
 function getMousePos(canvas, evt) {

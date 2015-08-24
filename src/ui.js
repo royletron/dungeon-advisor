@@ -33,7 +33,7 @@ global.UI = {
     this.renderer = new Renderer(GAME.width, GAME.height, 1);
     this.bg = new Renderer(GAME.width, GAME.height, 1);
     this.fg = new Renderer(GAME.width, GAME.height, 1);
-    this.properties = new Renderer(CHAR_WIDTH*10, CHAR_HEIGHT*20, 1);
+    this.properties = new Renderer(CHAR_WIDTH*28, CHAR_HEIGHT*20, 1);
     for(var x=0; x < this.w; x++) {
       if(Math.random() > 0.95)
       {
@@ -160,6 +160,12 @@ global.UI = {
         }.bind(this));
       }.bind(this));
     }
+    if(this.selected_room !== undefined)
+      if(this.selected_room.found === false) {
+        this.room_buttons.forEach(function(button){
+          button.update(dt);
+        });
+      }
     this.add_floor_button.update(dt);
   },
   clearProperties: function() {
@@ -171,7 +177,15 @@ global.UI = {
     if(this.selected_room !== undefined){
       if(this.selected_room.found === false)
       {
-        H.WriteText('Hey', 1, CHAR_HEIGHT, this.properties.context, FONT, 'FFFFFF');
+        R.all().forEach(function(room, idx){
+          var r = R[room];
+          H.WriteText(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx), this.properties.context, FONT, 'FFFFFF');
+          if(this.room_buttons[idx] === undefined)
+          {
+            this.room_buttons.push(new Button('Add', function(){console.log('a');}, (this.w - 30)+16, 6+(idx*1.8), 80));
+            this.room_buttons[idx].stamp(this.properties.context, 16, idx*1.8);
+          }
+        }.bind(this));
         //new room
       }
       else
@@ -232,13 +246,13 @@ global.UI = {
       status.stamp(ctx, this.w-29, 26 + (y * 3));
     }.bind(this));
 
-    this.properties.stamp(ctx, this.w -29, 6.5);
+    this.properties.stamp(ctx, this.w -30, 6);
 
     this.counters.forEach(function (counter, x){
       counter.stamp(ctx, 3 + (x*7), 4);
     }.bind(this));
 
-    this.add_floor_button.stamp(ctx, 1, 1);
+    this.add_floor_button.stamp(ctx);
     this.fg.stamp(ctx);
 
     if(this.selected_room !== undefined)

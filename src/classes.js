@@ -21,7 +21,7 @@ global.Char = function(symbol, color, bg, alpha) {
 };
 
 global.Button = function(text, cb, x, y, cost, data) {
-  this.width = ((text.length + 3) + (cost != undefined ? cost.toString().length + 3 : 0)) * CHAR_WIDTH;
+  this.width = ((text.length + 2) + (cost != undefined ? cost.toString().length + 4 : 0)) * CHAR_WIDTH;
   this.height = CHAR_HEIGHT*2;
   this.renderer = new Renderer(this.width, this.height);
   this.renderer.whole = false;
@@ -32,9 +32,9 @@ global.Button = function(text, cb, x, y, cost, data) {
 
   H.WriteText(text, CHAR_WIDTH, CHAR_HEIGHT * 1.2, this.renderer.context, FONT, 'EBE1CE');
   if(cost != undefined) {
-    this.renderer.context.fillText(cost.toString(), (text.length+4.5)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
+    this.renderer.context.fillText(cost.toString(), (text.length+4)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
     P.GOLD.renderer.whole = false;
-    P.GOLD.stamp(this.renderer.context, text.length+3, 0.2);
+    P.GOLD.stamp(this.renderer.context, text.length+2.5, 0.2);
   }
   this.x = x;
   this.y = y;
@@ -44,7 +44,7 @@ global.Button = function(text, cb, x, y, cost, data) {
   }
   this.stamp = function(toCanvas, x, y) {
     if(this.cost && (this.cost <= UI.gold))
-      this.renderer.stamp(toCanvas, this.x, this.y);
+      this.renderer.stamp(toCanvas, x || this.x, y || this.y);
   }
   this.update = function(dt) {
     if(H.MouseClick)
