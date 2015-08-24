@@ -4,7 +4,7 @@ global.UI = {
   lvl: 1,
   w: null,
   h: null,
-  floors: [[]],
+  floors: [[undefined, undefined, undefined, undefined]],
   max_rooms: 4,
   max_floors: 1,
   change: false,
@@ -80,7 +80,7 @@ global.UI = {
   addFloor: function() {
     if(this.gold >= 80)
     {
-      this.floors.push([]);
+      this.floors.push([undefined, undefined, undefined, undefined]);
       this.gold += -80;
       for(x = 2; x < this.w-32; x++)
         P.FLOOR.stamp(this.bg.context, x, ((this.floors.length+1)* ROOM_HEIGHT) - 4);
@@ -97,24 +97,30 @@ global.UI = {
       tmp.pop().kill();
     this.statuses = tmp;
   },
-  addRoom: function(type){
-    var added = false;
-    this.floors.forEach(function(f, i) {
-      if((f.length < (this.max_rooms)) && !added)
-      {
-        added = true;
-        f.push(new Room(type, ((i%2)== 1)));
-      }
-    }.bind(this));
+  addRoom: function(type, position){
+    console.log(position);
+    if(position === undefined)
+      this.floors[0][0] = new Room(type, false);
+    else
+      if(this.floors[position.y] !== undefined)
+        this.floors[position.y][position.x] = new Room(type, (position.y%2) == 1);
 
-    if(!added)
-      if(this.floors.length < (this.max_floors))
-        this.floors.push([new Room(type, ((this.floors.length%2)==1))]);
-      else
-        console.log('No room');
+    // this.floors.forEach(function(f, i) {
+    //   if((f.length < (this.max_rooms)) && !added)
+    //   {
+    //     added = true;
+    //     f.push(new Room(type, ((i%2)== 1)));
+    //   }
+    // }.bind(this));
+    //
+    // if(!added)
+    //   if(this.floors.length < (this.max_floors))
+    //     this.floors.push([new Room(type, ((this.floors.length%2)==1))]);
+    //   else
+    //     console.log('No room');
   },
   spawnHero: function() {
-    var h = E.GetRandomHero(1)
+    var h = E.GetRandomHero(1);
     this.heroes.push(h);
     this.num_heroes = this.heroes.length;
     this.gold += H.DoMath(h.type.increment, h.lvl, h.type.fee);
@@ -162,16 +168,17 @@ global.UI = {
       this.floors.forEach(function(floor, y){
         floor.forEach(function(room, x){
           if(H.HitTestPoint(H.MouseCoords, {x: (2+(x * ROOM_WIDTH)) * CHAR_WIDTH, y: (6 + (y * ROOM_HEIGHT)) * CHAR_HEIGHT, width: ROOM_WIDTH*CHAR_WIDTH, height: ROOM_HEIGHT*CHAR_HEIGHT}))
-            this.setSelection(room);
-        }.bind(this))
-      }.bind(this))
+            this.setSelection(room || {x: x, y: y, found: false});
+        }.bind(this));
+      }.bind(this));
     }
-
-
     this.add_floor_button.update(dt);
   },
   setSelection: function(room) {
-    this.selected_room = room;
+    if(room.found === false)
+      this.addRoom(R.CHURCH, room);
+    else
+      this.selected_room = room;
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)
@@ -193,17 +200,19 @@ global.UI = {
     });
     this.floors.forEach(function(floor, y) {
       floor.forEach(function(room, x) {
-        room.renderer.stamp(ctx, 2 + (x * ROOM_WIDTH), 6 + (y * ROOM_HEIGHT));
-        if(room == UI.selected_room)
+        if(room !== undefined)
         {
-          UI.fg.context.strokeStyle = "#25989B";
-          UI.fg.context.strokeRect((2+(x*ROOM_WIDTH))*CHAR_WIDTH, (6 + (y * ROOM_HEIGHT)) *CHAR_HEIGHT, ROOM_WIDTH*CHAR_WIDTH, ROOM_HEIGHT*CHAR_HEIGHT)
+          room.renderer.stamp(ctx, 2 + (x * ROOM_WIDTH), 6 + (y * ROOM_HEIGHT));
+          if(room == UI.selected_room)
+          {
+            UI.fg.context.strokeStyle = "#25989B";
+            UI.fg.context.strokeRect((2+(x*ROOM_WIDTH))*CHAR_WIDTH, (6 + (y * ROOM_HEIGHT)) *CHAR_HEIGHT, ROOM_WIDTH*CHAR_WIDTH, ROOM_HEIGHT*CHAR_HEIGHT);
+          }
+        }
+        else{
+          S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8);
         }
       });
-      for(var x = floor.length; x < UI.max_rooms; x++)
-      {
-        S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8)
-      }
     });
     this.heroes.forEach(function(hero) {
       hero.stamp(ctx);
