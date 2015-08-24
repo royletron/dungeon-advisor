@@ -72,6 +72,7 @@ function update(timestamp) {
     UI.update(dt);
 
     UI.draw();
+    H.MouseClick = false;
     //g_ctx.drawImage(map, 0, 0);
     // P.FLOOR_TILE.stamp(g_ctx, 10, 10);
 

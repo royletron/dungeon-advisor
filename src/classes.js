@@ -208,7 +208,7 @@ global.Renderer = function(width, height, alpha) {
   this.canvas.height = this.height = height;
   this.context = this.canvas.getContext('2d');
   this.context.globalAlpha = this.alpha = alpha || 1;
-  this.whole = true;
+  this.whole = false;
   this.stamp = function(toCanvas, x, y){
     var coords = H.BufferToCoords(x || 0, y || 0, this.whole);
     toCanvas.drawImage(this.canvas, coords.x, coords.y);

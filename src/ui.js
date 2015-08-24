@@ -81,7 +81,7 @@ global.UI = {
     {
       this.floors.push([]);
       this.gold += -80;
-      for(x = 2; x < this.w-29; x++)
+      for(x = 2; x < this.w-32; x++)
         P.FLOOR.stamp(this.bg.context, x, ((this.floors.length+1)* ROOM_HEIGHT) - 4);
       this.add_floor_button.y += ROOM_HEIGHT;
     }
@@ -156,7 +156,15 @@ global.UI = {
       }
     }.bind(this));
 
-    // if(H.MouseDown && !_clicked)
+    if(H.MouseClick)
+    {
+      this.floors.forEach(function(floor, y){
+        floor.forEach(function(room, x){
+          if(H.HitTestPoint(H.MouseCoords, {x: (2+(x * ROOM_WIDTH)) * CHAR_WIDTH, y: (6 + (y * ROOM_HEIGHT)) * CHAR_HEIGHT, width: ROOM_WIDTH*CHAR_WIDTH, height: ROOM_HEIGHT*CHAR_HEIGHT}))
+            console.log(room);
+        })
+      })
+    }
 
 
     this.add_floor_button.update(dt);
