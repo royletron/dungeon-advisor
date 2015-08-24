@@ -182,7 +182,7 @@ global.UI = {
           H.WriteText(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx), this.properties.context, FONT, 'FFFFFF');
           if(this.room_buttons[idx] === undefined)
           {
-            this.room_buttons.push(new Button('Add', function(){console.log('a');}, (this.w - 30)+16, 6+(idx*1.8), 80));
+            this.room_buttons.push(new Button('Add', function(d){console.log(d);}, (this.w - 30)+16, 6+(idx*1.8), 80, room));
             this.room_buttons[idx].stamp(this.properties.context, 16, idx*1.8);
           }
         }.bind(this));
