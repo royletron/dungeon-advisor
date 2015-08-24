@@ -44,7 +44,6 @@ global.Button = function(text, cb, x, y, cost) {
   }
   this.x = x;
   this.y = y;
-  this._clicked = false;
   this.cb = cb;
   this.getHitArea = function() {
     return {x: this.x*CHAR_WIDTH, y: this.y*CHAR_HEIGHT, width: this.renderer.width, height: this.renderer.height};
@@ -54,13 +53,11 @@ global.Button = function(text, cb, x, y, cost) {
       this.renderer.stamp(toCanvas, this.x, this.y);
   }
   this.update = function(dt) {
-    if(H.MouseDown && !this._clicked)
+    if(H.MouseClick)
       if(H.HitTestPoint(H.MouseCoords, this.getHitArea())) {
         this._clicked = true;
         this.cb();
       }
-    if(!H.MouseDown && this._clicked)
-      this._clicked = false;
   }
 }
 

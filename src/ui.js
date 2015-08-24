@@ -11,7 +11,7 @@ global.UI = {
   clouds: [],
   spawn_counter: 0,
   spawn_wait: 0,
-  spawn_point: {x: 2, y: 14.5},
+  spawn_point: {x: 2, y: 13.5},
   heroes: [],
   num_heroes: 0,
   bg: null,
@@ -42,15 +42,15 @@ global.UI = {
         S.OUTDOOR.stamp.stamp(this.bg.context, x, 0);
       for(var y=0; y < this.h; y++) {
         if(y > 4)
-          if((x > this.w-29) && (x < this.w-3) && (y > 6) && (y < this.h - 2))
-            if((y == 24) || (y==23))
+          if((x > this.w-31) && (x < this.w-2) && (y > 5) && (y < this.h - 1))
+            if(y == 24)
               P.randomSolid().stamp(this.bg.context, x, y);
             else
               P.BOX_MD.stamp(this.bg.context, x, y);
-          else if((x < 3) || (x > (this.w-32)) || (y < 7))
+          else if((x < 2) || (x > (this.w-33)) || (y < 6))
             P.randomSolid().stamp(this.fg.context, x, y);
           else
-            if((y%ROOM_HEIGHT) == 6)
+            if((y%ROOM_HEIGHT) == 5)
               if(Math.ceil(y/ROOM_HEIGHT)-1 > (this.floors.length))
                 P.OFF_FLOOR.stamp(this.bg.context, x, y);
               else
@@ -74,15 +74,15 @@ global.UI = {
 
     this.counters.push(new Counter(P.GOLD, this, 'gold'));
     this.counters.push(new Counter(new Char('#', 'FA6728'), this, 'num_heroes'));
-    this.addRoom(R.CHURCH);
+    this.addRoom(R.ENTRANCE);
   },
   addFloor: function() {
     if(this.gold >= 80)
     {
       this.floors.push([]);
       this.gold += -80;
-      for(x = 3; x < this.w-29; x++)
-        P.FLOOR.stamp(this.bg.context, x, ((this.floors.length+1)* ROOM_HEIGHT) - 3);
+      for(x = 2; x < this.w-29; x++)
+        P.FLOOR.stamp(this.bg.context, x, ((this.floors.length+1)* ROOM_HEIGHT) - 4);
       this.add_floor_button.y += ROOM_HEIGHT;
     }
   },
@@ -124,6 +124,7 @@ global.UI = {
     H.Null(hero);
     this.num_heroes = this.heroes.length;
   },
+  _clicked: false,
   update: function(dt){
     this.clouds.forEach(function(cloud, idx){
       if(cloud.x > (this.w + 2))
@@ -155,6 +156,9 @@ global.UI = {
       }
     }.bind(this));
 
+    // if(H.MouseDown && !_clicked)
+
+
     this.add_floor_button.update(dt);
   },
   flipHero: function(hero) {
@@ -177,7 +181,7 @@ global.UI = {
     });
     this.floors.forEach(function(floor, y) {
       floor.forEach(function(room, x) {
-        room.renderer.stamp(ctx, 3 + (x * ROOM_WIDTH), 7 + (y * ROOM_HEIGHT));
+        room.renderer.stamp(ctx, 2 + (x * ROOM_WIDTH), 6 + (y * ROOM_HEIGHT));
       });
     });
     this.heroes.forEach(function(hero) {
@@ -185,7 +189,7 @@ global.UI = {
     });
 
     this.statuses.forEach(function(status, y){
-      status.stamp(ctx, this.w-27, 26 + (y * 3));
+      status.stamp(ctx, this.w-29, 26 + (y * 3));
     }.bind(this));
 
     this.counters.forEach(function (counter, x){

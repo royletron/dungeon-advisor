@@ -138,17 +138,25 @@ GAME.addEventListener('mouseout', function(event) {
 GAME.addEventListener('mousedown', function(event) {
   H.MouseDown = true;
   H.MouseUp = false;
+  if(!H._clicked)
+    if(!H.MouseClick)
+      H._clicked = H.MouseClick = true;
+    else
+      H.MouseClick = false;
 });
 
 GAME.addEventListener('mouseup', function(event) {
   H.MouseDown = false;
   H.MouseUp = true;
+  H.MouseClick = H._clicked = false;
 });
 
 global.H = {
   MouseCoords: null,
   MouseDown: false,
   MouseUp: false,
+  MouseClick: false,
+  _clicked: false,
   CharToNum: function(char) {
     var c = char.charCodeAt(0) - 48;
     if(c > 9) c = c - 7;
