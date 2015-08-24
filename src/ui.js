@@ -1,6 +1,7 @@
 global.UI = {
   renderer: null,
   gold: 100,
+  lvl: 1,
   w: null,
   h: null,
   floors: [[]],

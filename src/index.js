@@ -53,8 +53,8 @@ stats.domElement.style.top = '0px';
 document.body.appendChild( stats.domElement );
 
 function update(timestamp) {
-  // if(stats)
-  //   stats.begin();
+  if(stats)
+    stats.begin();
 
   var dt = (timestamp - last_stamp)/1000;
   last_stamp = timestamp;
@@ -78,8 +78,8 @@ function update(timestamp) {
     // menu.stamp(g_ctx, 27, 0);
   }
 
-  // if(stats)
-  //   stats.end();
+  if(stats)
+    stats.end();
 
   window.requestAnimationFrame(update);
 }

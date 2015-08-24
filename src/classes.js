@@ -31,11 +31,11 @@ global.Button = function(text, cb, x, y, cost) {
   this.renderer.whole = false;
   this.cost = cost;
   this.renderer.context.font = FONT;
-  this.renderer.context.fillStyle = '#FF0000';
+  this.renderer.context.fillStyle = '#0D423D';
   this.renderer.context.fillRect(3, 3, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
-  this.renderer.context.fillStyle = '#FFFFFF';
+  this.renderer.context.fillStyle = '#007A52';
   this.renderer.context.fillRect(0, 0, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
-  this.renderer.context.fillStyle = '#000000';
+  this.renderer.context.fillStyle = '#EBE1CE';
   this.renderer.context.fillText(text, CHAR_WIDTH, CHAR_HEIGHT*1.2);
   if(cost != undefined) {
     this.renderer.context.fillText(cost.toString(), (text.length+4.5)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
@@ -314,6 +314,7 @@ global.Hero = function(x, y, type) {
   this.facing = RIGHT;
   this.speed = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
   this.body.velocity.x = this.speed;
+  this.lvl = H.WeightedRandom([(UI.lvl == 1 ? 1 : UI.lvl-1), UI.lvl, UI.lvl+1], [0.4, 1, 0.5]);
   UI.addStatus(this, this.name+" has entered!", "A "+this.type.name.toLowerCase()+" from ...");
   this.update = function(dt) {
     var m = (this.speed/3) * dt;
