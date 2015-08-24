@@ -23,6 +23,7 @@ global.UI = {
   },1, 1, 80),
   statuses: [],
   counters: [],
+  selected_room: null,
   init: function(ctx){
     this.ctx = ctx;
     this.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -161,13 +162,16 @@ global.UI = {
       this.floors.forEach(function(floor, y){
         floor.forEach(function(room, x){
           if(H.HitTestPoint(H.MouseCoords, {x: (2+(x * ROOM_WIDTH)) * CHAR_WIDTH, y: (6 + (y * ROOM_HEIGHT)) * CHAR_HEIGHT, width: ROOM_WIDTH*CHAR_WIDTH, height: ROOM_HEIGHT*CHAR_HEIGHT}))
-            console.log(room);
-        })
-      })
+            this.setSelection(room);
+        }.bind(this))
+      }.bind(this))
     }
 
 
     this.add_floor_button.update(dt);
+  },
+  setSelection: function(room) {
+    this.selected_room = room;
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)
@@ -190,7 +194,16 @@ global.UI = {
     this.floors.forEach(function(floor, y) {
       floor.forEach(function(room, x) {
         room.renderer.stamp(ctx, 2 + (x * ROOM_WIDTH), 6 + (y * ROOM_HEIGHT));
+        if(room == UI.selected_room)
+        {
+          UI.fg.context.strokeStyle = "#25989B";
+          UI.fg.context.strokeRect((2+(x*ROOM_WIDTH))*CHAR_WIDTH, (6 + (y * ROOM_HEIGHT)) *CHAR_HEIGHT, ROOM_WIDTH*CHAR_WIDTH, ROOM_HEIGHT*CHAR_HEIGHT)
+        }
       });
+      for(var x = floor.length; x < UI.max_rooms; x++)
+      {
+        S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8)
+      }
     });
     this.heroes.forEach(function(hero) {
       hero.stamp(ctx);
