@@ -24,6 +24,7 @@ global.UI = {
   statuses: [],
   counters: [],
   selected_room: undefined,
+  properties: undefined,
   init: function(ctx){
     this.ctx = ctx;
     this.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -31,7 +32,7 @@ global.UI = {
     this.renderer = new Renderer(GAME.width, GAME.height, 1);
     this.bg = new Renderer(GAME.width, GAME.height, 1);
     this.fg = new Renderer(GAME.width, GAME.height, 1);
-
+    this.properties = new Renderer(CHAR_WIDTH*10, CHAR_HEIGHT*20, 1);
     for(var x=0; x < this.w; x++) {
       if(Math.random() > 0.95)
       {
@@ -174,8 +175,25 @@ global.UI = {
     }
     this.add_floor_button.update(dt);
   },
+  clearProperties: function() {
+    this.properties.context.clearRect(0, 0, this.properties.canvas.width, this.properties.canvas.height);
+  },
   setSelection: function(room) {
     this.selected_room = room;
+    this.clearProperties();
+    if(this.selected_room !== undefined){
+      if(this.selected_room.found === false)
+      {
+        this.properties.context.font = FONT;
+        this.properties.context.fillStyle = '#121212';
+        this.properties.context.fillText('Hey', 1, CHAR_HEIGHT);
+        //new room
+      }
+      else
+      {
+
+      }
+    }
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)
@@ -194,8 +212,6 @@ global.UI = {
     var y = this.selected_room.y;
     ctx.strokeStyle = "#25989B";
     ctx.strokeRect((2+(x*ROOM_WIDTH))*CHAR_WIDTH, (6 + (y * ROOM_HEIGHT)) *CHAR_HEIGHT, ROOM_WIDTH*CHAR_WIDTH, ROOM_HEIGHT*CHAR_HEIGHT);
-
-    console.log(this.selected_room);
   },
   draw: function() {
     var ctx = this.renderer.context;
@@ -230,6 +246,8 @@ global.UI = {
     this.statuses.forEach(function(status, y){
       status.stamp(ctx, this.w-29, 26 + (y * 3));
     }.bind(this));
+
+    this.properties.stamp(ctx, this.w -29, 10);
 
     this.counters.forEach(function (counter, x){
       counter.stamp(ctx, 3 + (x*7), 4);
