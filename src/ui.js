@@ -23,7 +23,7 @@ global.UI = {
   },1, 1, 80),
   statuses: [],
   counters: [],
-  selected_room: null,
+  selected_room: undefined,
   init: function(ctx){
     this.ctx = ctx;
     this.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -175,10 +175,7 @@ global.UI = {
     this.add_floor_button.update(dt);
   },
   setSelection: function(room) {
-    if(room.found === false)
-      this.addRoom(R.CHURCH, room);
-    else
-      this.selected_room = room;
+    this.selected_room = room;
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)
@@ -188,6 +185,17 @@ global.UI = {
     hero.body.y += ROOM_HEIGHT;
     hero.turnAround();
     return hero;
+  },
+  makeSelection: function(x, y) {
+    this.selected_room = {x: x, y: y, room: this.selected_room};
+  },
+  drawSelection: function(ctx) {
+    var x = this.selected_room.x;
+    var y = this.selected_room.y;
+    ctx.strokeStyle = "#25989B";
+    ctx.strokeRect((2+(x*ROOM_WIDTH))*CHAR_WIDTH, (6 + (y * ROOM_HEIGHT)) *CHAR_HEIGHT, ROOM_WIDTH*CHAR_WIDTH, ROOM_HEIGHT*CHAR_HEIGHT);
+
+    console.log(this.selected_room);
   },
   draw: function() {
     var ctx = this.renderer.context;
@@ -203,15 +211,16 @@ global.UI = {
         if(room !== undefined)
         {
           room.renderer.stamp(ctx, 2 + (x * ROOM_WIDTH), 6 + (y * ROOM_HEIGHT));
-          if(room == UI.selected_room)
-          {
-            UI.fg.context.strokeStyle = "#25989B";
-            UI.fg.context.strokeRect((2+(x*ROOM_WIDTH))*CHAR_WIDTH, (6 + (y * ROOM_HEIGHT)) *CHAR_HEIGHT, ROOM_WIDTH*CHAR_WIDTH, ROOM_HEIGHT*CHAR_HEIGHT);
-          }
         }
         else{
           S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8);
         }
+        if(UI.selected_room !== undefined)
+          if(room !== undefined)
+            if(room.id == UI.selected_room.id)
+              UI.makeSelection(x, y);
+          else if((x == UI.selected_room.x) && (y == UI.selected_room.y))
+            UI.makeSelection(x, y);
       });
     });
     this.heroes.forEach(function(hero) {
@@ -228,6 +237,9 @@ global.UI = {
 
     this.add_floor_button.stamp(ctx, 1, 1);
     this.fg.stamp(ctx);
+
+    if(this.selected_room !== undefined)
+      this.drawSelection(ctx);
     // this.type.stamp(ctx, this.w-27, 9);
 
     this.renderer.stamp(g_ctx);
