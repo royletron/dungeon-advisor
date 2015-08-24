@@ -12,6 +12,170 @@ global.BOX_B = '594B54';
 global.RIGHT = 'r';
 global.LEFT = 'l';
 
+
+global.H = {
+  MouseCoords: null,
+  MouseDown: false,
+  MouseUp: false,
+  MouseClick: false,
+  _clicked: false,
+  WriteText: function(text, x, y, ctx, font, color, align) {
+    ctx.font = font;
+    ctx.fillStyle = '#'+color;
+    ctx.textAlign = align;
+    ctx.fillText(text, x, y);
+  },
+  DrawRect: function(x, y, width, height, ctx, fill) {
+    ctx.fillStyle = '#'+fill;
+    ctx.fillRect(x, y, width, height);
+  },
+  CharToNum: function(char) {
+    var c = char.charCodeAt(0) - 48;
+    if(c > 9) c = c - 7;
+    return c;
+  },
+  DoMath: function(m, x, c) {
+    var x = parseInt(x)/MAX_LVL;
+    return Math.floor(parseInt(c) + (parseInt(m)*((x * (2-x))) * 20));
+  },
+  WeightedRandom: function(list, weight) {
+    var total_weight = weight.reduce(function (prev, cur, i, arr) {
+      return prev + cur;
+    });
+
+    var random_num = this.GetRandom(0, total_weight);
+    var weight_sum = 0;
+
+    for (var i = 0; i < list.length; i++) {
+      weight_sum += weight[i];
+      weight_sum = +weight_sum.toFixed(2);
+
+      if (random_num <= weight_sum) {
+          return list[i];
+      }
+    }
+  },
+  NumToText: function(txt) {
+    if(txt > 3000)
+      txt = Math.floor(txt/1000) +'k'+((txt%1000)!== 0 ? '+' : '');
+    return txt;
+  },
+  HitTestPoint: function(objA, objB) {
+    if((objA.x >= objB.x) && (objA.x <= (objB.x + objB.width)) && (objA.y >= objB.y) && (objA.y < (objB.y + objB.height)))
+      return true;
+    else
+      return false;
+  },
+  Null: function(item) {
+    item = null;
+  },
+  GetRandomEntry: function(arr) {
+    return arr[Math.floor(Math.random()*arr.length)];
+  },
+  GetRandom: function (low, high) {
+      return~~ (Math.random() * (high - low)) + low;
+  },
+  EachValueKey: function(obj, cb){
+    for(var k in obj)
+    {
+      if(obj.hasOwnProperty(k))
+        cb(k);
+    }
+  },
+  FlipCanvas: function(canvas) {
+    var tmp = TMP_BUFFER(canvas.width, canvas.height);
+    var tctx = tmp.getContext('2d');
+    tctx.scale(-1, 1);
+    tctx.drawImage(canvas, -canvas.width, 0);
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(tmp, 0, 0);
+  },
+  BufferToCoords: function(x, y, whole) {
+    if(whole || (whole === undefined))
+      return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
+    else
+      return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
+  },
+  RemoveFromArray: function(arr, item, val) {
+    var _tmp = [];
+    arr.forEach(function(a){
+      if(val)
+        if(a[val] != item[val])
+          _tmp.push(a);
+      else
+        if (a !== item)
+          _tmp.push(a);
+    });
+    return _tmp;
+  },
+  CoordsToBuffer: function(x, y) {
+    return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
+  },
+  MakeBox: function(width, height, context){
+    for(var x=0; x < width; x++)
+    {
+      for(var y=0; y < height; y++)
+      {
+        if(y === 0)
+          if(x === 0)
+            P.BOX_BR.stamp(context, x, y);
+          else if(x == (width-1))
+            P.BOX_BL.stamp(context, x, y);
+          else
+            P.BOX_LR.stamp(context, x, y);
+        else if(y == (height-1))
+          if(x === 0)
+            P.BOX_TR.stamp(context, x, y);
+          else if(x == (width-1))
+            P.BOX_TL.stamp(context, x, y);
+          else
+            P.BOX_LR.stamp(context, x, y);
+        else
+          if((x === 0) || (x == (width-1)))
+            P.BOX_TB.stamp(context, x, y);
+          else
+            P.BOX_MD.stamp(context, x, y);
+      }
+    }
+  },
+  GenerateStamp: function(spr) {
+    var original = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
+    var reverse = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
+    this.StampSprite(original.context, 0, 0, spr);
+    reverse.context.scale(-1, 1);
+    this.StampSprite(reverse.context, -20, 0, spr);
+    return {original: original, reverse: reverse};
+  },
+  GenerateStamps: function() {
+    for (var key in S) {
+      if (S.hasOwnProperty(key)) {
+        var stamp = this.GenerateStamp(S[key]);
+        S[key].stamp = stamp.original;
+        S[key].reverse = stamp.reverse;
+      }
+     }
+  },
+  StampSprite: function(renderer, x, y, spr) {
+    var d = spr.d.split('');
+    var p = spr.p.split(' ');
+    for(var tx=0; tx < spr.w; tx++) {
+      for(var ty=0; ty < spr.h; ty++) {
+        var l = (ty*spr.w*3) + (tx*3);
+        var c = new Char(d[l], p[this.CharToNum(d[l+1])], p[this.CharToNum(d[l+2])]);
+        c.stamp(renderer, x + tx, y + ty);
+      }
+    }
+  },
+  StampText: function(renderer, x, y, text, color, bg, alpha) {
+    text.split("").forEach(function(symbol, index){
+      var char = new Char(symbol, color, bg, alpha);
+      char.stamp(renderer, x+index, y);
+      char = null;
+    });
+  }
+};
+
 global.MAX_LVL = 60;
 
 var buffer = document.createElement('canvas');
@@ -151,156 +315,3 @@ GAME.addEventListener('mouseup', function(event) {
   H.MouseUp = true;
   H.MouseClick = H._clicked = false;
 });
-
-global.H = {
-  MouseCoords: null,
-  MouseDown: false,
-  MouseUp: false,
-  MouseClick: false,
-  _clicked: false,
-  CharToNum: function(char) {
-    var c = char.charCodeAt(0) - 48;
-    if(c > 9) c = c - 7;
-    return c;
-  },
-  DoMath: function(m, x, c) {
-    var x = parseInt(x)/MAX_LVL;
-    return Math.floor(parseInt(c) + (parseInt(m)*((x * (2-x))) * 20));
-  },
-  WeightedRandom: function(list, weight) {
-    var total_weight = weight.reduce(function (prev, cur, i, arr) {
-      return prev + cur;
-    });
-     
-    var random_num = this.GetRandom(0, total_weight);
-    var weight_sum = 0;
-     
-    for (var i = 0; i < list.length; i++) {
-      weight_sum += weight[i];
-      weight_sum = +weight_sum.toFixed(2);
-       
-      if (random_num <= weight_sum) {
-          return list[i];
-      }
-    }
-  },
-  NumToText: function(txt) {
-    if(txt > 3000)
-      txt = Math.floor(txt/1000) +'k'+((txt%1000)!== 0 ? '+' : '');
-    return txt;
-  },
-  HitTestPoint: function(objA, objB) {
-    if((objA.x >= objB.x) && (objA.x <= (objB.x + objB.width)) && (objA.y >= objB.y) && (objA.y < (objB.y + objB.height)))
-      return true;
-    else
-      return false;
-  },
-  Null: function(item) {
-    item = null;
-  },
-  GetRandomEntry: function(arr) {
-    return arr[Math.floor(Math.random()*arr.length)];
-  },
-  GetRandom: function (low, high) {
-      return~~ (Math.random() * (high - low)) + low;
-  },
-  EachValueKey: function(obj, cb){
-    for(var k in obj)
-    {
-      if(obj.hasOwnProperty(k))
-        cb(k);
-    }
-  },
-  FlipCanvas: function(canvas) {
-    var tmp = TMP_BUFFER(canvas.width, canvas.height);
-    var tctx = tmp.getContext('2d');
-    tctx.scale(-1, 1);
-    tctx.drawImage(canvas, -canvas.width, 0);
-    var ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(tmp, 0, 0);
-  },
-  BufferToCoords: function(x, y, whole) {
-    if(whole || (whole === undefined))
-      return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
-    else
-      return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
-  },
-  RemoveFromArray: function(arr, item, val) {
-    var _tmp = [];
-    arr.forEach(function(a){
-      if(val)
-        if(a[val] != item[val])
-          _tmp.push(a);
-      else
-        if (a !== item)
-          _tmp.push(a);
-    });
-    return _tmp;
-  },
-  CoordsToBuffer: function(x, y) {
-    return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
-  },
-  MakeBox: function(width, height, context){
-    for(var x=0; x < width; x++)
-    {
-      for(var y=0; y < height; y++)
-      {
-        if(y === 0)
-          if(x === 0)
-            P.BOX_BR.stamp(context, x, y);
-          else if(x == (width-1))
-            P.BOX_BL.stamp(context, x, y);
-          else
-            P.BOX_LR.stamp(context, x, y);
-        else if(y == (height-1))
-          if(x === 0)
-            P.BOX_TR.stamp(context, x, y);
-          else if(x == (width-1))
-            P.BOX_TL.stamp(context, x, y);
-          else
-            P.BOX_LR.stamp(context, x, y);
-        else
-          if((x === 0) || (x == (width-1)))
-            P.BOX_TB.stamp(context, x, y);
-          else
-            P.BOX_MD.stamp(context, x, y);
-      }
-    }
-  },
-  GenerateStamp: function(spr) {
-    var original = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
-    var reverse = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
-    this.StampSprite(original.context, 0, 0, spr);
-    reverse.context.scale(-1, 1);
-    this.StampSprite(reverse.context, -20, 0, spr);
-    return {original: original, reverse: reverse};
-  },
-  GenerateStamps: function() {
-    for (var key in S) {
-      if (S.hasOwnProperty(key)) {
-        var stamp = this.GenerateStamp(S[key]);
-        S[key].stamp = stamp.original;
-        S[key].reverse = stamp.reverse;
-      }
-     }
-  },
-  StampSprite: function(renderer, x, y, spr) {
-    var d = spr.d.split('');
-    var p = spr.p.split(' ');
-    for(var tx=0; tx < spr.w; tx++) {
-      for(var ty=0; ty < spr.h; ty++) {
-        var l = (ty*spr.w*3) + (tx*3);
-        var c = new Char(d[l], p[this.CharToNum(d[l+1])], p[this.CharToNum(d[l+2])]);
-        c.stamp(renderer, x + tx, y + ty);
-      }
-    }
-  },
-  StampText: function(renderer, x, y, text, color, bg, alpha) {
-    text.split("").forEach(function(symbol, index){
-      var char = new Char(symbol, color, bg, alpha);
-      char.stamp(renderer, x+index, y);
-      char = null;
-    });
-  }
-};

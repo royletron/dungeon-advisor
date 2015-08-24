@@ -25,6 +25,7 @@ global.UI = {
   counters: [],
   selected_room: undefined,
   properties: undefined,
+  room_buttons: [],
   init: function(ctx){
     this.ctx = ctx;
     this.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -105,20 +106,6 @@ global.UI = {
     else
       if(this.floors[position.y] !== undefined)
         this.floors[position.y][position.x] = new Room(type, (position.y%2) == 1);
-
-    // this.floors.forEach(function(f, i) {
-    //   if((f.length < (this.max_rooms)) && !added)
-    //   {
-    //     added = true;
-    //     f.push(new Room(type, ((i%2)== 1)));
-    //   }
-    // }.bind(this));
-    //
-    // if(!added)
-    //   if(this.floors.length < (this.max_floors))
-    //     this.floors.push([new Room(type, ((this.floors.length%2)==1))]);
-    //   else
-    //     console.log('No room');
   },
   spawnHero: function() {
     var h = E.GetRandomHero(1);
@@ -184,9 +171,7 @@ global.UI = {
     if(this.selected_room !== undefined){
       if(this.selected_room.found === false)
       {
-        this.properties.context.font = FONT;
-        this.properties.context.fillStyle = '#121212';
-        this.properties.context.fillText('Hey', 1, CHAR_HEIGHT);
+        H.WriteText('Hey', 1, CHAR_HEIGHT, this.properties.context, FONT, 'FFFFFF');
         //new room
       }
       else
@@ -247,7 +232,7 @@ global.UI = {
       status.stamp(ctx, this.w-29, 26 + (y * 3));
     }.bind(this));
 
-    this.properties.stamp(ctx, this.w -29, 10);
+    this.properties.stamp(ctx, this.w -29, 6.5);
 
     this.counters.forEach(function (counter, x){
       counter.stamp(ctx, 3 + (x*7), 4);

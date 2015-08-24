@@ -5,13 +5,9 @@ global.Char = function(symbol, color, bg, alpha) {
   this.renderer = new Renderer(CHAR_WIDTH, CHAR_HEIGHT, alpha);
   if(this.bg !== undefined)
   {
-    this.renderer.context.fillStyle = '#'+this.bg;
-    this.renderer.context.fillRect(0, 0, CHAR_WIDTH, CHAR_HEIGHT);
+    H.DrawRect(0, 0, CHAR_WIDTH, CHAR_HEIGHT, this.renderer.context, this.bg);
   }
-  this.renderer.context.fillStyle = '#'+this.color;
-  this.renderer.context.textAlign = 'center';
-  this.renderer.context.font = FONT;
-  this.renderer.context.fillText(this.symbol, CHAR_WIDTH/2, CHAR_HEIGHT -1);
+  H.WriteText(this.symbol, CHAR_WIDTH/2, CHAR_HEIGHT -1, this.renderer.context, FONT, this.color, 'center');
   this.stamp = function(toCanvas, x, y){
     this.renderer.stamp(toCanvas, x, y);
   };
@@ -24,19 +20,17 @@ global.Char = function(symbol, color, bg, alpha) {
   }
 };
 
-global.Button = function(text, cb, x, y, cost) {
+global.Button = function(text, cb, x, y, cost, data) {
   this.width = ((text.length + 3) + (cost != undefined ? cost.toString().length + 3 : 0)) * CHAR_WIDTH;
   this.height = CHAR_HEIGHT*2;
   this.renderer = new Renderer(this.width, this.height);
   this.renderer.whole = false;
   this.cost = cost;
-  this.renderer.context.font = FONT;
-  this.renderer.context.fillStyle = '#0D423D';
-  this.renderer.context.fillRect(3, 3, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
-  this.renderer.context.fillStyle = '#007A52';
-  this.renderer.context.fillRect(0, 0, this.renderer.canvas.width-5, this.renderer.canvas.height-5);
-  this.renderer.context.fillStyle = '#EBE1CE';
-  this.renderer.context.fillText(text, CHAR_WIDTH, CHAR_HEIGHT*1.2);
+  H.DrawRect(3, 3, this.width-5, this.height-5, this.renderer.context, '0D423D');
+  H.DrawRect(0, 0, this.width-5, this.height-5, this.renderer.context, '007A52');
+  this.data = data;
+
+  H.WriteText(text, CHAR_WIDTH, CHAR_HEIGHT * 1.2, this.renderer.context, FONT, 'EBE1CE');
   if(cost != undefined) {
     this.renderer.context.fillText(cost.toString(), (text.length+4.5)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
     P.GOLD.renderer.whole = false;
@@ -56,23 +50,21 @@ global.Button = function(text, cb, x, y, cost) {
     if(H.MouseClick)
       if(H.HitTestPoint(H.MouseCoords, this.getHitArea())) {
         this._clicked = true;
-        this.cb();
+        this.cb(this.data);
       }
   }
 }
 
 global.Avatar = function(hero) {
-  this.color = '#25989B';
+  this.color = '25989B';
   this.hero = hero;
   this.renderer = new Renderer(3 *CHAR_WIDTH, 3 * CHAR_HEIGHT);
   this.renderer.whole = false;
   this.stamped = false;
   this.current_floor=0
   this.gen = function(){
-    this.renderer.context.font = FONT;
-    this.renderer.context.fillStyle = this.color;
-    this.renderer.context.fillText('◜◝', 0, CHAR_HEIGHT);
-    this.renderer.context.fillText('◟◞', 0, CHAR_HEIGHT*2);
+    H.WriteText('◜◝', 0, CHAR_HEIGHT, this.renderer.context, FONT, this.color);
+    H.WriteText('◟◞', 0, CHAR_HEIGHT*2, this.renderer.context, FONT, this.color);
     this.hero.stamp(this.renderer.context, 0.3, 0.65);
     this.stamped = true;
   }
@@ -94,9 +86,7 @@ global.StatusUpdate = function(hero, title, text) {
   this.typewriter = new TypeWriter(text, 21, 4);
   this.typewriter.run();
   this.renderer = new Renderer(21 * CHAR_WIDTH, CHAR_HEIGHT);
-  this.renderer.context.font = STATUS_FONT;
-  this.renderer.context.fillStyle = '#FFFFFF';
-  this.renderer.context.fillText(title, 0, CHAR_HEIGHT-2);
+  H.WriteText(title, 0, CHAR_HEIGHT-2, this.renderer.context, STATUS_FONT, 'ffffff');
   this.stamp = function(toCanvas, x, y){
     this.avatar.stamp(toCanvas, x, y);
     this.renderer.stamp(toCanvas, x+3, y);
@@ -130,9 +120,7 @@ global.TypeWriter = function(text, width, height, fixed) {
           cursorY += lineHeight;
           this.height += 1;
       }
-      this.renderer.context.font = STATUS_FONT;
-      this.renderer.context.fillStyle = '#25989B';
-      this.renderer.context.fillText(this.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT);
+      H.WriteText(this.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT, this.renderer.context, STATUS_FONT, '25989B');
       i++;
       cursorX += w;
       if(i === this.text.length)
@@ -250,12 +238,12 @@ global.Tween = function(entity, values, time, cb) {
     this.current += dt;
     H.EachValueKey(this.values, function(k){
       var diff = this.values[k] - this.start_values[k];
-      this.entity[k] = this.start_values[k] + (diff * (this.current/this.time))
+      this.entity[k] = this.start_values[k] + (diff * (this.current/this.time));
       if(this.entity[k] > this.values[k]) this.entity[k] = this.values[k];
     }.bind(this));
     if(this.current > this.time)
     {
-      if(this.cb != undefined)
+      if(this.cb !== undefined)
         this.cb();
 
       POP_CALLBACK(this.function);
@@ -270,14 +258,11 @@ global.Counter = function(symbol, object, value) {
   this.symbol = symbol;
   this.object = object;
   this.value = value;
-  this.previous;
   this.draw = function(){
     this.previous = this.object[this.value];
     var txt = H.NumToText(this.previous);
     this.renderer.context.clearRect(0, 0, CHAR_WIDTH * 10, CHAR_HEIGHT);
-    this.renderer.context.font = FONT;
-    this.renderer.context.fillStyle = '#000000';
-    this.renderer.context.fillText(txt, CHAR_WIDTH+4, CHAR_HEIGHT - 1);
+    H.WriteText(txt, CHAR_WIDTH+4, CHAR_HEIGHT-1, this.renderer.context, FONT, '000000');
     this.symbol.stamp(this.renderer.context);
   };
   this.draw();
