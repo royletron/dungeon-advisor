@@ -50,7 +50,8 @@ global.Button = function(text, cb, x, y, cost) {
     return {x: this.x*CHAR_WIDTH, y: this.y*CHAR_HEIGHT, width: this.renderer.width, height: this.renderer.height};
   }
   this.stamp = function(toCanvas, x, y) {
-    this.renderer.stamp(toCanvas, this.x, this.y);
+    if(this.cost && (this.cost <= UI.gold))
+      this.renderer.stamp(toCanvas, this.x, this.y);
   }
   this.update = function(dt) {
     if(H.MouseDown && !this._clicked)

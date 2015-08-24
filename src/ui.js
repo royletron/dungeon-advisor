@@ -18,7 +18,8 @@ global.UI = {
   fg: null,
   ctx: null,
   add_floor_button: new Button('Add Floor', function(){
-    console.log('you clicked me');
+    console.log(this);
+    UI.addFloor();
   },1, 1, 80),
   statuses: [],
   counters: [],
@@ -73,6 +74,16 @@ global.UI = {
     this.counters.push(new Counter(new Char('#', 'FA6728'), this, 'num_heroes'));
     this.addRoom(R.CHURCH);
   },
+  addFloor: function() {
+    if(this.gold >= 80)
+    {
+      this.floors.push([]);
+      this.gold += -80;
+      for(x = 3; x < this.w-29; x++)
+        P.FLOOR.stamp(this.bg.context, x, ((this.floors.length+1)* ROOM_HEIGHT) - 3);
+      this.add_floor_button.y += ROOM_HEIGHT;
+    }
+  },
   addStatus: function(hero, title, text){
     var tmp = [];
     tmp.push(new StatusUpdate(hero, title, text));
@@ -100,8 +111,10 @@ global.UI = {
         console.log('No room');
   },
   spawnHero: function() {
-    this.heroes.push(E.GetRandomHero(1));
+    var h = E.GetRandomHero(1)
+    this.heroes.push(h);
     this.num_heroes = this.heroes.length;
+    this.gold += H.DoMath(h.type.increment, h.lvl, h.type.fee);
   },
   removeHero: function(hero) {
     this.heroes = H.RemoveFromArray(this.heroes, hero, 'id');

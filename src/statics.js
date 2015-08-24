@@ -12,6 +12,8 @@ global.BOX_B = '594B54';
 global.RIGHT = 'r';
 global.LEFT = 'l';
 
+global.MAX_LVL = 60;
+
 var buffer = document.createElement('canvas');
 
 global.TMP_BUFFER = function(width, height) {
@@ -43,13 +45,13 @@ global.E = {
     {name: 'Lute', symbol: '∝', damage: 4, range: 1, code: 'lt', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3}
   ],
   heroes: [
-    {name: 'Knight', symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
-    {name: 'Dwarf', symbol: 'D', lvl_range: {t: 55, b: 1}, weapons: ['sa'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Priest', symbol: 'δ', lvl_range: {t: 55, b: 1}, weapons: ['cf'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Mage', symbol: 'Î', lvl_range: {t: 55, b: 1}, weapons: ['st', 'wd'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Rogue', symbol: '∱', lvl_range: {t: 55, b: 1}, weapons: ['kn'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Archer', symbol: '∔', lvl_range: {t: 55, b: 1}, weapons: ['bw'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Muse', symbol: '♭', lvl_range: {t: 55, b: 1}, weapons: ['lt'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'}
+    {name: 'Knight', fee: '10', increment: '3', symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
+    {name: 'Dwarf', fee: '8', increment: '3', symbol: 'D', lvl_range: {t: 55, b: 1}, weapons: ['sa'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
+    {name: 'Priest', fee: '3', increment: '4', symbol: 'δ', lvl_range: {t: 55, b: 1}, weapons: ['cf'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
+    {name: 'Mage', fee: '6', increment: '2', symbol: 'Î', lvl_range: {t: 55, b: 1}, weapons: ['st', 'wd'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
+    {name: 'Rogue', fee: '4', increment: '3', symbol: '∱', lvl_range: {t: 55, b: 1}, weapons: ['kn'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
+    {name: 'Archer', fee: '5', increment: '2', symbol: '∔', lvl_range: {t: 55, b: 1}, weapons: ['bw'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
+    {name: 'Muse', fee: '2', increment: '6', symbol: '♭', lvl_range: {t: 55, b: 1}, weapons: ['lt'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'}
   ],
   enemies: {
 
@@ -151,6 +153,10 @@ global.H = {
     var c = char.charCodeAt(0) - 48;
     if(c > 9) c = c - 7;
     return c;
+  },
+  DoMath: function(m, x, c) {
+    var x = parseInt(x)/MAX_LVL;
+    return Math.floor(parseInt(c) + (parseInt(m)*((x * (2-x))) * 20));
   },
   WeightedRandom: function(list, weight) {
     var total_weight = weight.reduce(function (prev, cur, i, arr) {
