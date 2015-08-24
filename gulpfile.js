@@ -4,6 +4,7 @@ var uglify = require('gulp-uglify');
 var gzip = require('gulp-gzip');
 var tar = require('gulp-tar');
 var replace = require('gulp-replace');
+var zip = require('gulp-zip');
 
 gulp.task('concat', function() {
   return gulp.src(['src/classes.js', 'src/statics.js', 'src/ui.js', 'src/index.js'])
@@ -26,4 +27,10 @@ gulp.task('tar', function() {
     .pipe(gulp.dest('./'));
 });
 
-gulp.task('compress', ['concat', 'tar']);
+gulp.task('zip', function() {
+  return gulp.src(['index.html', 'game.min.js'])
+    .pipe(zip('dist.zip'))
+    .pipe(gulp.dest('./'));
+});
+
+gulp.task('compress', ['concat', 'zip']);
