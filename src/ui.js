@@ -27,7 +27,6 @@ global.UI = {
     this.ctx = ctx;
     this.w = Math.floor(GAME.width / CHAR_WIDTH);
     this.h = Math.floor(GAME.height / CHAR_HEIGHT);
-    this.menu = new Menu('MENU', 25,  this.h - 20);
     this.renderer = new Renderer(GAME.width, GAME.height, 1);
     this.bg = new Renderer(GAME.width, GAME.height, 1);
     this.fg = new Renderer(GAME.width, GAME.height, 1);
@@ -44,7 +43,10 @@ global.UI = {
       for(var y=0; y < this.h; y++) {
         if(y > 4)
           if((x > this.w-29) && (x < this.w-3) && (y > 6) && (y < this.h - 2))
-            P.BOX_MD.stamp(this.bg.context, x, y);
+            if((y == 24) || (y==23))
+              P.randomSolid().stamp(this.bg.context, x, y);
+            else
+              P.BOX_MD.stamp(this.bg.context, x, y);
           else if((x < 3) || (x > (this.w-32)) || (y < 7))
             P.randomSolid().stamp(this.fg.context, x, y);
           else
@@ -183,7 +185,7 @@ global.UI = {
     });
 
     this.statuses.forEach(function(status, y){
-      status.stamp(ctx, this.w-27, 8 + (y * 4));
+      status.stamp(ctx, this.w-27, 26 + (y * 3));
     }.bind(this));
 
     this.counters.forEach(function (counter, x){
