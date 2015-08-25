@@ -188,6 +188,9 @@ global.Room = function(type, flipped) {
     type.stamp.reverse.stamp(this.renderer.context);
   else
     type.stamp.stamp.stamp(this.renderer.context);
+  this.entertain = function(hero) {
+    console.log('etnertain', hero);
+  }
 };
 
 global.Renderer = function(width, height, alpha) {
@@ -326,7 +329,8 @@ global.Hero = function(x, y, type) {
     this.currentRoom = c;
     if(H.Contains(this.type.faves, c.type.code))
     {
-      console.log('in');
+      if(Math.random() < 0.9)
+        c.entertain(this);
     }
     else{
       console.log('out');
