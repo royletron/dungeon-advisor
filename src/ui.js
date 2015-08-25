@@ -100,12 +100,16 @@ global.UI = {
     this.statuses = tmp;
   },
   addRoom: function(type, position){
-    console.log(position);
     if(position === undefined)
+    {
       this.floors[0][0] = new Room(type, false);
+      return this.floors[0][0]
+    }
     else
-      if(this.floors[position.y] !== undefined)
+      if(this.floors[position.y] !== undefined) {
         this.floors[position.y][position.x] = new Room(type, (position.y%2) == 1);
+        return this.floors[position.y][position.x];
+      }
   },
   spawnHero: function() {
     var h = E.GetRandomHero(1);
@@ -182,9 +186,13 @@ global.UI = {
           H.WriteText(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx), this.properties.context, FONT, 'FFFFFF');
           if(this.room_buttons[idx] === undefined)
           {
-            this.room_buttons.push(new Button('Add', function(d){console.log(d);}, (this.w - 30)+16, 6+(idx*1.8), 80, room));
-            this.room_buttons[idx].stamp(this.properties.context, 16, idx*1.8);
+            this.room_buttons.push(new Button('Add', function(d){
+              var room = UI.addRoom(R[d], UI.selected_room);
+              UI.setSelection(room);
+              UI.gold += -room.type.cost;
+            }, (this.w - 30)+16, 6+(idx*1.8), r.cost, room));
           }
+          this.room_buttons[idx].stamp(this.properties.context, 16, idx*1.8);
         }.bind(this));
         //new room
       }

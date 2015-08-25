@@ -61,6 +61,8 @@ global.H = {
     return txt;
   },
   HitTestPoint: function(objA, objB) {
+    if((objA === null) || (objB === null))
+      return false;
     if((objA.x >= objB.x) && (objA.x <= (objB.x + objB.width)) && (objA.y >= objB.y) && (objA.y < (objB.y + objB.height)))
       return true;
     else

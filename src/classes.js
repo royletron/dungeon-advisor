@@ -44,7 +44,7 @@ global.Button = function(text, cb, x, y, cost, data) {
   }
   this.stamp = function(toCanvas, x, y) {
     if(this.cost && (this.cost <= UI.gold))
-      this.renderer.stamp(toCanvas, x || this.x, y || this.y);
+      this.renderer.stamp(toCanvas, x === undefined ? this.x : x, y === undefined ? this.y : y);
   }
   this.update = function(dt) {
     if(H.MouseClick)
@@ -277,6 +277,7 @@ var heroId = 1;
 
 global.Hero = function(x, y, type) {
   this.type = type;
+  this.current_floor = 1;
   this.sprite = new Sprite(x, y, new Char(type.symbol, type.color));
   this.body = Physics.createBody(this.sprite, x, y, CHAR_WIDTH, CHAR_HEIGHT);
   this.weapon = {type: E.GetRandomWeapon(type.weapons), d:true};
