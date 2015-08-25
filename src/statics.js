@@ -71,6 +71,9 @@ global.H = {
   Null: function(item) {
     item = null;
   },
+  Contains: function(a, b) {
+    return a.split(b).length > 1;
+  },
   GetRandomEntry: function(arr) {
     return arr[Math.floor(Math.random()*arr.length)];
   },
@@ -259,7 +262,7 @@ global.E = {
     {name: 'Lute', symbol: '∝', damage: 4, range: 1, code: 'lt', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3}
   ],
   heroes: [
-    {name: 'Knight', faves: ['e'], turn: {t: 3, b: 1}, hates: ['s'], money: {t: 200, b: 130}, fee: 10, increment: 3, symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
+    {name: 'Knight', faves: 'he', turn: {t: 3, b: 1}, hates: ['s'], money: {t: 200, b: 130}, fee: 10, increment: 3, symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
     {name: 'Dwarf', fee: '8', increment: '3', symbol: 'D', lvl_range: {t: 55, b: 1}, weapons: ['sa'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
     {name: 'Priest', fee: '3', increment: '4', symbol: 'δ', lvl_range: {t: 55, b: 1}, weapons: ['cf'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
     {name: 'Mage', fee: '6', increment: '2', symbol: 'Î', lvl_range: {t: 55, b: 1}, weapons: ['st', 'wd'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},

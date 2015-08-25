@@ -287,6 +287,7 @@ global.Hero = function(x, y, type) {
   this.weapon.spr = new Char(this.weapon.type.symbol, this.weapon.type.color);
   this.sprite.renderer.renderer.whole = this.weapon.spr.renderer.whole = false;
   this.active = true;
+  this.experience = [];
   this.id = heroId;
   heroId ++;
   this.body.callbacks.push(function(b){
@@ -323,6 +324,14 @@ global.Hero = function(x, y, type) {
   },
   this.roomChanged = function(c) {
     this.currentRoom = c;
+    if(H.Contains(this.type.faves, c.type.code))
+    {
+      console.log('in');
+    }
+    else{
+      console.log('out');
+    }
+    // console.log(c.type, this.type);
   },
   this.getCurrentRoom = function() {
     var x = this.body.x - UI.spawn_point.x;
