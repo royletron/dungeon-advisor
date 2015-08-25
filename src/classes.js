@@ -297,6 +297,7 @@ global.Hero = function(x, y, type) {
   }.bind(this));
   this.facing = RIGHT;
   this.speed = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
+  this.money = H.GetRandom(type.money.b, type.money.t);
   this.body.velocity.x = this.speed;
   this.lvl = H.WeightedRandom([(UI.lvl == 1 ? 1 : UI.lvl-1), UI.lvl, UI.lvl+1], [0.4, 1, 0.5]);
   UI.addStatus(this, this.name+" has entered!", "A "+this.type.name.toLowerCase()+" from ...");
