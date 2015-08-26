@@ -183,13 +183,19 @@ global.Room = function(type, flipped) {
   this.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   this.type = type;
   this.id = roomID;
+
+  if(this.type.slots)
+    this.slots = this.type.slots.map(function(s){
+      return {x: s, npc: undefined, hero: undefined}
+    });
+
   roomID++;
   if(flipped)
     type.stamp.reverse.stamp(this.renderer.context);
   else
     type.stamp.stamp.stamp(this.renderer.context);
-  this.entertain = function(hero) {
-    console.log('etnertain', hero);
+  this.update = function(dt, h) {
+    console.log(dt);
   }
 };
 
@@ -293,12 +299,6 @@ global.Hero = function(x, y, type) {
   this.experience = [];
   this.id = heroId;
   heroId ++;
-  this.body.callbacks.push(function(b){
-    var add = this.weapon.type.offsetx;
-    if(this.facing == LEFT)
-      add = -add;
-    this.weapon.x = b.x + add;
-  }.bind(this));
   this.facing = RIGHT;
   this.speed = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
   this.money = H.GetRandom(type.money.b, type.money.t);
@@ -306,6 +306,19 @@ global.Hero = function(x, y, type) {
   this.lvl = H.WeightedRandom([(UI.lvl == 1 ? 1 : UI.lvl-1), UI.lvl, UI.lvl+1], [0.4, 1, 0.5]);
   UI.addStatus(this, this.name+" has entered!", "A "+this.type.name.toLowerCase()+" from ...");
   this.update = function(dt) {
+    this.update_weapon(dt);
+    var c = this.getCurrentRoom();
+    if(this.entertaining)
+      this.currentRoom.update(dt, this);
+    console.log(c);
+    if((this.currentRoom == undefined) || (c.id != this.currentRoom.id))
+      this.roomChanged(c);
+  },
+  this.update_weapon = function(dt) {
+    var add = this.weapon.type.offsetx;
+    if(this.facing == LEFT)
+      add = -add;
+    this.weapon.x = this.body.x + add;
     var m = (this.speed/3) * dt;
     if(this.weapon.d)
       this.weapon.y += m;
@@ -321,16 +334,14 @@ global.Hero = function(x, y, type) {
       this.weapon.y = this.body.y + this.weapon.type.top;
       this.weapon.d = true;
     }
-    var c = this.getCurrentRoom();
-    if((this.currentRoom == undefined) || (c.id != this.currentRoom.id))
-      this.roomChanged(c);
   },
   this.roomChanged = function(c) {
     this.currentRoom = c;
+    this.entertaining = false;
     if(H.Contains(this.type.faves, c.type.code))
     {
       if(Math.random() < 0.9)
-        c.entertain(this);
+        this.entertaining = true;
     }
     else{
       console.log('out');
