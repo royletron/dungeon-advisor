@@ -180,7 +180,10 @@ global.Physics = {
 var roomID = 1;
 
 global.Particle = function(char, x, y) {
-  this.char = char;
+  if(char.length > 0)
+    this.char = H.GetRandomEntry(char);
+  else
+    this.char = char;
   this.x = x;
   this.y = y;
   this.ux = (H.GetRandom(0, 100) - 50)/75;
@@ -191,7 +194,7 @@ global.Particle = function(char, x, y) {
     H.Null(this);
   }
   this.cb = PUSH_CALLBACK(function(dt){
-    dt = dt * this.rate;
+    dt = dt * this.rate;``
     this.alpha += -dt/4;
     if(this.alpha < 0) {
       POP_CALLBACK(this.cb);

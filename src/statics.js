@@ -221,6 +221,8 @@ global.P = {
   BOX_BR: new Char('┏', BOX, BOX_B),
   BOX_MD: new Char(' ', BOX, BOX_B),
   HEALTH: new Char('+', '00ff00'),
+  DRINK: new Char('¡', 'B85456'),
+  DRINK2: new Char('#', 'F1D67D'),
 
   FLOOR: new Char('┈', '63545E', '302222'),
   OFF_FLOOR: new Char('┈', '3b3539', '302222'),
@@ -241,7 +243,7 @@ global.S = {
 
 global.R = {
   HOSPITAL: {name: 'Hospital', p: P.HEALTH, code: 'h', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{atrribute: 'health', rate: {t: 10, b: 2}}], cost: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
-  INN: {name: 'Inn', p: P.HEALTH, code: 'i', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{atrribute: 'health', rate: {t: 10, b: 2}}], cost: {t: 20, b: 10}}], cost: 100, stamp: S.INN},
+  INN: {name: 'Inn', p: [P.DRINK, P.DRINK2], code: 'i', slots: [3, 9, 14, 16, 18], actions: [{name: 'Nurse', effects: [{atrribute: 'health', rate: {t: 10, b: 2}}], cost: {t: 20, b: 10}}], cost: 100, stamp: S.INN},
   ENTRANCE: {name: 'Entrance', code: 'e', actions: [{name: 'Chat'}], cost: 100, stamp: S.ENTRANCE},
   SEWER: {name: 'Sewer', cost: 70, stamp: S.SEWER},
   CHURCH: {name: 'Church', cost: 140, stamp: S.CHURCH},
@@ -279,7 +281,7 @@ global.E = {
     {name: 'Lute', symbol: '∝', damage: 4, range: 1, code: 'lt', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3}
   ],
   heroes: [
-    {name: 'Knight', faves: 'he', turn: {t: 16, b: 5}, hates: 's', money: {t: 200, b: 130}, health: {t: 200, b: 14}, fee: 10, increment: 0.5, symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
+    {name: 'Knight', faves: 'hei', turn: {t: 16, b: 5}, hates: 's', money: {t: 200, b: 130}, health: {t: 200, b: 14}, fee: 10, increment: 0.5, symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
     {name: 'Dwarf', fee: '8', increment: '3', symbol: 'D', lvl_range: {t: 55, b: 1}, weapons: ['sa'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
     {name: 'Priest', fee: '3', increment: '4', symbol: 'δ', lvl_range: {t: 55, b: 1}, weapons: ['cf'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
     {name: 'Mage', fee: '6', increment: '2', symbol: 'Î', lvl_range: {t: 55, b: 1}, weapons: ['st', 'wd'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},

@@ -11,6 +11,7 @@ global.UI = {
   clouds: [],
   spawn_counter: 0,
   spawn_wait: 0,
+  popularity: 5,
   spawn_point: {x: 0, y: 13.5},
   heroes: [],
   num_heroes: 0,
@@ -133,7 +134,7 @@ global.UI = {
     if(this.spawn_counter > this.spawn_wait)
     {
       this.spawn_counter = 0;
-      this.spawn_wait = H.GetRandom(12, 20);
+      this.spawn_wait = H.GetRandom(24- (this.popularity*4), (24 - (this.popularity*4)) + ( 24 - (this.popularity*4)));
       this.spawnHero();
     }
     this.heroes.forEach(function(hero) {
