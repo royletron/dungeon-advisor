@@ -11,7 +11,7 @@ global.UI = {
   clouds: [],
   spawn_counter: 0,
   spawn_wait: 0,
-  spawn_point: {x: 2, y: 13.5},
+  spawn_point: {x: 0, y: 13.5},
   heroes: [],
   num_heroes: 0,
   bg: null,

@@ -104,13 +104,21 @@ global.H = {
   },
   RemoveFromArray: function(arr, item, val) {
     var _tmp = [];
+    var fn = false;
     arr.forEach(function(a){
-      if(val)
-        if(a[val] != item[val])
-          _tmp.push(a);
+      if(fn)
+        _tmp.push(a);
       else
-        if (a !== item)
-          _tmp.push(a);
+        if(val)
+          if(a[val] != item[val])
+            _tmp.push(a);
+          else
+            fn = true;
+        else
+          if (a !== item)
+            _tmp.push(a);
+          else
+            fn = true;
     });
     return _tmp;
   },
@@ -186,7 +194,7 @@ global.MAX_LVL = 60;
 var buffer = document.createElement('canvas');
 
 global.TMP_BUFFER = function(width, height) {
-  buffer.width = width; buffer.heigth = height;
+  buffer.width = width; buffer.height = height;
   buffer.getContext('2d').clearRect(0, 0, buffer.width, buffer.height);
   buffer.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
   return buffer;
@@ -206,6 +214,7 @@ global.P = {
   BOX_BL: new Char('┓', BOX, BOX_B),
   BOX_BR: new Char('┏', BOX, BOX_B),
   BOX_MD: new Char(' ', BOX, BOX_B),
+  HEALTH: new Char('+', '00ff00'),
 
   FLOOR: new Char('┈', '63545E', '302222'),
   OFF_FLOOR: new Char('┈', '3b3539', '302222'),
@@ -262,7 +271,7 @@ global.E = {
     {name: 'Lute', symbol: '∝', damage: 4, range: 1, code: 'lt', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3}
   ],
   heroes: [
-    {name: 'Knight', faves: 'he', turn: {t: 6, b: 1}, hates: 's', money: {t: 200, b: 130}, fee: 10, increment: 3, symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
+    {name: 'Knight', faves: 'he', turn: {t: 16, b: 5}, hates: 's', money: {t: 200, b: 130}, fee: 10, increment: 0.5, symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
     {name: 'Dwarf', fee: '8', increment: '3', symbol: 'D', lvl_range: {t: 55, b: 1}, weapons: ['sa'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
     {name: 'Priest', fee: '3', increment: '4', symbol: 'δ', lvl_range: {t: 55, b: 1}, weapons: ['cf'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
     {name: 'Mage', fee: '6', increment: '2', symbol: 'Î', lvl_range: {t: 55, b: 1}, weapons: ['st', 'wd'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},

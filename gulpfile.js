@@ -27,8 +27,8 @@ gulp.task('tar', function() {
     .pipe(gulp.dest('./'));
 });
 
-gulp.task('zip', function() {
-  return gulp.src(['index.html', 'game.min.js'])
+gulp.task('zip', ['concat'], function() {
+  return gulp.src(['./index.html', './game.min.js'])
     .pipe(zip('dist.zip'))
     .pipe(gulp.dest('./'));
 });

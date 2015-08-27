@@ -64,14 +64,15 @@ function update(timestamp) {
     g_ctx.fillRect(0, 0, GAME.width, GAME.height);
 
     dt = dt * TIME;
-    CALLBACKS.forEach(function(cb){
-      cb(dt);
-    });
 
     Physics.update(dt);
     UI.update(dt);
 
     UI.draw();
+
+    CALLBACKS.forEach(function(cb){
+      cb(dt);
+    });
     H.MouseClick = false;
     //g_ctx.drawImage(map, 0, 0);
     // P.FLOOR_TILE.stamp(g_ctx, 10, 10);

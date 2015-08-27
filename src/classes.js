@@ -179,6 +179,31 @@ global.Physics = {
 
 var roomID = 1;
 
+global.Particle = function(char, x, y) {
+  this.char = char;
+  this.x = x;
+  this.y = y;
+  this.ux = (H.GetRandom(0, 100) - 50)/100;
+  this.alpha = 1;
+  this.destroy = function() {
+    this.char.destroy;
+    H.Null(this);
+  }
+  this.cb = PUSH_CALLBACK(function(dt){
+    this.alpha += -dt/4;
+    if(this.alpha < 0) {
+      POP_CALLBACK(this.cb);
+    }
+    else{
+      g_ctx.globalAlpha = this.alpha;
+      this.y += -dt;
+      this.x += (this.ux * dt)
+      this.char.stamp(g_ctx, this.x, this.y);
+      g_ctx.globalAlpha = 1;
+    }
+  }.bind(this));
+}
+
 global.Room = function(type, flipped) {
   this.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   this.type = type;
@@ -194,6 +219,10 @@ global.Room = function(type, flipped) {
     type.stamp.reverse.stamp(this.renderer.context);
   else
     type.stamp.stamp.stamp(this.renderer.context);
+  this.tick = function (h) {
+    h.last_tick = 0;
+    new Particle(P.HEALTH, h.body.x, h.body.y-1);
+  };
   this.update = function(dt, h) {
     if((h.busy != true) && this.slots)
     {
@@ -214,7 +243,8 @@ global.Room = function(type, flipped) {
     else{
       h.room_time += dt;
       h.last_tick += dt;
-      // if(h.last_tick > h.type.increment);
+      if(h.last_tick > h.type.increment)
+        this.tick(h);
       if(h.room_time > h.total_room_time) {
         this.slots.forEach(function(s){
           if(s.hero == h)
