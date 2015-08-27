@@ -133,7 +133,7 @@ global.UI = {
     if(this.spawn_counter > this.spawn_wait)
     {
       this.spawn_counter = 0;
-      this.spawn_wait = H.GetRandom(2, 4);
+      this.spawn_wait = H.GetRandom(12, 20);
       this.spawnHero();
     }
     this.heroes.forEach(function(hero) {

@@ -235,7 +235,7 @@ global.Room = function(type, flipped, x, y) {
           h.total_room_time = H.GetRandom(h.type.turn.b, h.type.turn.t);
           h.return_velocity = h.body.velocity.x;
           h.body.velocity.x = 0;
-          h.experience.push({n: 1, r: 'Loving the '+h.type.name});
+          h.had_a_go = true;
         }
       }.bind(this));
     }
@@ -368,7 +368,7 @@ global.Hero = function(x, y, type) {
     var c = this.getCurrentRoom();
     if(this.entertaining)
       this.currentRoom.update(dt, this);
-    if((this.currentRoom == undefined) || (c.id != this.currentRoom.id))
+    if(c != this.currentRoom)
       this.roomChanged(c);
   },
   this.update_weapon = function(dt) {
@@ -393,15 +393,25 @@ global.Hero = function(x, y, type) {
     }
   },
   this.roomChanged = function(c) {
-    this.currentRoom = c;
+    if(this.had_a_go === true)
+      this.experience.push({n: 1, r: 'Loving the '+this.currentRoom.type.name});
+    else if(this.had_a_go === false)
+      this.experience.push({n: -1, r: 'There was no room in '+this.currentRoom.type.name});
+
+    this.had_a_go = undefined;
     this.entertaining = false;
-    if(H.Contains(this.type.faves, c.type.code))
+    this.currentRoom = c;
+    if(c !== undefined)
     {
-      if(Math.random() < 0.9)
-        this.entertaining = true;
-    }
-    else{
-      console.log('out');
+      if(H.Contains(this.type.faves, c.type.code))
+      {
+        this.had_a_go = false;
+        if(Math.random() < 0.9)
+          this.entertaining = true;
+      }
+      else{
+        console.log('out');
+      }
     }
     // console.log(c.type, this.type);
   },
@@ -410,9 +420,9 @@ global.Hero = function(x, y, type) {
     var y = this.body.y - UI.spawn_point.y;
     var r = UI.floors[Math.floor(y/ROOM_HEIGHT)];
     if(r !== undefined)
-      r = r[Math.floor(x/ROOM_WIDTH)];
-    if(r === undefined) return this.currentRoom;
-    else return r;
+      return r[Math.floor(x/ROOM_WIDTH)];
+    else
+      return undefined;
   },
   this.turnAround = function() {
     this.sprite.renderer.flip();
