@@ -77,7 +77,7 @@ global.UI = {
 
     this.counters.push(new Counter(P.GOLD, this, 'gold'));
     this.counters.push(new Counter(new Char('#', 'FA6728'), this, 'num_heroes'));
-    this.addRoom(R.HOSPITAL);
+    this.addRoom(R.INN);
   },
   addFloor: function() {
     if(this.gold >= 80)

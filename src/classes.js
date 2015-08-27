@@ -183,13 +183,15 @@ global.Particle = function(char, x, y) {
   this.char = char;
   this.x = x;
   this.y = y;
-  this.ux = (H.GetRandom(0, 100) - 50)/100;
+  this.ux = (H.GetRandom(0, 100) - 50)/75;
+  this.rate = (H.GetRandom(100, 150))/100;
   this.alpha = 1;
   this.destroy = function() {
     this.char.destroy;
     H.Null(this);
   }
   this.cb = PUSH_CALLBACK(function(dt){
+    dt = dt * this.rate;
     this.alpha += -dt/4;
     if(this.alpha < 0) {
       POP_CALLBACK(this.cb);
@@ -222,7 +224,10 @@ global.Room = function(type, flipped, x, y) {
     type.stamp.stamp.stamp(this.renderer.context);
   this.tick = function (h) {
     h.last_tick = 0;
-    new Particle(P.HEALTH, h.body.x, h.body.y-1);
+    new Particle(this.type.p, h.body.x, h.body.y-1);
+    this.type.actions.forEach(function(action){
+
+    })
   };
   this.update = function(dt, h) {
     if((h.busy != true) && this.slots)
@@ -362,6 +367,7 @@ global.Hero = function(x, y, type) {
   this.money = H.GetRandom(type.money.b, type.money.t);
   this.body.velocity.x = this.speed;
   this.lvl = H.WeightedRandom([(UI.lvl == 1 ? 1 : UI.lvl-1), UI.lvl, UI.lvl+1], [0.4, 1, 0.5]);
+  this.health = this.current_health = H.Moultonize(this.lvl, this.type.health.b, this.type.health.t);
   UI.addStatus(this, this.name+" has entered!", "A "+this.type.name.toLowerCase()+" from ...");
   this.update = function(dt) {
     this.update_weapon(dt);
