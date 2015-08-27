@@ -102,12 +102,12 @@ global.UI = {
   addRoom: function(type, position){
     if(position === undefined)
     {
-      this.floors[0][0] = new Room(type, false);
+      this.floors[0][0] = new Room(type, false, 0, 0);
       return this.floors[0][0]
     }
     else
       if(this.floors[position.y] !== undefined) {
-        this.floors[position.y][position.x] = new Room(type, (position.y%2) == 1);
+        this.floors[position.y][position.x] = new Room(type, (position.y%2) == 1, position.x, position.y);
         return this.floors[position.y][position.x];
       }
   },
@@ -133,7 +133,7 @@ global.UI = {
     if(this.spawn_counter > this.spawn_wait)
     {
       this.spawn_counter = 0;
-      this.spawn_wait = H.GetRandom(8, 14);
+      this.spawn_wait = H.GetRandom(2, 4);
       this.spawnHero();
     }
     this.heroes.forEach(function(hero) {

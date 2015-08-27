@@ -204,11 +204,12 @@ global.Particle = function(char, x, y) {
   }.bind(this));
 }
 
-global.Room = function(type, flipped) {
+global.Room = function(type, flipped, x, y) {
   this.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   this.type = type;
   this.id = roomID;
-
+  this.x = x;
+  this.y = y;
   if(this.type.slots)
     this.slots = this.type.slots.map(function(s){
       return {x: s, npc: undefined, hero: undefined}
@@ -227,8 +228,8 @@ global.Room = function(type, flipped) {
     if((h.busy != true) && this.slots)
     {
       this.slots.forEach(function(s){
-        if(!h.busy && s.x === Math.floor(h.body.x) && (s.hero == undefined)) {
-          s.hero = h
+        if(!h.busy && (s.x + (this.x * ROOM_WIDTH)) === Math.floor(h.body.x) && (h.body.y === (13.5 + (this.y * ROOM_HEIGHT))) && (s.hero == undefined)) {
+          s.hero = h;
           h.busy = true;
           h.room_time = h.last_tick = 0;
           h.total_room_time = H.GetRandom(h.type.turn.b, h.type.turn.t);
@@ -236,9 +237,7 @@ global.Room = function(type, flipped) {
           h.body.velocity.x = 0;
           h.experience.push({n: 1, r: 'Loving the '+h.type.name});
         }
-      });
-      if(!h.busy)
-        h.experience.push({n: -1, r: 'Not enough room in the '+h.type.name});
+      }.bind(this));
     }
     else{
       h.room_time += dt;
