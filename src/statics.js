@@ -224,7 +224,7 @@ global.S = {
 };
 
 global.R = {
-  HOSPITAL: {name: 'Hospital', code: 'h', actions: [{name: 'Nurse', effects: [{atrribute: 'health', rate: {t: 10, b: 2}}], cost: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
+  HOSPITAL: {name: 'Hospital', code: 'h', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{atrribute: 'health', rate: {t: 10, b: 2}}], cost: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
   ENTRANCE: {name: 'Entrance', code: 'e', actions: [{name: 'Chat'}], cost: 100, stamp: S.ENTRANCE},
   SEWER: {name: 'Sewer', cost: 70, stamp: S.SEWER},
   CHURCH: {name: 'Church', cost: 140, stamp: S.CHURCH},
@@ -303,6 +303,22 @@ function getMousePos(canvas, evt) {
   return {x: evt.clientX - rect.left, y: evt.clientY - rect.top};
 }
 
+function onDown() {
+  H.MouseDown = true;
+  H.MouseUp = false;
+  if(!H._clicked)
+    if(!H.MouseClick)
+      H._clicked = H.MouseClick = true;
+    else
+      H.MouseClick = false;
+};
+
+function onUp() {
+  H.MouseDown = false;
+  H.MouseUp = true;
+  H.MouseClick = H._clicked = false;
+}
+
 GAME.addEventListener('mousemove', function(event) {
   H.MouseCoords = getMousePos(GAME, event);
 });
@@ -312,18 +328,20 @@ GAME.addEventListener('mouseout', function(event) {
   H.MouseDown = false;
 });
 
+GAME.addEventListener('touchstart', function(event){
+  H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
+  onDown();
+});
+
+GAME.addEventListener('touchend', function(event){
+  H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
+  onUp();
+})
+
 GAME.addEventListener('mousedown', function(event) {
-  H.MouseDown = true;
-  H.MouseUp = false;
-  if(!H._clicked)
-    if(!H.MouseClick)
-      H._clicked = H.MouseClick = true;
-    else
-      H.MouseClick = false;
+  onDown();
 });
 
 GAME.addEventListener('mouseup', function(event) {
-  H.MouseDown = false;
-  H.MouseUp = true;
-  H.MouseClick = H._clicked = false;
+  onUp();
 });

@@ -195,7 +195,36 @@ global.Room = function(type, flipped) {
   else
     type.stamp.stamp.stamp(this.renderer.context);
   this.update = function(dt, h) {
-    console.log(dt);
+    if((h.busy != true) && this.slots)
+    {
+      this.slots.forEach(function(s){
+        if(!h.busy && s.x === Math.floor(h.body.x) && (s.hero == undefined)) {
+          s.hero = h
+          h.busy = true;
+          h.room_time = h.last_tick = 0;
+          h.total_room_time = H.GetRandom(h.type.turn.b, h.type.turn.t);
+          h.return_velocity = h.body.velocity.x;
+          h.body.velocity.x = 0;
+          h.experience.push({n: 1, r: 'Loving the '+h.type.name});
+        }
+      });
+      if(!h.busy)
+        h.experience.push({n: -1, r: 'Not enough room in the '+h.type.name});
+    }
+    else{
+      h.room_time += dt;
+      h.last_tick += dt;
+      // if(h.last_tick > h.type.increment);
+      if(h.room_time > h.total_room_time) {
+        this.slots.forEach(function(s){
+          if(s.hero == h)
+            s.hero = undefined;
+        })
+        h.busy = h.entertaining = false;
+        h.body.velocity.x = h.return_velocity;
+      }
+    }
+    // console.log(h.body.x);
   }
 };
 
@@ -310,7 +339,6 @@ global.Hero = function(x, y, type) {
     var c = this.getCurrentRoom();
     if(this.entertaining)
       this.currentRoom.update(dt, this);
-    console.log(c);
     if((this.currentRoom == undefined) || (c.id != this.currentRoom.id))
       this.roomChanged(c);
   },
