@@ -23,30 +23,30 @@ global.Char = function(s, color, bg, alpha) {
 
 global.Button = function(text, cb, x, y, cost, data) {
   var t = this;
-  t.width = ((text.length + 2) + (cost != undefined ? cost.toString().length + 4 : 0)) * CHAR_WIDTH;
+  t.width = ((text.length + 2) + (cost != undefined ? cost.toString().length + 4 : 0.75)) * CHAR_WIDTH;
   t.height = CHAR_HEIGHT*2;
-  t.renderer = new Renderer(t.width, t.height);
-  t.renderer.whole = false;
+  t.r = new Renderer(t.width, t.height);
+  t.r.whole = false;
   t.cost = cost;
-  H.DrawRect(3, 3, t.width-5, t.height-5, t.renderer.context, '0D423D');
-  H.DrawRect(0, 0, t.width-5, t.height-5, t.renderer.context, '007A52');
+  H.DrawRect(3, 3, t.width-5, t.height-5, t.r.context, '0D423D');
+  H.DrawRect(0, 0, t.width-5, t.height-5, t.r.context, '007A52');
   t.data = data;
 
-  H.WriteText(text, CHAR_WIDTH, CHAR_HEIGHT * 1.2, t.renderer.context, FONT, 'EBE1CE');
+  H.WriteText(text, CHAR_WIDTH, CHAR_HEIGHT * 1.2, t.r.context, FONT, 'EBE1CE');
   if(cost != undefined) {
-    t.renderer.context.fillText(cost.toString(), (text.length+4)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
+    t.r.context.fillText(cost.toString(), (text.length+4)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
     P.GOLD.renderer.whole = false;
-    P.GOLD.stamp(t.renderer.context, text.length+2.5, 0.2);
+    P.GOLD.stamp(t.r.context, text.length+2.5, 0.2);
   }
   t.x = x;
   t.y = y;
   t.cb = cb;
   t.kill = function() {
-    t.renderer.kill();
+    t.r.kill();
     H.Null(this);
   }
   t.getHitArea = function() {
-    return {x: t.x*CHAR_WIDTH, y: t.y*CHAR_HEIGHT, width: t.renderer.width, height: t.renderer.height};
+    return {x: t.x*CHAR_WIDTH, y: t.y*CHAR_HEIGHT, width: t.r.width, height: t.r.height};
   }
   t.stamp = function(toCanvas, x, y) {
     var s = true;
@@ -54,7 +54,7 @@ global.Button = function(text, cb, x, y, cost, data) {
       if(t.cost > UI.gold)
         s = false;
     if(s)
-      t.renderer.stamp(toCanvas, x === undefined ? t.x : x, y === undefined ? t.y : y);
+      t.r.stamp(toCanvas, x === undefined ? t.x : x, y === undefined ? t.y : y);
   }
   t.update = function(dt) {
     if(H.MouseClick)

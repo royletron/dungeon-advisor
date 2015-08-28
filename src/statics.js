@@ -22,7 +22,7 @@ global.H = {
   WriteText: function(text, x, y, ctx, font, color, align) {
     ctx.font = font;
     ctx.fillStyle = '#'+color;
-    ctx.textAlign = align;
+    ctx.textAlign = align || 'left';
     ctx.fillText(text, x, y);
   },
   DrawRect: function(x, y, width, height, ctx, fill) {

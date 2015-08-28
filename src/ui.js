@@ -78,13 +78,13 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
-    t.addRoom(R.INN);
+    t.addRoom(R.ENTRANCE);
   },
   addFloor: function() {
     if(t.gold >= 80)
     {
       t.floors.push([undefined, undefined, undefined, undefined]);
-      t.gold += -80;
+      t.setGold(-80);
       for(x = 2; x <  t.w-32; x++)
       P.FLOOR.stamp(t.bg.context, x, ((t.floors.length+1)* ROOM_HEIGHT) - 4);
       t.add_floor_button.y += ROOM_HEIGHT;
@@ -116,7 +116,7 @@ var t = global.UI = {
     var h = E.GetRandomHero(1);
     t.heroes.push(h);
     t.num_heroes =  t.heroes.length;
-    t.gold += H.DoMath(h.type.increment, h.lvl, h.type.fee);
+    t.setGold(H.DoMath(h.type.increment, h.lvl, h.type.fee));
   },
   removeHero: function(hero) {
     H.RemoveFromArray( t.heroes, hero, 'id');
@@ -206,16 +206,34 @@ var t = global.UI = {
       }
       else
       {
-        room.type.actions.forEach(function(a, i){
-          H.WriteText(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
-          var b = new Button('^', function(d){
-            console.log(d);
-          }, (t.w - 30)+16, 6+(i*1.8), undefined, a);
-          t.buttons.push(b);
-          b.stamp(t.properties.context, 16, i*1.8);
-        });
+        if(room.type)
+          if(room.type.actions)
+            room.type.actions.forEach(function(a, i){
+              H.WriteText(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
+              H.WriteText(a.val, 195, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF', 'center');
+              var b = new Button('↑', function(d){
+                d.a.val += 1;
+                UI.setSelection(d.r);
+              }, (t.w - 30)+17, 6+(i*1.8), undefined, {r: room, a: a});
+              var c = new Button('↓', function(d){
+                d.a.val += -1;
+                UI.setSelection(d.r);
+              }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
+              if(a.val !== a.charge.t) {
+                t.buttons.push(b);
+                b.stamp(t.properties.context, 17, i*1.8);
+              }
+              if(a.val !== a.charge.b) {
+                t.buttons.push(c);
+                c.stamp(t.properties.context, 24, i*1.8);
+              }
+            });
       }
     }
+  },
+  setGold: function(amount) {
+    t.gold += amount;
+    this.setSelection(this.selected_room);
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)
