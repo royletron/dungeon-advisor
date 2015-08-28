@@ -9,6 +9,8 @@ var zip = require('gulp-zip');
 gulp.task('concat', function() {
   return gulp.src(['src/classes.js', 'src/statics.js', 'src/ui.js', 'src/index.js'])
     .pipe(replace('global.', ''))
+    .pipe(replace('CHAR_WIDTH', 'cw'))
+    .pipe(replace('CHAR_HEIGHT', 'ch'))
     .pipe(concat('game.min.js'))
     .pipe(uglify())
     .pipe(gulp.dest('./'));
