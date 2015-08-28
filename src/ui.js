@@ -1,4 +1,4 @@
-global.UI = {
+var t = global.UI = {
   renderer: null,
   gold: 100,
   lvl: 1,
@@ -27,174 +27,174 @@ global.UI = {
   properties: undefined,
   room_buttons: [],
   init: function(ctx){
-    this.ctx = ctx;
-    this.w = Math.floor(GAME.width / CHAR_WIDTH);
-    this.h = Math.floor(GAME.height / CHAR_HEIGHT);
-    this.renderer = new Renderer(GAME.width, GAME.height, 1);
-    this.bg = new Renderer(GAME.width, GAME.height, 1);
-    this.fg = new Renderer(GAME.width, GAME.height, 1);
-    this.properties = new Renderer(CHAR_WIDTH*28, CHAR_HEIGHT*20, 1);
-    for(var x=0; x < this.w; x++) {
+    t.ctx = ctx;
+    t.w = Math.floor(GAME.width / CHAR_WIDTH);
+    t.h = Math.floor(GAME.height / CHAR_HEIGHT);
+    t.renderer = new Renderer(GAME.width, GAME.height, 1);
+    t.bg = new Renderer(GAME.width, GAME.height, 1);
+    t.fg = new Renderer(GAME.width, GAME.height, 1);
+    t.properties = new Renderer(CHAR_WIDTH*28, CHAR_HEIGHT*20, 1);
+    for(var x=0; x < t.w; x++) {
       if(Math.random() > 0.95)
       {
         var c = new Sprite(x, H.GetRandom(1, 3), new Char('@', 'FFFFFF', undefined, 0.2));
         c.body.velocity.x = 1;
-        this.clouds.push(c);
+        t.clouds.push(c);
       }
       if((x%14 === 0) && (Math.random() > 0.5) && (x > 20))
-        S.OUTDOOR.stamp.stamp(this.bg.context, x, 0);
-      for(var y=0; y < this.h; y++) {
+        S.OUTDOOR.stamp.stamp(t.bg.context, x, 0);
+      for(var y=0; y < t.h; y++) {
         if(y > 4)
-          if((x > this.w-31) && (x < this.w-2) && (y > 5) && (y < this.h - 1))
+          if((x > t.w-31) && (x < t.w-2) && (y > 5) && (y < t.h - 1))
             if(y == 24)
-              P.randomSolid().stamp(this.bg.context, x, y);
+              P.randomSolid().stamp(t.bg.context, x, y);
             else
-              P.BOX_MD.stamp(this.bg.context, x, y);
-          else if((x < 2) || (x > (this.w-33)) || (y < 6))
-            P.randomSolid().stamp(this.fg.context, x, y);
+              P.BOX_MD.stamp(t.bg.context, x, y);
+          else if((x < 2) || (x > (t.w-33)) || (y < 6))
+            P.randomSolid().stamp(t.fg.context, x, y);
           else
             if((y%ROOM_HEIGHT) == 5)
-              if(Math.ceil(y/ROOM_HEIGHT)-1 > (this.floors.length))
-                P.OFF_FLOOR.stamp(this.bg.context, x, y);
+              if(Math.ceil(y/ROOM_HEIGHT)-1 > (t.floors.length))
+                P.OFF_FLOOR.stamp(t.bg.context, x, y);
               else
-                P.FLOOR.stamp(this.bg.context, x, y);
+                P.FLOOR.stamp(t.bg.context, x, y);
             else
-              P.VOID.stamp(this.bg.context, x, y);
+              P.VOID.stamp(t.bg.context, x, y);
       }
     }
-    this.bg.context.font = HEADING_FONT;
-    this.bg.context.strokeStyle = 'white';
-    this.bg.context.lineWidth = 5;
-    this.bg.context.strokeText('dungeon', 10, 44);
-    this.bg.context.fillText('dungeon', 10, 44);
-    this.bg.context.fillStyle = '#579441';
-    this.bg.context.strokeText('advisor', 135, 44);
-    this.bg.context.fillText('advisor', 135, 44);
-    this.renderer.stamp(ctx);
+    t.bg.context.font = HEADING_FONT;
+    t.bg.context.strokeStyle = 'white';
+    t.bg.context.lineWidth = 5;
+    t.bg.context.strokeText('dungeon', 10, 44);
+    t.bg.context.fillText('dungeon', 10, 44);
+    t.bg.context.fillStyle = '#579441';
+    t.bg.context.strokeText('advisor', 135, 44);
+    t.bg.context.fillText('advisor', 135, 44);
+    t.renderer.stamp(ctx);
 
-    this.add_floor_button.y = 10 + (this.floors.length * ROOM_HEIGHT);
-    this.add_floor_button.x =((this.w-29)/2) - 8;
+    t.add_floor_button.y = 10 + (t.floors.length * ROOM_HEIGHT);
+    t.add_floor_button.x =((t.w-29)/2) - 8;
 
-    this.counters.push(new Counter(P.GOLD, this, 'gold'));
-    this.counters.push(new Counter(new Char('#', 'FA6728'), this, 'num_heroes'));
-    this.addRoom(R.INN);
+    t.counters.push(new Counter(P.GOLD, t, 'gold'));
+    t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
+    t.addRoom(R.INN);
   },
   addFloor: function() {
-    if(this.gold >= 80)
+    if(t.gold >= 80)
     {
-      this.floors.push([undefined, undefined, undefined, undefined]);
-      this.gold += -80;
-      for(x = 2; x < this.w-32; x++)
-        P.FLOOR.stamp(this.bg.context, x, ((this.floors.length+1)* ROOM_HEIGHT) - 4);
-      this.add_floor_button.y += ROOM_HEIGHT;
+      t.floors.push([undefined, undefined, undefined, undefined]);
+      t.gold += -80;
+      for(x = 2; x <  t.w-32; x++)
+        P.FLOOR.stamp(t.bg.context, x, ((t.floors.length+1)* ROOM_HEIGHT) - 4);
+      t.add_floor_button.y += ROOM_HEIGHT;
     }
   },
   addStatus: function(hero, title, text){
     var tmp = [];
     tmp.push(new StatusUpdate(hero, title, text));
-    this.statuses.forEach(function(status){
+    t.statuses.forEach(function(status){
       tmp.push(status);
     });
     if(tmp.length > 5)
       tmp.pop().kill();
-    this.statuses = tmp;
+    t.statuses = tmp;
   },
   addRoom: function(type, position){
     if(position === undefined)
     {
-      this.floors[0][0] = new Room(type, false, 0, 0);
-      return this.floors[0][0]
+       t.floors[0][0] = new Room(type, false, 0, 0);
+      return  t.floors[0][0]
     }
     else
-      if(this.floors[position.y] !== undefined) {
-        this.floors[position.y][position.x] = new Room(type, (position.y%2) == 1, position.x, position.y);
-        return this.floors[position.y][position.x];
+      if( t.floors[position.y] !== undefined) {
+         t.floors[position.y][position.x] = new Room(type, (position.y%2) == 1, position.x, position.y);
+        return  t.floors[position.y][position.x];
       }
   },
   spawnHero: function() {
     var h = E.GetRandomHero(1);
-    this.heroes.push(h);
-    this.num_heroes = this.heroes.length;
-    this.gold += H.DoMath(h.type.increment, h.lvl, h.type.fee);
+     t.heroes.push(h);
+     t.num_heroes =  t.heroes.length;
+     t.gold += H.DoMath(h.type.increment, h.lvl, h.type.fee);
   },
   removeHero: function(hero) {
-    H.RemoveFromArray(this.heroes, hero, 'id');
+    H.RemoveFromArray( t.heroes, hero, 'id');
     hero.end();
     H.Null(hero);
-    this.num_heroes = this.heroes.length;
+     t.num_heroes =  t.heroes.length;
   },
   _clicked: false,
   update: function(dt){
-    this.clouds.forEach(function(cloud, idx){
+     t.clouds.forEach(function(cloud, idx){
       cloud.update(dt);
-      if(cloud.x > (this.w + 2))
+      if(cloud.x > ( t.w + 2))
         cloud.body.x = -1;
-    }.bind(this));
-    this.spawn_counter += dt;
-    if(this.spawn_counter > this.spawn_wait)
+    }.bind( t));
+     t.spawn_counter += dt;
+    if( t.spawn_counter >  t.spawn_wait)
     {
-      this.spawn_counter = 0;
-      this.spawn_wait = H.GetRandom(24- (this.popularity*4), (24 - (this.popularity*4)) + ( 24 - (this.popularity*4)));
-      this.spawnHero();
+       t.spawn_counter = 0;
+       t.spawn_wait = H.GetRandom(24- ( t.popularity*4), (24 - ( t.popularity*4)) + ( 24 - ( t.popularity*4)));
+       t.spawnHero();
     }
-    this.heroes.forEach(function(hero) {
+     t.heroes.forEach(function(hero) {
       hero.update(dt);
-      if(hero.sprite.x < (this.w - 31))
+      if(hero.sprite.x < ( t.w - 31))
       {
-        if(hero.sprite.x < (this.spawn_point.x - 2))
-          if(hero.current_floor < this.floors.length)
-            this.flipHero(hero);
+        if(hero.sprite.x < ( t.spawn_point.x - 2))
+          if(hero.current_floor <  t.floors.length)
+             t.flipHero(hero);
           else
-            this.removeHero(hero);
+             t.removeHero(hero);
       }
       else
       {
-        if(hero.current_floor < (this.floors.length))
-          this.flipHero(hero);
+        if(hero.current_floor < ( t.floors.length))
+           t.flipHero(hero);
         else
-          this.removeHero(hero);
+           t.removeHero(hero);
       }
-    }.bind(this));
+    }.bind( t));
 
     if(H.MouseClick)
     {
-      this.floors.forEach(function(floor, y){
+       t.floors.forEach(function(floor, y){
         floor.forEach(function(room, x){
           if(H.HitTestPoint(H.MouseCoords, {x: (2+(x * ROOM_WIDTH)) * CHAR_WIDTH, y: (6 + (y * ROOM_HEIGHT)) * CHAR_HEIGHT, width: ROOM_WIDTH*CHAR_WIDTH, height: ROOM_HEIGHT*CHAR_HEIGHT}))
-            this.setSelection(room || {x: x, y: y, found: false});
-        }.bind(this));
-      }.bind(this));
+             t.setSelection(room || {x: x, y: y, found: false});
+        }.bind( t));
+      }.bind( t));
     }
-    if(this.selected_room !== undefined)
-      if(this.selected_room.found === false) {
-        this.room_buttons.forEach(function(button){
+    if( t.selected_room !== undefined)
+      if( t.selected_room.found === false) {
+         t.room_buttons.forEach(function(button){
           button.update(dt);
         });
       }
-    this.add_floor_button.update(dt);
+     t.add_floor_button.update(dt);
   },
   clearProperties: function() {
-    this.properties.context.clearRect(0, 0, this.properties.canvas.width, this.properties.canvas.height);
+     t.properties.context.clearRect(0, 0,  t.properties.canvas.width,  t.properties.canvas.height);
   },
   setSelection: function(room) {
-    this.selected_room = room;
-    this.clearProperties();
-    if(this.selected_room !== undefined){
-      if(this.selected_room.found === false)
+     t.selected_room = room;
+     t.clearProperties();
+    if( t.selected_room !== undefined){
+      if( t.selected_room.found === false)
       {
         R.all().forEach(function(room, idx){
           var r = R[room];
-          H.WriteText(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx), this.properties.context, FONT, 'FFFFFF');
-          if(this.room_buttons[idx] === undefined)
+          H.WriteText(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.properties.context, FONT, 'FFFFFF');
+          if( t.room_buttons[idx] === undefined)
           {
-            this.room_buttons.push(new Button('Add', function(d){
+             t.room_buttons.push(new Button('Add', function(d){
               var room = UI.addRoom(R[d], UI.selected_room);
               UI.setSelection(room);
               UI.gold += -room.type.cost;
-            }, (this.w - 30)+16, 6+(idx*1.8), r.cost, room));
+            }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
           }
-          this.room_buttons[idx].stamp(this.properties.context, 16, idx*1.8);
-        }.bind(this));
+           t.room_buttons[idx].stamp( t.properties.context, 16, idx*1.8);
+        }.bind( t));
         //new room
       }
       else
@@ -213,24 +213,24 @@ global.UI = {
     return hero;
   },
   makeSelection: function(x, y) {
-    this.selected_room = {x: x, y: y, room: this.selected_room};
+     t.selected_room = {x: x, y: y, room:  t.selected_room};
   },
   drawSelection: function(ctx) {
-    var x = this.selected_room.x;
-    var y = this.selected_room.y;
+    var x =  t.selected_room.x;
+    var y =  t.selected_room.y;
     ctx.strokeStyle = "#25989B";
     ctx.strokeRect((2+(x*ROOM_WIDTH))*CHAR_WIDTH, (6 + (y * ROOM_HEIGHT)) *CHAR_HEIGHT, ROOM_WIDTH*CHAR_WIDTH, ROOM_HEIGHT*CHAR_HEIGHT);
   },
   draw: function() {
-    var ctx = this.renderer.context;
+    var ctx =  t.renderer.context;
     ctx.clearRect(0, 0, GAME.width, GAME.height);
 
-    this.bg.stamp(ctx);
+     t.bg.stamp(ctx);
 
-    this.clouds.forEach(function(cloud, idx){
+     t.clouds.forEach(function(cloud, idx){
       cloud.stamp(ctx);
     });
-    this.floors.forEach(function(floor, y) {
+     t.floors.forEach(function(floor, y) {
       floor.forEach(function(room, x) {
         if(room !== undefined)
         {
@@ -247,27 +247,27 @@ global.UI = {
             UI.makeSelection(x, y);
       });
     });
-    this.heroes.forEach(function(hero) {
+     t.heroes.forEach(function(hero) {
       hero.stamp(ctx);
     });
 
-    this.statuses.forEach(function(status, y){
-      status.stamp(ctx, this.w-29, 26 + (y * 3));
-    }.bind(this));
+     t.statuses.forEach(function(status, y){
+      status.stamp(ctx,  t.w-29, 26 + (y * 3));
+    }.bind( t));
 
-    this.properties.stamp(ctx, this.w -30, 6);
+     t.properties.stamp(ctx,  t.w -30, 6);
 
-    this.counters.forEach(function (counter, x){
+     t.counters.forEach(function (counter, x){
       counter.stamp(ctx, 3 + (x*7), 4);
-    }.bind(this));
+    }.bind( t));
 
-    this.add_floor_button.stamp(ctx);
-    this.fg.stamp(ctx);
+     t.add_floor_button.stamp(ctx);
+     t.fg.stamp(ctx);
 
-    if(this.selected_room !== undefined)
-      this.drawSelection(ctx);
-    // this.type.stamp(ctx, this.w-27, 9);
+    if( t.selected_room !== undefined)
+       t.drawSelection(ctx);
+    //  t.type.stamp(ctx,  t.w-27, 9);
 
-    this.renderer.stamp(g_ctx);
+     t.renderer.stamp(g_ctx);
   }
 };
