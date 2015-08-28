@@ -103,29 +103,26 @@ global.H = {
       return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
   },
   Moultonize: function(x, from, to) {
-    console.log(x, from, to);
     var b = Math.pow(10, (Math.log10(to/from))/100);
     return from * Math.pow(b, x);
   },
   RemoveFromArray: function(arr, item, val) {
-    var _tmp = [];
-    var fn = false;
-    arr.forEach(function(a){
-      if(fn)
-        _tmp.push(a);
-      else
+    if(arr === undefined) return arr;
+    var i = arr.indexOf(item);
+    if(i === -1)
+    {
+      arr.forEach(function(a, idx){
         if(val)
-          if(a[val] != item[val])
-            _tmp.push(a);
-          else
-            fn = true;
+          if(a[val] === item[val])
+            i = idx;
         else
-          if (a !== item)
-            _tmp.push(a);
-          else
-            fn = true;
-    });
-    return _tmp;
+          if(a === item)
+            i = idx;
+      });
+    }
+    if(i !== -1)
+      var r = arr.splice(i, 1);
+    return r;
   },
   CoordsToBuffer: function(x, y) {
     return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
@@ -158,12 +155,12 @@ global.H = {
     }
   },
   GenerateStamp: function(spr) {
-    var original = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
-    var reverse = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
-    this.StampSprite(original.context, 0, 0, spr);
-    reverse.context.scale(-1, 1);
-    this.StampSprite(reverse.context, -20, 0, spr);
-    return {original: original, reverse: reverse};
+    var o = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
+    var r = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
+    this.StampSprite(o.context, 0, 0, spr);
+    r.context.scale(-1, 1);
+    this.StampSprite(r.context, -20, 0, spr);
+    return {original: o, reverse: r};
   },
   GenerateStamps: function() {
     for (var key in S) {
@@ -184,13 +181,6 @@ global.H = {
         c.stamp(renderer, x + tx, y + ty);
       }
     }
-  },
-  StampText: function(renderer, x, y, text, color, bg, alpha) {
-    text.split("").forEach(function(symbol, index){
-      var char = new Char(symbol, color, bg, alpha);
-      char.stamp(renderer, x+index, y);
-      char = null;
-    });
   }
 };
 
@@ -261,9 +251,9 @@ global.R = {
 
 
 global.N = {
-  names: ['Tom', 'Thomas', 'Brian', 'Bobby', 'Boromir', 'Budgergy', 'Bobbin', 'Bilbo', 'Bonzo', 'Bongo', 'Calvin', 'Capitan', 'Mr White', 'Jack', 'John', 'Shirley', 'Jonty', 'Monty', 'Cresswell', 'Burgermeister', 'Royletron', 'Timon', 'Aladdin', 'Adolf', 'Tony', 'Antony', 'Finn', 'Jake', 'Peter', 'Pete', 'Pele', 'Persius', 'Ponyo', 'Pogo', 'Serj', 'Sergey', 'Samir', 'Todmorden', 'Kevin', 'Dante', 'Colin', 'Dennis', 'Jake', 'Solomon'],
+  names: 'Tom Thomas Brian Bobby Boromir Budgergy Bobbin Bilbo Bonzo Bongo Calvin Capitan Mr White Jack John Shirley Jonty Monty Cresswell Burgermeister Royletron Timon Aladdin Adolf Tony Antony Finn Jake Peter Pete Pele Persius Ponyo Pogo Serj Sergey Samir Todmorden Kevin Dante Colin Dennis Jake Solomon',
   Random: function() {
-    return H.GetRandomEntry(this.names);
+    return H.GetRandomEntry(this.names.split(' '));
   }
 };
 

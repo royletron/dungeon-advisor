@@ -28,16 +28,17 @@ H.GenerateStamps();
 
 UI.init(m_ctx);
 
-var menu = new Menu(' OBJECTS ');
-
-global.CALLBACKS = [];
+global.CALLBACKS = new Array();
+var c_id = 0
 
 global.PUSH_CALLBACK = function(cb) {
-  CALLBACKS.push(cb);
+  c_id ++;
+  CALLBACKS.push({f: cb, i: c_id});
+  return {f: cb, i: c_id};
 };
 
 global.POP_CALLBACK = function(cb) {
-  CALLBACKS = H.RemoveFromArray(CALLBACKS, cb);
+  H.RemoveFromArray(CALLBACKS, cb, 'i');
 };
 
 var last_stamp = 0;
@@ -70,14 +71,11 @@ function update(timestamp) {
 
     UI.draw();
 
-    CALLBACKS.forEach(function(cb){
-      cb(dt);
-    });
+    if(CALLBACKS)
+      CALLBACKS.forEach(function(cb){
+        cb.f(dt);
+      });
     H.MouseClick = false;
-    //g_ctx.drawImage(map, 0, 0);
-    // P.FLOOR_TILE.stamp(g_ctx, 10, 10);
-
-    // menu.stamp(g_ctx, 27, 0);
   }
 
   if(stats)

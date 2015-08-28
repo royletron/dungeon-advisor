@@ -47,8 +47,6 @@ var voidChar = new Char('F', WALL_D, WALL_D);
 
 var cursorChar = new Char('⨁', CURSOR, CURSOR_D, 0.2);
 
-var MENU = new Menu();
-
 Dungeon.Generate();
 
 for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
@@ -134,8 +132,6 @@ function update(timestamp) {
   baddies.forEach(function(baddie){
     baddie.update(dt, context);
   });
-
-  MENU.render(context);
 
   for(i=0; i < Math.ceil(canvas.width/CHAR_WIDTH); i++)
   {

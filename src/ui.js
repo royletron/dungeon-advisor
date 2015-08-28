@@ -19,7 +19,6 @@ global.UI = {
   fg: null,
   ctx: null,
   add_floor_button: new Button('Add Floor', function(){
-    console.log(this);
     UI.addFloor();
   },1, 1, 80),
   statuses: [],
@@ -119,7 +118,7 @@ global.UI = {
     this.gold += H.DoMath(h.type.increment, h.lvl, h.type.fee);
   },
   removeHero: function(hero) {
-    this.heroes = H.RemoveFromArray(this.heroes, hero, 'id');
+    H.RemoveFromArray(this.heroes, hero, 'id');
     hero.end();
     H.Null(hero);
     this.num_heroes = this.heroes.length;
@@ -127,6 +126,7 @@ global.UI = {
   _clicked: false,
   update: function(dt){
     this.clouds.forEach(function(cloud, idx){
+      cloud.update(dt);
       if(cloud.x > (this.w + 2))
         cloud.body.x = -1;
     }.bind(this));
