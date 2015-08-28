@@ -41,11 +41,19 @@ global.Button = function(text, cb, x, y, cost, data) {
   t.x = x;
   t.y = y;
   t.cb = cb;
+  t.kill = function() {
+    t.renderer.kill();
+    H.Null(this);
+  }
   t.getHitArea = function() {
     return {x: t.x*CHAR_WIDTH, y: t.y*CHAR_HEIGHT, width: t.renderer.width, height: t.renderer.height};
   }
   t.stamp = function(toCanvas, x, y) {
-    if(t.cost && (t.cost <= UI.gold))
+    var s = true;
+    if(t.cost != undefined)
+      if(t.cost > UI.gold)
+        s = false;
+    if(s)
       t.renderer.stamp(toCanvas, x === undefined ? t.x : x, y === undefined ? t.y : y);
   }
   t.update = function(dt) {

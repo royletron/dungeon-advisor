@@ -23,6 +23,7 @@ var t = global.UI = {
   },1, 1, 80),
   statuses: [],
   counters: [],
+  buttons: [],
   selected_room: undefined,
   properties: undefined,
   room_buttons: [],
@@ -171,6 +172,9 @@ var t = global.UI = {
         button.update(dt);
       });
     }
+    t.buttons.forEach(function(b){
+      b.update(dt);
+    })
     t.add_floor_button.update(dt);
   },
   clearProperties: function() {
@@ -179,6 +183,10 @@ var t = global.UI = {
   setSelection: function(room) {
     t.selected_room = room;
     t.clearProperties();
+    t.buttons.forEach(function(b) {
+      b.kill();
+    })
+    t.buttons = [];
     if( t.selected_room !== undefined){
       if( t.selected_room.found === false)
       {
@@ -198,9 +206,13 @@ var t = global.UI = {
       }
       else
       {
-        console.log(room);
         room.type.actions.forEach(function(a, i){
           H.WriteText(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
+          var b = new Button('^', function(d){
+            console.log(d);
+          }, (t.w - 30)+16, 6+(i*1.8), undefined, a);
+          t.buttons.push(b);
+          b.stamp(t.properties.context, 16, i*1.8);
         });
       }
     }
