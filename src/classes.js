@@ -212,6 +212,7 @@ global.Particle = function(char, x, y) {
 global.Room = function(type, flipped, x, y) {
   this.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   this.type = type;
+  this.flipped = flipped;
   this.id = roomID;
   this.x = x;
   this.y = y;
@@ -229,7 +230,10 @@ global.Room = function(type, flipped, x, y) {
     h.last_tick = 0;
     new Particle(this.type.p, h.body.x, h.body.y-1);
     this.type.actions.forEach(function(action){
-
+      action.effects.forEach(function(e){
+        if(h.hasOwnProperty(e.attribute))
+          h[e.attribute] += H.Moultonize(h.lvl, e.rate.b, e.rate.t);
+      })
     })
   };
   this.update = function(dt, h) {

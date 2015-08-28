@@ -180,7 +180,6 @@ global.H = {
     for(var tx=0; tx < spr.w; tx++) {
       for(var ty=0; ty < spr.h; ty++) {
         var l = (ty*spr.w*3) + (tx*3);
-          console.log(d[l])
         var c = new Char(d[l], p[this.CharToNum(d[l+1])], p[this.CharToNum(d[l+2])]);
         c.stamp(renderer, x + tx, y + ty);
       }
@@ -242,8 +241,8 @@ global.S = {
 };
 
 global.R = {
-  HOSPITAL: {name: 'Hospital', p: P.HEALTH, code: 'h', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{atrribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
-  INN: {name: 'Inn', p: [P.DRINK, P.DRINK2], code: 'i', slots: [3, 9, 14, 16, 18], actions: [{name: 'Drink', effects: [{atrribute: 'health', rate: {t: 10, b: 2}}], charge {t: 8, b: 2}}], cost: 100, stamp: S.INN},
+  HOSPITAL: {name: 'Hospital', p: P.HEALTH, code: 'h', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
+  INN: {name: 'Inn', p: [P.DRINK, P.DRINK2], code: 'i', slots: [3, 9, 14, 16, 18], actions: [{name: 'Drink', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 8, b: 2}}], cost: 100, stamp: S.INN},
   ENTRANCE: {name: 'Entrance', code: 'e', actions: [{name: 'Chat'}], cost: 100, stamp: S.ENTRANCE},
   SEWER: {name: 'Sewer', cost: 70, stamp: S.SEWER},
   CHURCH: {name: 'Church', cost: 140, stamp: S.CHURCH},
