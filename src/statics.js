@@ -168,6 +168,12 @@ global.H = {
         var stamp = this.GenerateStamp(S[key]);
         S[key].stamp = stamp.original;
         S[key].reverse = stamp.reverse;
+        if(R.hasOwnProperty(key)) {
+          R[key].actions.forEach(function(r, i){
+            console.log(r)
+            r.val = r.charge.b + ((r.charge.t - r.charge.b) /2);
+          })
+        }
       }
      }
   },
