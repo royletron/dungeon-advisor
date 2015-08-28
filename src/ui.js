@@ -78,7 +78,7 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
-    t.addRoom(R.INN);
+    t.addRoom(R.LAIR);
   },
   addFloor: function() {
     if(t.gold >= 80)
