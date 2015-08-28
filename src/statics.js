@@ -127,33 +127,6 @@ global.H = {
   CoordsToBuffer: function(x, y) {
     return {x: Math.floor(x/CHAR_WIDTH), y: Math.floor(y/CHAR_HEIGHT)};
   },
-  MakeBox: function(width, height, context){
-    for(var x=0; x < width; x++)
-    {
-      for(var y=0; y < height; y++)
-      {
-        if(y === 0)
-          if(x === 0)
-            P.BOX_BR.stamp(context, x, y);
-          else if(x == (width-1))
-            P.BOX_BL.stamp(context, x, y);
-          else
-            P.BOX_LR.stamp(context, x, y);
-        else if(y == (height-1))
-          if(x === 0)
-            P.BOX_TR.stamp(context, x, y);
-          else if(x == (width-1))
-            P.BOX_TL.stamp(context, x, y);
-          else
-            P.BOX_LR.stamp(context, x, y);
-        else
-          if((x === 0) || (x == (width-1)))
-            P.BOX_TB.stamp(context, x, y);
-          else
-            P.BOX_MD.stamp(context, x, y);
-      }
-    }
-  },
   GenerateStamp: function(spr) {
     var o = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
     var r = new Renderer(spr.w*CHAR_WIDTH, spr.h*CHAR_HEIGHT);
@@ -169,10 +142,10 @@ global.H = {
         S[key].stamp = stamp.original;
         S[key].reverse = stamp.reverse;
         if(R.hasOwnProperty(key)) {
-          R[key].actions.forEach(function(r, i){
-            console.log(r)
-            r.val = r.charge.b + ((r.charge.t - r.charge.b) /2);
-          })
+          if(R[key].actions !== undefined)
+            R[key].actions.forEach(function(r, i){
+              r.val = r.charge.b + ((r.charge.t - r.charge.b) /2);
+            });
         }
       }
      }
@@ -239,7 +212,7 @@ global.S = {
 global.R = {
   HOSPITAL: {name: 'Hospital', p: P.HEALTH, code: 'h', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
   INN: {name: 'Inn', p: [P.DRINK, P.DRINK2], code: 'i', slots: [3, 9, 14, 16, 18], actions: [{name: 'Drink', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 8, b: 2}}], cost: 100, stamp: S.INN},
-  ENTRANCE: {name: 'Entrance', code: 'e', actions: [{name: 'Chat'}], cost: 100, stamp: S.ENTRANCE},
+  ENTRANCE: {name: 'Entrance', code: 'e', actions: [{name: 'Chat', effects: [{attribute: 'xp', rate: {t: 5, b: 1}}], charge: {t: 10, b: 2}}], cost: 100, stamp: S.ENTRANCE},
   SEWER: {name: 'Sewer', cost: 70, stamp: S.SEWER},
   CHURCH: {name: 'Church', cost: 140, stamp: S.CHURCH},
   random: function(){
