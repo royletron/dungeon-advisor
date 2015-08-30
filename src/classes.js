@@ -180,9 +180,7 @@ global.Physics = {
     return body;
   },
   removeBody: function(body) {
-    console.log('in', this._bodies.length);
     H.RemoveFromArray(this._bodies, body, 'i');
-    console.log('out', this._bodies.length);
   },
   update: function(dt) {
     this._bodies.forEach(function(item, idx){

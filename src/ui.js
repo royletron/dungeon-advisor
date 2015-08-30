@@ -78,7 +78,7 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
-    t.addRoom(R.LAIR);
+    t.addRoom(R.INN);
   },
   addFloor: function() {
     if(t.gold >= 80)
@@ -233,7 +233,7 @@ var t = global.UI = {
   },
   setGold: function(amount) {
     t.gold += amount;
-    this.setSelection(this.selected_room);
+    // this.setSelection(this.selected_room);
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)
