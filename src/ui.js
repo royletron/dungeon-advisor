@@ -1,6 +1,6 @@
 var t = global.UI = {
   renderer: null,
-  gold: 100,
+  gold: 1000,
   lvl: 1,
   w: null,
   h: null,

@@ -1,4 +1,4 @@
-global.FONT = '16px Courier New';
+global.FONT = '16px Courier';
 global.STATUS_FONT = '13px Courier New';
 global.HEADING_FONT = '30px Courier New';
 global.CHAR_WIDTH = 9;
@@ -311,6 +311,11 @@ function onUp() {
   H.MouseClick = H._clicked = false;
 }
 
+GAME.addEventListener('click', function(event) {
+  H.MouseCoords = getMousePos(GAME, event);
+  H.MouseClick = true;
+})
+
 GAME.addEventListener('mousemove', function(event) {
   H.MouseCoords = getMousePos(GAME, event);
 });
@@ -330,6 +335,11 @@ GAME.addEventListener('touchend', function(event){
   onUp();
 })
 
+GAME.addEventListener('touchcancel', function(event){
+  H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
+  onUp();
+})
+
 GAME.addEventListener('mousedown', function(event) {
   onDown();
 });
@@ -337,3 +347,4 @@ GAME.addEventListener('mousedown', function(event) {
 GAME.addEventListener('mouseup', function(event) {
   onUp();
 });
+
