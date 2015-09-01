@@ -25,6 +25,7 @@ var t = global.UI = {
   counters: [],
   buttons: [],
   room_buttons: [],
+  changed: false,
   init: function(ctx){
     t.ctx = ctx;
     t.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -44,21 +45,21 @@ var t = global.UI = {
       S.OUTDOOR.stamp.stamp(t.bg.context, x, 0);
       for(var y=0; y < t.h; y++) {
         if(y > 4)
-        if((x > t.w-31) && (x < t.w-2) && (y > 5) && (y < t.h - 1))
-        if(y == 24)
-        P.randomSolid().stamp(t.bg.context, x, y);
-        else
-        P.BOX_MD.stamp(t.bg.context, x, y);
-        else if((x < 2) || (x > (t.w-33)) || (y < 6))
-        P.randomSolid().stamp(t.fg.context, x, y);
-        else
-        if((y%ROOM_HEIGHT) == 5)
-        if(Math.ceil(y/ROOM_HEIGHT)-1 > (t.floors.length))
-        P.OFF_FLOOR.stamp(t.bg.context, x, y);
-        else
-        P.FLOOR.stamp(t.bg.context, x, y);
-        else
-        P.VOID.stamp(t.bg.context, x, y);
+          if((x > t.w-31) && (x < t.w-2) && (y > 5) && (y < t.h - 1))
+            if(y == 24)
+              P.randomSolid().stamp(t.bg.context, x, y);
+            else
+              P.BOX_MD.stamp(t.bg.context, x, y);
+            else if((x < 2) || (x > (t.w-33)) || (y < 6))
+              P.randomSolid().stamp(t.fg.context, x, y);
+            else
+              if((y%ROOM_HEIGHT) == 5)
+                if(Math.ceil(y/ROOM_HEIGHT)-1 > (t.floors.length))
+                  P.OFF_FLOOR.stamp(t.bg.context, x, y);
+                else
+                  P.FLOOR.stamp(t.bg.context, x, y);
+                else
+                  P.VOID.stamp(t.bg.context, x, y);
       }
     }
     t.bg.context.font = HEADING_FONT;
@@ -76,7 +77,7 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
-    t.addRoom(R.ENTRANCE);
+    t.addRoom(R.SEWER);
   },
   addFloor: function() {
     if(t.gold >= 80)
@@ -124,6 +125,9 @@ var t = global.UI = {
   },
   _clicked: false,
   update: function(dt){
+    if(t.changed)
+      t.setSelection(t.selected_room);
+    t.changed = false;
     t.clouds.forEach(function(cloud, idx){
       cloud.update(dt);
       if(cloud.x > ( t.w + 2))
@@ -200,12 +204,45 @@ var t = global.UI = {
             }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
           }
           t.room_buttons[idx].stamp( t.properties.context, 16, idx*1.8);
-        }.bind( t));
+        }.bind(t));
       }
       else
       {
         if(room.type)
-          if(room.type.actions)
+          if(room.type.battle)
+          {
+            room.slots.forEach(function(s, i){
+              if(s.npc)
+              {
+                H.WriteText(s.npc.name+' ('+s.npc.type.name+')', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
+              }
+              else
+              {
+                H.WriteText('empty', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'EDEDED');
+              }
+            });
+            var w = 0;
+            var h = 0;
+            room.type.enemies.split('').forEach(function(e, i){
+              var en = E.GetEnemy(e);
+              var f = false;
+              var n = new Button(en.name, function(d){
+                d.r.slots.forEach(function(s, idx){
+                  if((s.npc == undefined) && !f)
+                  {
+                    f = true;
+                    s.npc = new Enemy(en, s, d.r);
+                  }
+                })
+                t.changed = true;
+              }, (t.w - 30) + w, 6+((room.slots.length+0.2+h)*1.8), Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t)), {e: en, r: room});
+              t.buttons.push(n);
+              n.stamp(t.properties.context, 0+w, ((room.slots.length+0.2+h)*1.8));
+              w += n.r.width/CHAR_WIDTH;
+              if(w > 17) { h++; w = 0; }
+            });
+          }
+          else if(room.type.actions)
             room.type.actions.forEach(function(a, i){
               H.WriteText(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
               H.WriteText(a.val, 195, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF', 'center');
@@ -243,7 +280,7 @@ var t = global.UI = {
     return hero;
   },
   makeSelection: function(x, y) {
-    t.selected_room = {x: x, y: y, room:  t.selected_room};
+    // t.selected_room = {x: x, y: y, room:  t.selected_room};
   },
   drawSelection: function(ctx) {
     var x =  t.selected_room.x;
@@ -270,11 +307,11 @@ var t = global.UI = {
           S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8);
         }
         if(UI.selected_room !== undefined)
-        if(room !== undefined)
-        if(room.id == UI.selected_room.id)
-        UI.makeSelection(x, y);
-        else if((x == UI.selected_room.x) && (y == UI.selected_room.y))
-        UI.makeSelection(x, y);
+          if(room !== undefined)
+            if(room.id == UI.selected_room.id)
+              UI.makeSelection(x, y);
+            else if((x == UI.selected_room.x) && (y == UI.selected_room.y))
+              UI.makeSelection(x, y);
       });
     });
     t.heroes.forEach(function(hero) {

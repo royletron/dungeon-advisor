@@ -91,8 +91,8 @@ global.H = {
     var tmp = TMP_BUFFER(c.width, c.height);
     var tctx = tmp.getContext('2d');
     tctx.scale(-1, 1);
-    tctx.drawImage(c, -canvas.width, 0);
-    var ctx = canvas.getContext('2d');
+    tctx.drawImage(c, -c.width, 0);
+    var ctx = c.getContext('2d');
     ctx.clearRect(0, 0, c.width, c.height);
     ctx.drawImage(tmp, 0, 0);
   },
@@ -103,7 +103,7 @@ global.H = {
       return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
   },
   Moultonize: function(x, from, to) {
-    var b = Math.pow(10, (Math.log10(to/from))/100);
+    var b = Math.pow(10, (Math.log10(to/from))/10);
     return from * Math.pow(b, x);
   },
   RemoveFromArray: function(arr, item, val) {
@@ -183,6 +183,7 @@ global.P = {
   BOX_MD: new Char(' ', BOX, BOX_B),
   HEALTH: new Char('+', '00ff00'),
   DRINK: new Char('¡', 'B85456'),
+  X: new Char('X', 'CF3267'),
   DRINK2: new Char('#', 'F1D67D'),
   HOLY: new Char('†', '3CD9BC'),
   FLOOR: new Char('┈', '63545E', '302222'),
@@ -192,6 +193,7 @@ global.P = {
 };
 
 global.S = {
+  BROTHEL: {p: '63545E 302222 83AF9B C8C8A9 FE4365 F9CDAD', d:'═01═01╦01═01═01═01═01═01═01═01═01═01═01═01═01═01═01═01═01╤01 01 01║51▓41▓41 01 01◆01 01 01 01 01 01 01 01 01 01 01 01╎01 01 01║51▓41▓41 01 01▢01 01 01 01 01┌01╍01╍01┐01 01▤31▤31╎01 01 01╚51═51═51═51═51═51 01 01╔51═51╧51═51═51╧51═51═51═51╡01 01 01 01 01 01 01 01 01 01╔51╝51 01 01 01 01 01 01 01 01╎01 01 01─01─01─01╮01 01 01╔51╝51 01 01 01 01─01─01─01╮01 01 01 01 21░21░21░21╽01 01╔51╝51 01 01 01 01 31▒31▒31▒31╽01 01 01 01 21░21░21░21┃01 01╝51▗41▄41▄41▟41 01 31▒31▒31▒31┃01 01 01┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41┉41', w: 20, h: 9},
   HOSPITAL: {p: '63545E 302222 998D2D FEF441 493B23 383636 D20000 B4D645 F8F7F1 392929', d: '═01╤04═04═04═04╤04═01╤04═04═04═04╤04═01╤04═04═04═04╤04═01╗01 01╧34═32═32═32╧34 01╧34═32═32═32╧34 01╧34═32═32═32╧34 01║01◼91 01◼04 04◼04 01◼91 01◼04 04◼04 01◼91 01◼04 04◼04 01◼91║01 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01║01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91║01 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01◼91 01 01 01⩴85⟿65 01○01 01⩴85⟿75 01○01 01⩴85⟿75 01○01 01⩴85⟿65 01○01 01▗01▄01▟01|01 01▗01▄01▟01|01 01▗01▄01▟01|01 01▗01▄01▟01|01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01┅01', w: 20, h: 9},
   ENTRANCE: {p: '63545E 302222 C3F83C 493B23 998D2D FEF441', d: '═01╦01═01═01═01╦01═01═01═01╦01═01═01═01╦01═01═01═01═01═01╦01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░03◌54░03░01░01╎01░01░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░03░01░01░03◌54░03░01░01╎01░01░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░03░01░01░03◌54░03░01░01╎01░01░01░01░01░01║01░01░01░01░01░01░01░01░01░01░03░01░01░03◌54░03░01░01░01░01║01░01░01░01░01░01░01░01░01░01░01░01░01░01░03░01░01░01░01░01 01░01░01░01◬21░01░01░01◬21░01░01░01◬21░01░01░01◬21░01░01░01 01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01┈01', w: 20, h:9},
   CHURCH: {p: '63545E 302222 62533E F9DC90 FFF64F 5D5C70 C79C00', d: '═01═01═01═01═01═01╦01═01═01═01═01═01╦01═01═01═01═01═01═01╦01 01 01 01 01 01 01╹01 01 01 01 01 01╹01 01 01 01 01 01 01║01 01┌32─32─32┐32 01 01 01 01╻41 01 01 01 01┌32─32─32┐32 01║01 01│32#52)52│32 01 01 01━41╋41━41 01 01 01│32(52%52│32 01║01 01└32─32─32┘32 01 01 01 01┃41 01 01 01 01└32─32─32┘32 01║01 01 01 01 01 01 01 01 01 01╹41 01 01 01 01 01 01 01 01 01║01 01◯61 01●61 01◯61 01 01 01●61 01 01 01◯61 01●61 01◯61 01 01 01╹31 01╹31 01╹31 01┏32━32┻32━32┓32 01╹31 01╹31 01╹31 01 01┈31┈31┈31┈31┈31┈31┈31┻31╍31╍31╍31┻31┈31┈31┈31┈31┈31┈31┈31┈31', w: 20, h: 9},
@@ -205,10 +207,11 @@ global.S = {
 global.R = {
   HOSPITAL: {name: 'Hospital', p: P.HEALTH, code: 'h', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
   INN: {name: 'Inn', p: [P.DRINK, P.DRINK2], code: 'i', slots: [3, 9, 14, 16, 18], actions: [{name: 'Drink', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 8, b: 2}}], cost: 100, stamp: S.INN},
+  BROTHEL: {name: 'Brothel', p: P.X, code: 'b', slots: [5, 11], actions: [{name: 'Kiss', effects: [{attribute: 'health', rate: {t: 3, b: 0}}], charge: {t: 11, b: 1}}], cost: 210, stamp: S.BROTHEL},
   ENTRANCE: {name: 'Entrance', code: 'e', actions: [{name: 'Chat', effects: [{attribute: 'xp', rate: {t: 5, b: 1}}], charge: {t: 10, b: 2}}], cost: 100, stamp: S.ENTRANCE},
-  SEWER: {name: 'Sewer', code: 's', cost: 70, stamp: S.SEWER},
+  SEWER: {name: 'Sewer', code: 's', slots: [3, 7, 12, 17], battle: true, enemies: 'rs', cost: 70, stamp: S.SEWER},
   CHURCH: {name: 'Church', code: 'c', cost: 140, stamp: S.CHURCH, p: P.HOLY, slots: [5, 10, 15], actions: [{name: 'Pray', effects: [{attribute: 'health', rate: {t: 5, b: 0}}], charge: {t: 10, b: 0}}]},
-  LAIR: {name: 'Lair', code: 'l', cost: 150, stamp: S.LAIR},
+  LAIR: {name: 'Lair', code: 'l', slots: [4, 8, 12], battle: true, cost: 150, stamp: S.LAIR},
   random: function(){
     return R[H.GetRandomEntry(this.all())];
   },
@@ -345,15 +348,23 @@ global.E = {
       color: 'FFE9AA'
     }
   ],
-  enemies: {
-
-  },
+  enemies: [
+    {name: 'Rat', code: 'r', cost: {t: 10, b: 2}, attack: {t: 8, b: 1}, defense: {t: 74, b: 10}},
+    {name: 'Skeleton', code: 's', cost: {t: 11, b: 3}, attack: {t: 11, b:2}, defense: {t: 101, b: 40}},
+  ],
   GetRandomWeapon: function(choice) {
     var w = [];
     choice.forEach(function (c){
       w.push(this.GetWeapon(c))
     }.bind(this));
     return H.GetRandomEntry(w);
+  },
+  GetEnemy: function(code) {
+    var e;
+    this.enemies.forEach(function(c){
+      if(c.code == code) e = c;
+    });
+    return e;
   },
   GetWeapon: function(code) {
     var w;

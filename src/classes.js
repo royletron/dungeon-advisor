@@ -21,6 +21,12 @@ global.Char = function(s, color, bg, alpha) {
   }
 };
 
+global.Enemy = function(type) {
+  var t = this;
+  t.type = type
+  t.name = N.Random();
+}
+
 global.Button = function(text, cb, x, y, cost, data) {
   var t = this;
   t.width = ((text.length + 2) + (cost != undefined ? cost.toString().length + 4 : 0.75)) * CHAR_WIDTH;
@@ -58,10 +64,12 @@ global.Button = function(text, cb, x, y, cost, data) {
   }
   t.update = function(dt) {
     if(H.MouseClick)
+    {
       if(H.HitTestPoint(H.MouseCoords, t.getHitArea())) {
         t._clicked = true;
         t.cb(t.data);
       }
+    }
   }
 }
 
@@ -244,13 +252,14 @@ global.Room = function(type, flipped, x, y) {
     type.stamp.stamp.stamp(t.renderer.context);
   t.tick = function (h) {
     h.last_tick = 0;
-    new Particle(t.type.p, h.body.x, h.body.y-1);
-    t.type.actions.forEach(function(action){
-      action.effects.forEach(function(e){
-        if(h.hasOwnProperty(e.attribute))
-          h[e.attribute] += H.Moultonize(h.lvl, e.rate.b, e.rate.t);
-      })
-    })
+    if(t.type.battle)
+      if(h.slot)
+      {
+        //fight?
+
+      }
+    else
+      new Particle(t.type.p, h.body.x, h.body.y-1);
   };
   this.update = function(dt, h) {
     if((h.busy != true) && t.slots)
@@ -258,6 +267,7 @@ global.Room = function(type, flipped, x, y) {
       t.slots.forEach(function(s){
         if(!h.busy && (s.x + (this.x * ROOM_WIDTH)) === Math.floor(h.body.x) && (h.body.y === (13.5 + (this.y * ROOM_HEIGHT))) && (s.hero == undefined)) {
           s.hero = h;
+          h.slot = s;
           h.busy = true;
           h.room_time = h.last_tick = 0;
           h.total_room_time = H.GetRandom(h.type.turn.b, h.type.turn.t);
@@ -278,6 +288,7 @@ global.Room = function(type, flipped, x, y) {
             if(s.hero == h)
               s.hero = undefined;
         })
+        h.room_action(t)
         h.busy = h.entertaining = false;
         h.body.velocity.x = h.return_velocity;
       }
@@ -369,8 +380,34 @@ global.Hero = function(x, y, type) {
   t.money = H.GetRandom(type.money.b, type.money.t);
   t.body.velocity.x = t.speed;
   t.lvl = H.WeightedRandom([(UI.lvl == 1 ? 1 : UI.lvl-1), UI.lvl, UI.lvl+1], [0.4, 1, 0.5]);
-  t.health = t.current_health = H.Moultonize(t.lvl, t.type.health.b, t.type.health.t);
+  t.getXP = function(lvl) {
+    return H.Moultonize(lvl || t.lvl, 1, 100000);
+  }
+  t.getHealth = function(lvl) {
+    return H.Moultonize(lvl || t.lvl, t.type.health.b, t.type.health.t);
+  }
+  t.health = t.max_health = t.getHealth();
+  t.xp = t.getXP(t.lvl-1);
   UI.addStatus(t, t.name+" has entered!", "A "+t.type.name.toLowerCase()+" from ...");
+  t.updateHealth = function(v) {
+    t.health += v;
+    if(t.health > t.max_health)
+      t.health = t.max_health
+  }
+  t.updateXP = function(v) {
+    t.xp += v;
+    if(t.getXP(t.lvl+1) < t.xp)
+      t.levelUp();
+  }
+  t.levelUp = function() {
+    t.lvl += 1;
+    t.max_health = t.getHealth();
+    console.log('lvl up');
+    t.experience.push({n: 1, r: 'Levelled up to '+t.lvl});
+  }
+  t.room_action = function(room) {
+    console.log(room);
+  }
   t.update = function(dt) {
     t.body.update(dt);
     t.sprite.x = t.body.x;
@@ -381,7 +418,7 @@ global.Hero = function(x, y, type) {
       t.currentRoom.update(dt, t);
     if(c != t.currentRoom)
       t.roomChanged(c);
-  },
+  }
   t.update_weapon = function(dt) {
     var add = t.w.type.offsetx;
     if(t.facing == LEFT)
@@ -402,10 +439,10 @@ global.Hero = function(x, y, type) {
       t.w.y = t.body.y + t.w.type.top;
       t.w.d = true;
     }
-  },
+  }
   t.roomChanged = function(c) {
     if(t.had_a_go === true)
-      t.experience.push({n: 1, r: 'Loving the '+t.currentRoom.type.name});
+      t.experience.push({n: 1, r: 'Loved the '+t.currentRoom.type.name});
     else if(t.had_a_go === false)
       t.experience.push({n: -1, r: 'There was no room in '+t.currentRoom.type.name});
 
@@ -416,16 +453,16 @@ global.Hero = function(x, y, type) {
     {
       if(H.Contains(t.type.faves, c.type.code))
       {
-        t.had_a_go = false;
         if(Math.random() < 0.9)
           t.entertaining = true;
       }
       else{
-        console.log('out');
+        if(Math.random() < 0.1)
+          t.entertaining = true;
       }
     }
     // console.log(c.type, this.type);
-  },
+  }
   t.getCurrentRoom = function() {
     var x = t.body.x - UI.spawn_point.x;
     var y = t.body.y - UI.spawn_point.y;
@@ -434,7 +471,7 @@ global.Hero = function(x, y, type) {
       return r[Math.floor(x/ROOM_WIDTH)];
     else
       return undefined;
-  },
+  }
   t.turnAround = function() {
     t.sprite.renderer.flip();
     t.w.spr.renderer.flip();
@@ -446,7 +483,7 @@ global.Hero = function(x, y, type) {
       this.facing = RIGHT;
       t.body.velocity.x = t.speed;
     }
-  };
+  }
   t.stamp = function(toCanvas, x, y) {
     var wx, wy;
     if(x != undefined) wx = x + t.w.type.offsetx;
@@ -456,12 +493,12 @@ global.Hero = function(x, y, type) {
       t.sprite.stamp(toCanvas, x || t.body.x, y || t.body.y);
       t.w.spr.stamp(toCanvas, wx || t.w.x, wy || t.w.y);
     }
-  };
+  }
   this.end = function() {
     UI.addStatus(t, t.name+" has left!", "A "+t.type.name.toLowerCase()+" from ...");
     t.active = false;
     t.sprite.kill();
     t.w.spr.kill();
     H.Null(t);
-  };
+  }
 };
