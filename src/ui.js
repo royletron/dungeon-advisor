@@ -95,7 +95,7 @@ var t = global.UI = {
     t.statuses.forEach(function(status){
       tmp.push(status);
     });
-    if(tmp.length > 5)
+    if(tmp.length > 4)
     tmp.pop().kill();
     t.statuses = tmp;
   },

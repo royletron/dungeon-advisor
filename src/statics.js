@@ -19,6 +19,33 @@ global.H = {
   MouseUp: false,
   MouseClick: false,
   _clicked: false,
+  Summarise: function(hero) {
+    var score = 0;
+    var rooms = 0;
+    var empty = 0;
+    var review = '';
+    UI.floors.forEach(function(floor){
+      floor.forEach(function(room){
+        if(room != undefined)
+          rooms++;
+        else
+          empty++;
+      })
+    })
+    if(hero.lvl/10 > rooms/12)
+      hero.experience.push({n: -2, r: 'Not enough rooms'});
+    if(empty + ((Math.random()*4) - 2) > 4)
+      hero.experience.push({n: -1, r: 'Lots of empty rooms'});
+    hero.experience.forEach(function(exp, i){
+      score += exp.n;
+      if(Math.random() > 0.5)
+        if(exp.n > 0)
+          review += H.GetRandomEntry(['I liked', 'It was good that', 'I enjoyed']) + ' '+ exp.r;
+        else
+          review += H.GetRandomEntry(['I hated', 'It was terrible that', 'I didn\'t enjoy']) + ' '+ exp.r
+    })
+    console.log(score, review);
+  },
   WriteText: function(t, x, y, c, f, l, a) {
     c.font = f;
     c.fillStyle = '#'+l;

@@ -261,7 +261,15 @@ global.Room = function(type, flipped, x, y) {
 
       }
   };
-  this.update = function(dt, h) {
+  t.getSlot = function(h) {
+    var s;
+    t.slots.forEach(function(_s){
+      if(_s.h == h)
+        s = _s
+    })
+    return s;
+  }
+  t.update = function(dt, h) {
     if((h.busy != true) && t.slots)
     {
       t.slots.forEach(function(s){
@@ -388,7 +396,7 @@ global.Hero = function(x, y, type) {
   }
   t.health = t.max_health = t.getHealth();
   t.xp = t.getXP(t.lvl-1);
-  UI.addStatus(t, t.name+" has entered!", "A "+t.type.name.toLowerCase()+" from ...");
+  // UI.addStatus(t, t.name+" has entered!", "A "+t.type.name.toLowerCase()+" from ...");
   t.updateHealth = function(v) {
     t.health += v;
     if(t.health > t.max_health)
@@ -442,7 +450,18 @@ global.Hero = function(x, y, type) {
   }
   t.roomChanged = function(c) {
     if(t.had_a_go === true)
-      t.experience.push({n: 1, r: 'Loved the '+t.currentRoom.type.name});
+    {
+      if(t.currentRoom.type.battle)
+      {
+        var s = t.currentRoom.getSlot(t);
+        if(s && s.npc)
+          t.experience.push({n: 2, r: 'Great to fight against real enemies like '+s.npc.name});
+        else
+          t.experience.push({n: 1, r: 'Would have been better to fight real enemies'});
+      }
+      else
+        t.experience.push({n: 1, r: 'Loved the '+t.currentRoom.type.name});
+    }
     else if(t.had_a_go === false)
       t.experience.push({n: -1, r: 'There was no room in '+t.currentRoom.type.name});
 
@@ -495,7 +514,8 @@ global.Hero = function(x, y, type) {
     }
   }
   this.end = function() {
-    UI.addStatus(t, t.name+" has left!", "A "+t.type.name.toLowerCase()+" from ...");
+    // UI.addStatus(t, t.name+" has left!", "A "+t.type.name.toLowerCase()+" from ...");
+
     t.active = false;
     t.sprite.kill();
     t.w.spr.kill();
