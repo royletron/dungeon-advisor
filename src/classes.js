@@ -25,6 +25,7 @@ global.Enemy = function(type) {
   var t = this;
   t.type = type
   t.name = N.Random();
+  t.c = new Char(type.symbol, type.color);
 }
 
 global.Button = function(text, cb, x, y, cost, data) {
@@ -252,14 +253,13 @@ global.Room = function(type, flipped, x, y) {
     type.stamp.stamp.stamp(t.renderer.context);
   t.tick = function (h) {
     h.last_tick = 0;
+    new Particle(t.type.p, h.body.x, h.body.y-1);
     if(t.type.battle)
       if(h.slot)
       {
         //fight?
 
       }
-    else
-      new Particle(t.type.p, h.body.x, h.body.y-1);
   };
   this.update = function(dt, h) {
     if((h.busy != true) && t.slots)

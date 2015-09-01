@@ -302,6 +302,11 @@ var t = global.UI = {
         if(room !== undefined)
         {
           room.renderer.stamp(ctx, 2 + (x * ROOM_WIDTH), 6 + (y * ROOM_HEIGHT));
+          room.slots.forEach(function(s){
+            if(s != undefined)
+              if(s.npc)
+                s.npc.c.stamp(ctx, 2 +  (x * ROOM_WIDTH) + s.x, 6 + (y * ROOM_HEIGHT) + 7.6);
+          })
         }
         else{
           S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8);
@@ -317,6 +322,7 @@ var t = global.UI = {
     t.heroes.forEach(function(hero) {
       hero.stamp(ctx);
     });
+
 
     t.statuses.forEach(function(status, y){
       status.stamp(ctx,  t.w-29, 26 + (y * 3));
