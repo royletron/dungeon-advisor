@@ -19,15 +19,15 @@ global.H = {
   MouseUp: false,
   MouseClick: false,
   _clicked: false,
-  WriteText: function(text, x, y, ctx, font, color, align) {
-    ctx.font = font;
-    ctx.fillStyle = '#'+color;
-    ctx.textAlign = align || 'left';
-    ctx.fillText(text, x, y);
+  WriteText: function(t, x, y, c, f, l, a) {
+    c.font = f;
+    c.fillStyle = '#'+l;
+    c.textAlign = a || 'left';
+    c.fillText(t, x, y);
   },
-  DrawRect: function(x, y, width, height, ctx, fill) {
-    ctx.fillStyle = '#'+fill;
-    ctx.fillRect(x, y, width, height);
+  DrawRect: function(x, y, w, h, c, f) {
+    c.fillStyle = '#'+f;
+    c.fillRect(x, y, w, h);
   },
   CharToNum: function(char) {
     var c = char.charCodeAt(0) - 48;
@@ -38,20 +38,20 @@ global.H = {
     var x = parseInt(x)/MAX_LVL;
     return Math.floor(parseInt(c) + (parseInt(m)*((x * (2-x))) * 20));
   },
-  WeightedRandom: function(list, weight) {
-    var total_weight = weight.reduce(function (prev, cur, i, arr) {
+  WeightedRandom: function(l, w) {
+    var tw = w.reduce(function (prev, cur, i, arr) {
       return prev + cur;
     });
 
-    var random_num = this.GetRandom(0, total_weight);
-    var weight_sum = 0;
+    var rn = this.GetRandom(0, tw);
+    var ws = 0;
 
-    for (var i = 0; i < list.length; i++) {
-      weight_sum += weight[i];
-      weight_sum = +weight_sum.toFixed(2);
+    for (var i = 0; i < l.length; i++) {
+      ws += w[i];
+      ws = +ws.toFixed(2);
 
-      if (random_num <= weight_sum) {
-          return list[i];
+      if (rn <= ws) {
+          return l[i];
       }
     }
   },
@@ -87,13 +87,13 @@ global.H = {
         cb(k);
     }
   },
-  FlipCanvas: function(canvas) {
-    var tmp = TMP_BUFFER(canvas.width, canvas.height);
+  FlipCanvas: function(c) {
+    var tmp = TMP_BUFFER(c.width, c.height);
     var tctx = tmp.getContext('2d');
     tctx.scale(-1, 1);
-    tctx.drawImage(canvas, -canvas.width, 0);
+    tctx.drawImage(c, -canvas.width, 0);
     var ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, c.width, c.height);
     ctx.drawImage(tmp, 0, 0);
   },
   BufferToCoords: function(x, y, whole) {
@@ -150,14 +150,14 @@ global.H = {
       }
      }
   },
-  StampSprite: function(renderer, x, y, spr) {
+  StampSprite: function(r, x, y, spr) {
     var d = spr.d.split('');
     var p = spr.p.split(' ');
     for(var tx=0; tx < spr.w; tx++) {
       for(var ty=0; ty < spr.h; ty++) {
         var l = (ty*spr.w*3) + (tx*3);
         var c = new Char(d[l], p[this.CharToNum(d[l+1])], p[this.CharToNum(d[l+2])]);
-        c.stamp(renderer, x + tx, y + ty);
+        c.stamp(r, x + tx, y + ty);
       }
     }
   }
@@ -180,23 +180,14 @@ global.GAME = document.createElement('canvas');
 global.P = {
   randomSolid: function(){ return H.GetRandomEntry(this.SOLID_TILES); },
   SOLID_TILES: [new Char('∵', '84596F', '594B54'), new Char('#', '84596F', '594B54'), new Char('*', '84596F', '594B54')],
-
-  BOX_TB: new Char('┃', BOX, BOX_B),
-  BOX_LR: new Char('━', BOX, BOX_B),
-  BOX_TR: new Char('┗', BOX, BOX_B),
-  BOX_TL: new Char('┛', BOX, BOX_B),
-  BOX_BL: new Char('┓', BOX, BOX_B),
-  BOX_BR: new Char('┏', BOX, BOX_B),
   BOX_MD: new Char(' ', BOX, BOX_B),
   HEALTH: new Char('+', '00ff00'),
   DRINK: new Char('¡', 'B85456'),
   DRINK2: new Char('#', 'F1D67D'),
   HOLY: new Char('†', '3CD9BC'),
-
   FLOOR: new Char('┈', '63545E', '302222'),
   OFF_FLOOR: new Char('┈', '3b3539', '302222'),
   GOLD: new Char('●', 'FFE545'),
-
   VOID: new Char(' ', '302222', '302222')
 };
 
@@ -242,7 +233,7 @@ global.N = {
 global.E = {
   weapons: [
     {name: 'Shortsword', symbol: '}', damage: 3, range: 3, code: 'ss', color: '00FF00', offsetx: 0.6, top: -0.5, bottom: -0.35},
-    {name: 'Longsword', symbol: '∤', strike: '/', damage: 4, range: 3, code: 'ls', color: 'A7FBEB', offsetx: 0.7, top: - 0.45, bottom: -0.2},
+    {name: 'Longsword', symbol: '∤', damage: 4, range: 3, code: 'ls', color: 'A7FBEB', offsetx: 0.7, top: - 0.45, bottom: -0.2},
     {name: 'Small Axe', symbol: '>', damage: 4, range: 1, code: 'sa', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
     {name: 'Bow', symbol: '⦔', damage: 4, range: 1, code: 'bw', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
     {name: 'Crucifix', symbol: '†', damage: 4, range: 1, code: 'cf', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
@@ -390,56 +381,56 @@ function getMousePos(canvas, evt) {
     return H.MouseCoords;
 }
 
-function onDown() {
-  H.MouseDown = true;
-  H.MouseUp = false;
-  if(!H._clicked)
-    if(!H.MouseClick)
-      H._clicked = H.MouseClick = true;
-    else
-      H.MouseClick = false;
-};
+// function onDown() {
+//   H.MouseDown = true;
+//   H.MouseUp = false;
+//   if(!H._clicked)
+//     if(!H.MouseClick)
+//       H._clicked = H.MouseClick = true;
+//     else
+//       H.MouseClick = false;
+// };
 
-function onUp() {
-  H.MouseDown = false;
-  H.MouseUp = true;
-  H.MouseClick = H._clicked = false;
-}
+// function onUp() {
+//   H.MouseDown = false;
+//   H.MouseUp = true;
+//   H.MouseClick = H._clicked = false;
+// }
 
 GAME.addEventListener('click', function(event) {
   H.MouseCoords = getMousePos(GAME, event);
   H.MouseClick = true;
 })
 
-GAME.addEventListener('mousemove', function(event) {
-  H.MouseCoords = getMousePos(GAME, event);
-});
+// GAME.addEventListener('mousemove', function(event) {
+//   H.MouseCoords = getMousePos(GAME, event);
+// });
 
-GAME.addEventListener('mouseout', function(event) {
-  H.MouseCoords = null;
-  H.MouseDown = false;
-});
+// GAME.addEventListener('mouseout', function(event) {
+//   H.MouseCoords = null;
+//   H.MouseDown = false;
+// });
 
-GAME.addEventListener('touchstart', function(event){
-  H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
-  onDown();
-});
+// GAME.addEventListener('touchstart', function(event){
+//   H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
+//   onDown();
+// });
 
-GAME.addEventListener('touchend', function(event){
-  H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
-  onUp();
-})
+// GAME.addEventListener('touchend', function(event){
+//   H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
+//   onUp();
+// })
 
-GAME.addEventListener('touchcancel', function(event){
-  H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
-  onUp();
-})
+// GAME.addEventListener('touchcancel', function(event){
+//   H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
+//   onUp();
+// })
 
-GAME.addEventListener('mousedown', function(event) {
-  onDown();
-});
+// GAME.addEventListener('mousedown', function(event) {
+//   onDown();
+// });
 
-GAME.addEventListener('mouseup', function(event) {
-  onUp();
-});
+// GAME.addEventListener('mouseup', function(event) {
+//   onUp();
+// });
 

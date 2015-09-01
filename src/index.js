@@ -1,4 +1,4 @@
-var Stats = require('../dev-libs/stats.min.js');
+// var Stats = require('../dev-libs/stats.min.js');
 
 var map = document.createElement('canvas');
 
@@ -22,6 +22,8 @@ document.body.appendChild(GAME);
 global.g_ctx = GAME.getContext('2d');
 global.m_ctx = map.getContext('2d');
 
+g_ctx.imageSmoothingEnabled = m_ctx.imageSmoothingEnabled = false;
+
 H.GenerateStamps();
 
 // D.Draw(map, m_ctx);
@@ -43,19 +45,19 @@ global.POP_CALLBACK = function(cb) {
 
 var last_stamp = 0;
 
-var stats = new Stats();
-stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
+// var stats = new Stats();
+// stats.setMode( 0 ); // 0: fps, 1: ms, 2: mb
 
 // align top-left
-stats.domElement.style.position = 'absolute';
-stats.domElement.style.left = '0px';
-stats.domElement.style.top = '0px';
+// stats.domElement.style.position = 'absolute';
+// stats.domElement.style.left = '0px';
+// stats.domElement.style.top = '0px';
 
-document.body.appendChild( stats.domElement );
+// document.body.appendChild( stats.domElement );
 
 function update(timestamp) {
-  if(stats)
-    stats.begin();
+  // if(stats)
+  //   stats.begin();
 
   var dt = (timestamp - last_stamp)/1000;
   last_stamp = timestamp;
@@ -78,8 +80,8 @@ function update(timestamp) {
     H.MouseClick = false;
   }
 
-  if(stats)
-    stats.end();
+  // if(stats)
+  //   stats.end();
 
   window.requestAnimationFrame(update);
 }

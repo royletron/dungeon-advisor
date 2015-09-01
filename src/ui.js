@@ -24,8 +24,6 @@ var t = global.UI = {
   statuses: [],
   counters: [],
   buttons: [],
-  selected_room: undefined,
-  properties: undefined,
   room_buttons: [],
   init: function(ctx){
     t.ctx = ctx;

@@ -95,18 +95,18 @@ global.StatusUpdate = function(hero, title, text) {
   var t = this;
   t.hero = hero;
   t.avatar = new Avatar(hero);
-  t.typewriter = new TypeWriter(text, 21, 4);
-  t.typewriter.run();
+  t.tw = new TypeWriter(text, 21, 4);
+  t.tw.run();
   t.renderer = new Renderer(21 * CHAR_WIDTH, CHAR_HEIGHT);
   H.WriteText(title, 0, CHAR_HEIGHT-2, t.renderer.context, STATUS_FONT, 'ffffff');
   t.stamp = function(toCanvas, x, y){
     t.avatar.stamp(toCanvas, x, y);
     t.renderer.stamp(toCanvas, x+3, y);
-    t.typewriter.stamp(toCanvas, x+3, y+1);
+    t.tw.stamp(toCanvas, x+3, y+1);
   }
   t.kill = function(){
     t.avatar.kill();
-    t.typewriter.kill();
+    t.tw.kill();
     t.renderer.kill();
     H.Null(t);
   }
@@ -123,22 +123,22 @@ global.TypeWriter = function(text, width, height, fixed) {
     var i = 0;
     var cursorX = 0; var cursorY = 0; var lineHeight = CHAR_HEIGHT;
     t.interval = setInterval(function(){
-      var rem = this.text.substr(i);
+      var rem = t.text.substr(i);
       var space = rem.indexOf(' ');
-      space = (space === -1)?this.text.length:space;
-      var wordwidth = this.renderer.context.measureText(rem.substring(0, space)).width;
-      var w = this.renderer.context.measureText(this.text.charAt(i)).width;
-      if(cursorX + wordwidth >= this.renderer.canvas.width) {
+      space = (space === -1)?t.text.length:space;
+      var wordwidth = t.renderer.context.measureText(rem.substring(0, space)).width;
+      var w = t.renderer.context.measureText(t.text.charAt(i)).width;
+      if(cursorX + wordwidth >= t.renderer.canvas.width) {
           cursorX = 0;
           cursorY += lineHeight;
-          this.height += 1;
+          t.height += 1;
       }
-      H.WriteText(this.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT, this.renderer.context, STATUS_FONT, '25989B');
+      H.WriteText(t.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT, t.renderer.context, STATUS_FONT, '25989B');
       i++;
       cursorX += w;
-      if(i === this.text.length)
-        clearInterval(this.interval);
-    }.bind(this), 110);
+      if(i === t.text.length)
+        clearInterval(t.interval);
+    }.bind(t), 110);
   };
   t.stamp = function(toCanvas, x, y) {
     t.renderer.stamp(toCanvas, x, y);
@@ -277,7 +277,7 @@ global.Room = function(type, flipped, x, y) {
           t.slots.forEach(function(s){
             if(s.hero == h)
               s.hero = undefined;
-          })
+        })
         h.busy = h.entertaining = false;
         h.body.velocity.x = h.return_velocity;
       }
@@ -292,6 +292,7 @@ global.Renderer = function(width, height, alpha) {
   t.canvas.height = t.height = height;
   t.context = t.canvas.getContext('2d');
   t.context.globalAlpha = t.alpha = alpha || 1;
+  t.context.imageSmoothingEnabled = false;
   t.whole = false;
   this.stamp = function(toCanvas, x, y){
     var coords = H.BufferToCoords(x || 0, y || 0, t.whole);
