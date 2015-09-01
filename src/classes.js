@@ -435,7 +435,7 @@ global.Hero = function(x, y, type) {
   },
   t.turnAround = function() {
     t.sprite.renderer.flip();
-    t.weapon.spr.renderer.flip();
+    t.w.spr.renderer.flip();
     if(t.facing == RIGHT) {
       t.facing = LEFT;
       t.body.velocity.x = -t.speed;

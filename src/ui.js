@@ -78,7 +78,7 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
-    t.addRoom(R.INN);
+    t.addRoom(R.ENTRANCE);
   },
   addFloor: function() {
     if(t.gold >= 80)
@@ -140,7 +140,7 @@ var t = global.UI = {
     }
     t.heroes.forEach(function(hero) {
       hero.update(dt);
-      if(hero.sprite.x < ( t.w - 31))
+      if(hero.sprite.x < ( t.w - 32))
       {
         if(hero.sprite.x < ( t.spawn_point.x - 2))
         if(hero.current_floor <  t.floors.length)

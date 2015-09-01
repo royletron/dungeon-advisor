@@ -191,6 +191,7 @@ global.P = {
   HEALTH: new Char('+', '00ff00'),
   DRINK: new Char('¡', 'B85456'),
   DRINK2: new Char('#', 'F1D67D'),
+  HOLY: new Char('†', '3CD9BC'),
 
   FLOOR: new Char('┈', '63545E', '302222'),
   OFF_FLOOR: new Char('┈', '3b3539', '302222'),
@@ -214,9 +215,9 @@ global.R = {
   HOSPITAL: {name: 'Hospital', p: P.HEALTH, code: 'h', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
   INN: {name: 'Inn', p: [P.DRINK, P.DRINK2], code: 'i', slots: [3, 9, 14, 16, 18], actions: [{name: 'Drink', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 8, b: 2}}], cost: 100, stamp: S.INN},
   ENTRANCE: {name: 'Entrance', code: 'e', actions: [{name: 'Chat', effects: [{attribute: 'xp', rate: {t: 5, b: 1}}], charge: {t: 10, b: 2}}], cost: 100, stamp: S.ENTRANCE},
-  SEWER: {name: 'Sewer', cost: 70, stamp: S.SEWER},
-  CHURCH: {name: 'Church', cost: 140, stamp: S.CHURCH},
-  LAIR: {name: 'Lair', cost: 150, stamp: S.LAIR},
+  SEWER: {name: 'Sewer', code: 's', cost: 70, stamp: S.SEWER},
+  CHURCH: {name: 'Church', code: 'c', cost: 140, stamp: S.CHURCH, p: P.HOLY, slots: [5, 10, 15], actions: [{name: 'Pray', effects: [{attribute: 'health', rate: {t: 5, b: 0}}], charge: {t: 10, b: 0}}]},
+  LAIR: {name: 'Lair', code: 'l', cost: 150, stamp: S.LAIR},
   random: function(){
     return R[H.GetRandomEntry(this.all())];
   },
@@ -251,13 +252,107 @@ global.E = {
     {name: 'Lute', symbol: '∝', damage: 4, range: 1, code: 'lt', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3}
   ],
   heroes: [
-    {name: 'Knight', faves: 'hei', turn: {t: 16, b: 5}, hates: 's', money: {t: 200, b: 130}, health: {t: 200, b: 14}, fee: 10, increment: 0.5, symbol: '$', lvl_range: {t: 50, b: 1}, weapons: ['ls', 'ss'], speed: {t: 1.5, b: 0.7}, color: 'FFE9BA'},
-    {name: 'Dwarf', fee: '8', increment: '3', symbol: 'D', lvl_range: {t: 55, b: 1}, weapons: ['sa'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Priest', fee: '3', increment: '4', symbol: 'δ', lvl_range: {t: 55, b: 1}, weapons: ['cf'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Mage', fee: '6', increment: '2', symbol: 'Î', lvl_range: {t: 55, b: 1}, weapons: ['st', 'wd'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Rogue', fee: '4', increment: '3', symbol: '∱', lvl_range: {t: 55, b: 1}, weapons: ['kn'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Archer', fee: '5', increment: '2', symbol: '∔', lvl_range: {t: 55, b: 1}, weapons: ['bw'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'},
-    {name: 'Muse', fee: '2', increment: '6', symbol: '♭', lvl_range: {t: 55, b: 1}, weapons: ['lt'], speed: {t: 1.1, b: 0.6}, color: 'FFE9AA'}
+    {
+      name: 'Knight', 
+      faves: 'hei', 
+      turn: {t: 16, b: 5}, 
+      hates: 's', 
+      money: {t: 200, b: 130}, 
+      health: {t: 200, b: 14}, 
+      fee: 10, 
+      increment: 0.5, 
+      symbol: '$', 
+      lvl_range: {t: 50, b: 1}, 
+      weapons: ['ls', 'ss'], 
+      speed: {t: 1.5, b: 0.7}, 
+      color: 'FFE9BA'
+    },
+    {
+      name: 'Dwarf', 
+      faves: 'shil',  
+      turn: {t: 15, b: 8}, 
+      fee: '8', 
+      increment: 0.2, 
+      symbol: 'D', 
+      lvl_range: {t: 55, b: 1}, 
+      weapons: ['sa'], 
+      money: {t: 170, b: 140}, 
+      health: {t: 230, b: 24}, 
+      speed: {t:1, b:0.7},
+      fee: 8, 
+      increment: 0.9, 
+      color: 'FFE9AA'
+    },
+    {
+      name: 'Priest', 
+      faves: 'cls', 
+      turn: {t: 18, b: 8}, 
+      fee: 3, 
+      increment: 0.4, 
+      symbol: 'δ', 
+      lvl_range: {t: 55, b: 1}, 
+      weapons: ['cf'], 
+      money: {t: 70, b: 40}, 
+      health: {t: 330, b: 18}, 
+      speed: {t: 1.1, b: 0.6}, 
+      color: 'FFE9AA'
+    },
+    {
+      name: 'Mage', 
+      faves: 'ishl', 
+      turn: {t: 11, b: 3}, 
+      fee: 6, 
+      increment: 0.6, 
+      symbol: 'Î', 
+      lvl_range: {t: 55, b: 1}, 
+      weapons: ['st', 'wd'], 
+      money: {t: 120, b: 80}, 
+      health: {t: 160, b: 11}, 
+      speed: {t: 1.1, b: 0.6}, 
+      color: 'FFE9AA'
+    },
+    {
+      name: 'Rogue', 
+      faves: 'slihc', 
+      turn: {t: 20, b: 10}, 
+      fee: 4, 
+      increment: 0.8,
+      symbol: '∱', 
+      lvl_range: {t: 55, b: 1}, 
+      weapons: ['kn'],
+      money: {t: 190, b: 40}, 
+      health: {t: 200, b: 8},  
+      speed: {t: 1.1, b: 0.6}, 
+      color: 'FFE9AA'
+    },
+    {
+      name: 'Archer', 
+      faves: 'hlc',
+      turn: {t: 21, b: 7},  
+      fee: 5, 
+      increment: 0.9, 
+      symbol: '∔', 
+      lvl_range: {t: 55, b: 1}, 
+      weapons: ['bw'],
+      money: {t: 170, b: 140}, 
+      health: {t: 230, b: 24},  
+      speed: {t: 2.9, b: 1.8}, 
+      color: 'FFE9AA'
+    },
+    {
+      name: 'Muse', 
+      faves: 'ihcls', 
+      turn: {t: 36, b: 11}, 
+      fee: 2, 
+      increment: 0.6,
+      symbol: '♭', 
+      lvl_range: {t: 55, b: 1}, 
+      weapons: ['lt'],
+      money: {t: 200, b: 90}, 
+      health: {t: 120, b: 34},  
+      speed: {t: 1.1, b: 0.6}, 
+      color: 'FFE9AA'
+    }
   ],
   enemies: {
 
@@ -282,7 +377,7 @@ global.E = {
       if(c.lvl_range.b <= lvl)
         h.push(c)
     })
-    return new Hero(UI.spawn_point.x, UI.spawn_point.y, this.heroes[0]); //H.GetRandomEntry(h));
+    return new Hero(UI.spawn_point.x, UI.spawn_point.y, H.GetRandomEntry(h)); //H.GetRandomEntry(h));
   }
 };
 
