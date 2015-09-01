@@ -261,14 +261,6 @@ global.Room = function(type, flipped, x, y) {
 
       }
   };
-  t.getSlot = function(h) {
-    var s;
-    t.slots.forEach(function(_s){
-      if(_s.hero.id == h.id)
-        s = _s
-    })
-    return s;
-  }
   t.update = function(dt, h) {
     if((h.busy != true) && t.slots)
     {
@@ -453,9 +445,8 @@ global.Hero = function(x, y, type) {
     {
       if(t.currentRoom.type.battle)
       {
-        var s = t.currentRoom.getSlot(t);
-        if(s && s.npc)
-          t.experience.push({n: 2, r: 'Great to fight against real enemies like '+s.npc.name});
+        if(t.slot && t.slot.npc)
+          t.experience.push({n: 2, r: 'Great to fight against real enemies like '+t.slot.npc.name});
         else
           t.experience.push({n: 1, r: 'Would have been better to fight real enemies'});
       }

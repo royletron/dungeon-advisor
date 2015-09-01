@@ -118,6 +118,8 @@ var t = global.UI = {
     t.setGold(H.DoMath(h.type.increment, h.lvl, h.type.fee));
   },
   removeHero: function(hero) {
+    console.log(hero);
+    H.Summarise(hero);
     H.RemoveFromArray( t.heroes, hero, 'id');
     hero.end();
     H.Null(hero);
@@ -209,7 +211,7 @@ var t = global.UI = {
       else
       {
         if(room.type)
-          if(room.type.battle)
+          if(room.type.battle && room.slots)
           {
             room.slots.forEach(function(s, i){
               if(s.npc)
@@ -302,11 +304,12 @@ var t = global.UI = {
         if(room !== undefined)
         {
           room.renderer.stamp(ctx, 2 + (x * ROOM_WIDTH), 6 + (y * ROOM_HEIGHT));
-          room.slots.forEach(function(s){
-            if(s != undefined)
-              if(s.npc)
-                s.npc.c.stamp(ctx, 2 +  (x * ROOM_WIDTH) + s.x, 6 + (y * ROOM_HEIGHT) + 7.6);
-          })
+          if(room.slots)
+            room.slots.forEach(function(s){
+              if(s != undefined)
+                if(s.npc)
+                  s.npc.c.stamp(ctx, 2 +  (x * ROOM_WIDTH) + s.x, 6 + (y * ROOM_HEIGHT) + 7.6);
+            })
         }
         else{
           S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8);
