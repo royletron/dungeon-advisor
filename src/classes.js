@@ -273,10 +273,11 @@ global.Room = function(type, flipped, x, y) {
       if(h.last_tick > h.type.increment)
         t.tick(h);
       if(h.room_time > h.total_room_time) {
-        t.slots.forEach(function(s){
-          if(s.hero == h)
-            s.hero = undefined;
-        })
+        if(t.slots)
+          t.slots.forEach(function(s){
+            if(s.hero == h)
+              s.hero = undefined;
+          })
         h.busy = h.entertaining = false;
         h.body.velocity.x = h.return_velocity;
       }
