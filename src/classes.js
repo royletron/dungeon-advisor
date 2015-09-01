@@ -264,7 +264,7 @@ global.Room = function(type, flipped, x, y) {
   t.getSlot = function(h) {
     var s;
     t.slots.forEach(function(_s){
-      if(_s.h == h)
+      if(_s.hero.id == h.id)
         s = _s
     })
     return s;
