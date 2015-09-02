@@ -100,6 +100,27 @@ global.Avatar = function(hero) {
   }
 }
 
+global.StarRating = function(txt) {
+  var t = this;
+  t.r = new Renderer(9*CHAR_WIDTH, CHAR_HEIGHT);
+  t.setNum = function(val)
+  {
+    if(val != t.num){
+      t.num = val;
+      t.r.context.clearRect(0, 0, t.r.canvas.width, t.r.canvas.height);
+      for(var i=0; i < 5; i++)
+      {
+        P.B_STAR.stamp(t.r.context, i, 0);
+      }
+      H.WriteText(t.num.toFixed(1), 5.5*CHAR_WIDTH, CHAR_HEIGHT-1, t.r.context, FONT, '000000');
+    }
+  }
+  t.setNum(0);
+  t.stamp = function(c, x, y){
+    t.r.stamp(c, x, y);
+  }
+}
+
 global.StatusUpdate = function(hero, title, text) {
   var t = this;
   t.hero = hero;
@@ -261,11 +282,11 @@ global.Room = function(type, flipped, x, y) {
 
       }
   };
-  this.update = function(dt, h) {
+  t.update = function(dt, h) {
     if((h.busy != true) && t.slots)
     {
       t.slots.forEach(function(s){
-        if(!h.busy && (s.x + (this.x * ROOM_WIDTH)) === Math.floor(h.body.x) && (h.body.y === (13.5 + (this.y * ROOM_HEIGHT))) && (s.hero == undefined)) {
+        if((s.x + (this.x * ROOM_WIDTH)) === Math.floor(h.body.x) && (Math.floor(h.body.y) === (13 + (this.y * ROOM_HEIGHT))) && (s.hero == undefined)) {
           s.hero = h;
           h.slot = s;
           h.busy = true;
@@ -388,7 +409,7 @@ global.Hero = function(x, y, type) {
   }
   t.health = t.max_health = t.getHealth();
   t.xp = t.getXP(t.lvl-1);
-  UI.addStatus(t, t.name+" has entered!", "A "+t.type.name.toLowerCase()+" from ...");
+  // UI.addStatus(t, t.name+" has entered!", "A "+t.type.name.toLowerCase()+" from ...");
   t.updateHealth = function(v) {
     t.health += v;
     if(t.health > t.max_health)
@@ -403,6 +424,7 @@ global.Hero = function(x, y, type) {
     t.lvl += 1;
     t.max_health = t.getHealth();
     t.experience.push({n: 1, r: 'Levelled up to '+t.lvl, t: 4});
+    console.log('lvl up');
   }
   t.room_action = function(room) {
     console.log(room);
@@ -443,14 +465,19 @@ global.Hero = function(x, y, type) {
     console.log(c, t.entertaining, t.had_a_go);
     if(t.entertaining !== undefined)
       if(t.had_a_go === true)
-        if(H.Contains(t.type.faves, t.currentRoom.type.code))
-          t.experience.push({n: 1, r: ' going to my fave the '+t.currentRoom.type.name, t: 1});
+        if(t.currentRoom.type.battle)
+          if(t.slot && t.slot.npc)
+            t.experience.push({n: 1, r: 'to fight against real enemies like '+t.slot.npc.name, t: 6});
+          else
+            t.experience.push({n: 0.6, r: 'fight but I had to fight the wall, no enemies', t: 7});
+        else if(H.Contains(t.type.faves, t.currentRoom.type.code))
+          t.experience.push({n: 1, r: 'I got to go to my fave the '+t.currentRoom.type.name, t: 1});
         else if(H.Contains(t.type.hates, t.currentRoom.type.code))
           t.experience.push({n: 0.6, r: ' '})
         else
-          t.experience.push({n: 0.8, r: ' had fun in the '+t.currentRoom.type.name, t: 2});
+          t.experience.push({n: 0.8, r: 'I had fun in the '+t.currentRoom.type.name, t: 2});
       else
-        t.experience.push({n: 0.1, r: ' couldn\'t get in the '+t.currentRoom.type.name, t: 3});
+        t.experience.push({n: 0.1, r: 'I couldn\'t get in the '+t.currentRoom.type.name, t: 3});
 
     t.had_a_go = undefined;
     t.entertaining = undefined;
@@ -508,7 +535,7 @@ global.Hero = function(x, y, type) {
     }
   }
   this.end = function() {
-    UI.addStatus(t, t.name+" has left!", "A "+t.type.name.toLowerCase()+" from ...");
+    // UI.addStatus(t, t.name+" has left!", "A "+t.type.name.toLowerCase()+" from ...");
     t.active = false;
     t.sprite.kill();
     t.w.spr.kill();

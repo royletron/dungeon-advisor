@@ -34,6 +34,7 @@ var t = global.UI = {
     t.renderer = new Renderer(GAME.width, GAME.height, 1);
     t.bg = new Renderer(GAME.width, GAME.height, 1);
     t.fg = new Renderer(GAME.width, GAME.height, 1);
+    t.rating = new StarRating();
     t.properties = new Renderer(CHAR_WIDTH*28, CHAR_HEIGHT*20, 1);
     for(var x=0; x < t.w; x++) {
       if(Math.random() > 0.95)
@@ -96,7 +97,7 @@ var t = global.UI = {
     t.statuses.forEach(function(status){
       tmp.push(status);
     });
-    if(tmp.length > 5)
+    if(tmp.length > 4)
     tmp.pop().kill();
     t.statuses = tmp;
   },
@@ -107,9 +108,9 @@ var t = global.UI = {
       return t.floors[0][0]
     }
     else
-    if( t.floors[position.y] !== undefined) {
-      t.floors[position.y][position.x] = new Room(type, (position.y%2) == 1, position.x, position.y);
-      return t.floors[position.y][position.x];
+      if( t.floors[position.y] !== undefined) {
+        t.floors[position.y][position.x] = new Room(type, (position.y%2) == 1, position.x, position.y);
+        return t.floors[position.y][position.x];
     }
   },
   spawnHero: function() {
@@ -119,6 +120,8 @@ var t = global.UI = {
     t.setGold(H.DoMath(h.type.increment, h.lvl, h.type.fee));
   },
   removeHero: function(hero) {
+    console.log(hero);
+    console.log(H.Summarise(hero));
     H.RemoveFromArray( t.heroes, hero, 'id');
     console.log(hero.experience);
     hero.end();
@@ -259,25 +262,28 @@ var t = global.UI = {
               room.type.actions.forEach(function(a, i){
                 H.WriteText(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
                 H.WriteText(a.val, 195, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF', 'center');
-                var b = new Button('↑', function(d){
-                  d.a.val += 1;
-                  UI.setSelection(d.r);
-                }, (t.w - 30)+17, 6+(i*1.8), undefined, {r: room, a: a});
-                var c = new Button('↓', function(d){
-                  d.a.val += -1;
-                  UI.setSelection(d.r);
-                }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
-                if(a.val !== a.charge.t) {
-                  t.buttons.push(b);
-                  b.stamp(t.properties.context, 17, i*1.8);
-                }
-                if(a.val !== a.charge.b) {
-                  t.buttons.push(c);
-                  c.stamp(t.properties.context, 24, i*1.8);
-                }
+                t.createStepper(room, t, a, i)
               });
         }
       }
+    }
+  },
+  createStepper: function(room, t, a, i) {
+    var b = new Button('↑', function(d){
+      d.a.val += 1;
+      UI.setSelection(d.r);
+    }, (t.w - 30)+17, 6+(i*1.8), undefined, {r: room, a: a});
+    var c = new Button('↓', function(d){
+      d.a.val += -1;
+      UI.setSelection(d.r);
+    }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
+    if(a.val !== a.charge.t) {
+      t.buttons.push(b);
+      b.stamp(t.properties.context, 17, i*1.8);
+    }
+    if(a.val !== a.charge.b) {
+      t.buttons.push(c);
+      c.stamp(t.properties.context, 24, i*1.8);
     }
   },
   setGold: function(amount) {
@@ -314,11 +320,12 @@ var t = global.UI = {
         if(room !== undefined)
         {
           room.renderer.stamp(ctx, 2 + (x * ROOM_WIDTH), 6 + (y * ROOM_HEIGHT));
-          room.slots.forEach(function(s){
-            if(s != undefined)
-              if(s.npc)
-                s.npc.c.stamp(ctx, 2 +  (x * ROOM_WIDTH) + s.x, 6 + (y * ROOM_HEIGHT) + 7.6);
-          })
+          if(room.slots)
+            room.slots.forEach(function(s){
+              if(s != undefined)
+                if(s.npc)
+                  s.npc.c.stamp(ctx, 2 +  (x * ROOM_WIDTH) + s.x, 6 + (y * ROOM_HEIGHT) + 7.6);
+            })
         }
         else{
           S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8);
@@ -337,11 +344,13 @@ var t = global.UI = {
     t.properties.stamp(ctx,  t.w -30, 6);
 
     t.counters.forEach(function (counter, x){
-      counter.stamp(ctx, 3 + (x*7), 4);
+      counter.stamp(ctx, 3 + (x*8), 4);
     }.bind( t));
 
     t.add_floor_button.stamp(ctx);
     t.fg.stamp(ctx);
+
+    t.rating.stamp(ctx, 16, 4);
 
     if( t.selected_room !== undefined)
       t.drawSelection(ctx, (2+(t.selected_room.x*ROOM_WIDTH)), (6 + (t.selected_room.y*ROOM_HEIGHT)), ROOM_WIDTH, ROOM_HEIGHT);

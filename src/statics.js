@@ -19,6 +19,61 @@ global.H = {
   MouseUp: false,
   MouseClick: false,
   _clicked: false,
+  Summarise: function(hero, loop) {
+    var score = 0;
+    var rooms = 0;
+    var empty = 0;
+    var review = '';
+    if(loop == undefined)
+    {
+      UI.floors.forEach(function(floor){
+        floor.forEach(function(room){
+          if(room != undefined)
+            rooms++;
+          else
+            empty++;
+        })
+      })
+      if(hero.lvl/10 > UI.floors.length/4)
+        hero.experience.push({n: 0.2, r: 'there were not enough floors'});
+      if(empty + ((Math.random()*4) - 2) > 4)
+        hero.experience.push({n: 0, r: 'there are lots of empty rooms'});
+    }
+    var _tmp = [];
+    var first = true;
+    hero.experience.forEach(function(exp, i){
+      score += exp.n;
+      if((Math.random() > 0.5) && (!H.InArray(_tmp, exp, 't'))) {
+        _tmp.push(exp);
+        if(!first)
+          review += ' and ';
+        first = false;
+        if(exp.n > 0.3)
+          review += H.GetRandomEntry(['I liked', 'It was good', 'I enjoyed']) + ' that '+ exp.r;
+        else
+          review += H.GetRandomEntry(['I hated', 'It was terrible', 'I didn\'t enjoy']) + ' that '+ exp.r
+      }
+    })
+    if(hero.experience.length == 0){
+      return 'Terrible';
+    }
+    if(review.length == 0)
+      review = H.Summarise(hero, true);
+    return review
+  },
+  InArray: function(arr, value, column) {
+    for(var i=0; i < arr.length; i++)
+    {
+      var ent = arr[i];
+      if(column)
+        if(ent[column] === value)
+          return true
+      else
+        if(ent === value)
+          return true
+    }
+    return false;
+  },
   WriteText: function(t, x, y, c, f, l, a) {
     c.font = f;
     c.fillStyle = '#'+l;
@@ -72,6 +127,7 @@ global.H = {
     item = null;
   },
   Contains: function(a, b) {
+    if(a === undefined) return false;
     return a.split(b).length > 1;
   },
   GetRandomEntry: function(arr) {
@@ -189,6 +245,8 @@ global.P = {
   FLOOR: new Char('┈', '63545E', '302222'),
   OFF_FLOOR: new Char('┈', '3b3539', '302222'),
   GOLD: new Char('●', 'FFE545'),
+  B_STAR: new Char('☆', '490A3D'),
+  STAR: new Char('★', 'E97F02'),
   FIGHT: new Char('⤧', 'FF0066'),
   VOID: new Char(' ', '302222', '302222')
 };
