@@ -55,11 +55,11 @@ global.H = {
       }
     })
     if(hero.experience.length == 0){
-      return 'Terrible';
+      return {r: 0, s: 'Terrible'};
     }
     if(review.length == 0)
-      review = H.Summarise(hero, true);
-    return review
+      review = H.Summarise(hero, true).s;
+    return {r: score/hero.experience.length, s: review}
   },
   InArray: function(arr, value, column) {
     for(var i=0; i < arr.length; i++)

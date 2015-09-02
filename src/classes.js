@@ -110,7 +110,10 @@ global.StarRating = function(txt) {
       t.r.context.clearRect(0, 0, t.r.canvas.width, t.r.canvas.height);
       for(var i=0; i < 5; i++)
       {
-        P.B_STAR.stamp(t.r.context, i, 0);
+        if(Math.round(val) > i)
+          P.STAR.stamp(t.r.context, i, 0);
+        else
+          P.B_STAR.stamp(t.r.context, i, 0);
       }
       H.WriteText(t.num.toFixed(1), 5.5*CHAR_WIDTH, CHAR_HEIGHT-1, t.r.context, FONT, '000000');
     }
@@ -126,6 +129,7 @@ global.StatusUpdate = function(hero, title, text) {
   t.hero = hero;
   t.avatar = new Avatar(hero);
   t.tw = new TypeWriter(text, 21, 4);
+  t.height = t.tw.height + 2
   t.tw.run();
   t.renderer = new Renderer(21 * CHAR_WIDTH, CHAR_HEIGHT);
   H.WriteText(title, 0, CHAR_HEIGHT-2, t.renderer.context, STATUS_FONT, 'ffffff');
@@ -148,28 +152,41 @@ global.TypeWriter = function(text, width, height, fixed) {
   t.text = text;
   t.renderer = new Renderer(width * CHAR_WIDTH, height * CHAR_HEIGHT);
   t.interval;
-  t.height = 1;
+  t.height = 0;
+  t.arr = [];
+
+  var cursorX = 0;
+  var cursorY = 0;
+  var lineHeight = CHAR_HEIGHT;
+  var i = 0;
+  while(i !== text.length) {
+    var rem = text.substr(i);
+    var space = rem.indexOf(' ');
+    space = (space === -1)?text.length:space;
+    t.renderer.context.font = STATUS_FONT;
+    var wordwidth = t.renderer.context.measureText(rem.substring(0, space)).width;
+    var w = t.renderer.context.measureText(text.charAt(i)).width;
+    if(cursorX + wordwidth >= t.renderer.canvas.width) {
+      cursorX = 0;
+      cursorY += lineHeight;
+      t.height ++;
+    }
+    t.arr.push({c: text.charAt(i), x: cursorX, y: cursorY + CHAR_HEIGHT});
+    i++;
+    cursorX += w; 
+    t.renderer.canvas.height = (t.height+2) * CHAR_HEIGHT
+  }
+
+  
   t.run = function() {
     var i = 0;
-    var cursorX = 0; var cursorY = 0; var lineHeight = CHAR_HEIGHT;
     t.interval = setInterval(function(){
-      var rem = t.text.substr(i);
-      var space = rem.indexOf(' ');
-      space = (space === -1)?t.text.length:space;
-      var wordwidth = t.renderer.context.measureText(rem.substring(0, space)).width;
-      var w = t.renderer.context.measureText(t.text.charAt(i)).width;
-      if(cursorX + wordwidth >= t.renderer.canvas.width) {
-          cursorX = 0;
-          cursorY += lineHeight;
-          t.height += 1;
-      }
-      H.WriteText(t.text.charAt(i), cursorX, cursorY + CHAR_HEIGHT, t.renderer.context, STATUS_FONT, '25989B');
-      i++;
-      cursorX += w;
-      if(i === t.text.length)
+      H.WriteText(t.arr[i].c, t.arr[i].x, t.arr[i].y, t.renderer.context, STATUS_FONT, '25989b');
+      if(i == t.arr.length-1)
         clearInterval(t.interval);
+      i++;
     }.bind(t), 110);
-  };
+  }
   t.stamp = function(toCanvas, x, y) {
     t.renderer.stamp(toCanvas, x, y);
   }
@@ -204,7 +221,6 @@ global.Physics = {
   _bodies: [],
   createBody: function(entity, x, y, width, height, fixed) {
     var body = new Body(x, y, width, height, fixed);
-    // this._bodies.push({body: body, entity: entity});
     body.i = p_i;
     p_i ++;
     return body;
@@ -325,6 +341,7 @@ global.Renderer = function(width, height, alpha) {
   t.context = t.canvas.getContext('2d');
   t.context.globalAlpha = t.alpha = alpha || 1;
   t.context.imageSmoothingEnabled = false;
+  t.context.fontStyle = FONT;
   t.whole = false;
   this.stamp = function(toCanvas, x, y){
     var coords = H.BufferToCoords(x || 0, y || 0, t.whole);

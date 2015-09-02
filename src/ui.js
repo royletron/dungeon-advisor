@@ -27,6 +27,8 @@ var t = global.UI = {
   room_buttons: [],
   changed: false,
   offset: 0,
+  r_total: 0,
+  r_count: 0,
   init: function(ctx){
     t.ctx = ctx;
     t.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -120,10 +122,12 @@ var t = global.UI = {
     t.setGold(H.DoMath(h.type.increment, h.lvl, h.type.fee));
   },
   removeHero: function(hero) {
-    console.log(hero);
-    console.log(H.Summarise(hero));
+    var exp = H.Summarise(hero);
+    t.r_total += exp.r;
+    t.r_count += 1;
+    t.rating.setNum((t.r_total/t.r_count)*5);
+    t.addStatus(hero, (exp.r*5).toFixed(1)+' rating from '+hero.name, exp.s);
     H.RemoveFromArray( t.heroes, hero, 'id');
-    console.log(hero.experience);
     hero.end();
     H.Null(hero);
     t.num_heroes =  t.heroes.length;
@@ -336,10 +340,11 @@ var t = global.UI = {
       hero.stamp(ctx);
     });
 
-
-    t.statuses.forEach(function(status, y){
-      status.stamp(ctx,  t.w-29, 26 + (y * 3));
-    }.bind( t));
+    var j = 0;
+    t.statuses.forEach(function(status){
+      status.stamp(ctx,  t.w-29, 25.5 + j);
+      j += status.height;
+    }.bind(t));
 
     t.properties.stamp(ctx,  t.w -30, 6);
 
