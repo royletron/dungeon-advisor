@@ -63,7 +63,10 @@ var t = global.UI = {
                 else
                   P.FLOOR.stamp(t.bg.context, x, y);
                 else
-                  P.VOID.stamp(t.bg.context, x, y);
+                  if(y == t.h-1)
+                    P.randomSolid().stamp(t.bg.context, x, y);
+                  else
+                    P.VOID.stamp(t.bg.context, x, y);
       }
     }
     t.bg.context.font = HEADING_FONT;
