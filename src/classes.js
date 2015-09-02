@@ -74,7 +74,7 @@ global.Button = function(text, cb, x, y, cost, data) {
   }
 }
 
-global.Avatar = function(hero) {
+global.Avatar = function(hero, center) {
   var t = this;
   t.color = '25989B';
   t.hero = hero;
@@ -82,10 +82,11 @@ global.Avatar = function(hero) {
   t.renderer.whole = false;
   t.stamped = false;
   t.current_floor=0
+  t.center = center
   t.gen = function(){
     H.WriteText('◜◝', 0, CHAR_HEIGHT, t.renderer.context, FONT, t.color);
     H.WriteText('◟◞', 0, CHAR_HEIGHT*2, t.renderer.context, FONT, t.color);
-    t.hero.stamp(t.renderer.context, 0.3, 0.65);
+    t.hero.stamp(t.renderer.context, t.center ? 1:0.3, 0.65);
     t.stamped = true;
   }
   if(t.hero.stamp != null)

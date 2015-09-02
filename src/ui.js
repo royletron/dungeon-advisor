@@ -234,11 +234,14 @@ var t = global.UI = {
               room.slots.forEach(function(s, i){
                 if(s.npc)
                 {
-                  H.WriteText(s.npc.name+' ('+s.npc.type.name+')', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
+                  var a = new Avatar(s.npc.c, true);
+                  H.WriteText(s.npc.name+' ('+s.npc.type.name+')', 36, 18 + (CHAR_HEIGHT*1.8)*(i*2), t.properties.context, FONT, 'FFFFFF');
+                  a.stamp(t.properties.context, 0, (i*2)*1.8);
+                  H.Null(a);
                 }
                 else
                 {
-                  H.WriteText('empty', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'EDEDED');
+                  H.WriteText('empty', 36, 18 + (CHAR_HEIGHT*1.8)*(i*2), t.properties.context, FONT, 'EDEDED');
                 }
               });
               var w = 0;
@@ -255,9 +258,9 @@ var t = global.UI = {
                     }
                   })
                   t.changed = true;
-                }, (t.w - 30) + w, 6+((room.slots.length+0.2+h)*1.8), Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t)), {e: en, r: room});
+                }, (t.w - 30) + w, 6+(((room.slots.length*2)+0.2+h)*1.8), Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t)), {e: en, r: room});
                 t.buttons.push(n);
-                n.stamp(t.properties.context, 0+w, ((room.slots.length+0.2+h)*1.8));
+                n.stamp(t.properties.context, 0+w, (((room.slots.length * 2)+0.2+h)*1.8));
                 w += n.r.width/CHAR_WIDTH;
                 if(w > 17) { h++; w = 0; }
               });
