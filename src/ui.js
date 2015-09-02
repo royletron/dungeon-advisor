@@ -26,6 +26,7 @@ var t = global.UI = {
   buttons: [],
   room_buttons: [],
   changed: false,
+  offset: 0,
   init: function(ctx){
     t.ctx = ctx;
     t.w = Math.floor(GAME.width / CHAR_WIDTH);
@@ -126,6 +127,7 @@ var t = global.UI = {
   },
   _clicked: false,
   update: function(dt){
+    t.offset += dt*5;
     if(t.changed)
       t.setSelection(t.selected_room);
     t.changed = false;
@@ -168,6 +170,10 @@ var t = global.UI = {
           t.setSelection(room || {x: x, y: y, found: false});
         }.bind( t));
       }.bind( t));
+      t.heroes.forEach(function(hero){
+        if(H.HitTestPoint(H.MouseCoords, {x: hero.body.x * CHAR_WIDTH, y: hero.body.y * CHAR_HEIGHT, width:CHAR_WIDTH, height:CHAR_HEIGHT}))
+          t.setSelection(hero, true);
+      }.bind(t))
     }
     if( t.selected_room !== undefined)
     if( t.selected_room.found === false) {
@@ -183,87 +189,94 @@ var t = global.UI = {
   clearProperties: function() {
     t.properties.context.clearRect(0, 0,  t.properties.canvas.width,  t.properties.canvas.height);
   },
-  setSelection: function(room) {
-    t.selected_room = room;
-    t.clearProperties();
-    t.buttons.forEach(function(b) {
-      b.kill();
-    })
-    t.buttons = [];
-    if( t.selected_room !== undefined){
-      if( t.selected_room.found === false)
-      {
-        R.all().forEach(function(room, idx){
-          var r = R[room];
-          H.WriteText(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.properties.context, FONT, 'FFFFFF');
-          if( t.room_buttons[idx] === undefined)
-          {
-            t.room_buttons.push(new Button('Add', function(d){
-              var room = UI.addRoom(R[d], UI.selected_room);
-              UI.setSelection(room);
-              UI.gold += -room.type.cost;
-            }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
-          }
-          t.room_buttons[idx].stamp( t.properties.context, 16, idx*1.8);
-        }.bind(t));
-      }
-      else
-      {
-        if(room.type)
-          if(room.type.battle)
-          {
-            room.slots.forEach(function(s, i){
-              if(s.npc)
-              {
-                H.WriteText(s.npc.name+' ('+s.npc.type.name+')', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
-              }
-              else
-              {
-                H.WriteText('empty', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'EDEDED');
-              }
-            });
-            var w = 0;
-            var h = 0;
-            room.type.enemies.split('').forEach(function(e, i){
-              var en = E.GetEnemy(e);
-              var f = false;
-              var n = new Button(en.name, function(d){
-                d.r.slots.forEach(function(s, idx){
-                  if((s.npc == undefined) && !f)
-                  {
-                    f = true;
-                    s.npc = new Enemy(en, s, d.r);
-                  }
-                })
-                t.changed = true;
-              }, (t.w - 30) + w, 6+((room.slots.length+0.2+h)*1.8), Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t)), {e: en, r: room});
-              t.buttons.push(n);
-              n.stamp(t.properties.context, 0+w, ((room.slots.length+0.2+h)*1.8));
-              w += n.r.width/CHAR_WIDTH;
-              if(w > 17) { h++; w = 0; }
-            });
-          }
-          else if(room.type.actions)
-            room.type.actions.forEach(function(a, i){
-              H.WriteText(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
-              H.WriteText(a.val, 195, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF', 'center');
-              var b = new Button('↑', function(d){
-                d.a.val += 1;
-                UI.setSelection(d.r);
-              }, (t.w - 30)+17, 6+(i*1.8), undefined, {r: room, a: a});
-              var c = new Button('↓', function(d){
-                d.a.val += -1;
-                UI.setSelection(d.r);
-              }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
-              if(a.val !== a.charge.t) {
-                t.buttons.push(b);
-                b.stamp(t.properties.context, 17, i*1.8);
-              }
-              if(a.val !== a.charge.b) {
-                t.buttons.push(c);
-                c.stamp(t.properties.context, 24, i*1.8);
-              }
-            });
+  setSelection: function(room, isHero) {
+    t.selected_hero = t.selected_room = undefined;
+    if(isHero) {
+      t.selected_hero = room;
+    }
+    else
+    {
+      t.selected_room = room;
+      t.clearProperties();
+      t.buttons.forEach(function(b) {
+        b.kill();
+      })
+      t.buttons = [];
+      if( t.selected_room !== undefined){
+        if( t.selected_room.found === false)
+        {
+          R.all().forEach(function(room, idx){
+            var r = R[room];
+            H.WriteText(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.properties.context, FONT, 'FFFFFF');
+            if( t.room_buttons[idx] === undefined)
+            {
+              t.room_buttons.push(new Button('Add', function(d){
+                var room = UI.addRoom(R[d], UI.selected_room);
+                UI.setSelection(room);
+                UI.gold += -room.type.cost;
+              }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
+            }
+            t.room_buttons[idx].stamp( t.properties.context, 16, idx*1.8);
+          }.bind(t));
+        }
+        else
+        {
+          if(room.type)
+            if(room.type.battle)
+            {
+              room.slots.forEach(function(s, i){
+                if(s.npc)
+                {
+                  H.WriteText(s.npc.name+' ('+s.npc.type.name+')', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
+                }
+                else
+                {
+                  H.WriteText('empty', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'EDEDED');
+                }
+              });
+              var w = 0;
+              var h = 0;
+              room.type.enemies.split('').forEach(function(e, i){
+                var en = E.GetEnemy(e);
+                var f = false;
+                var n = new Button(en.name, function(d){
+                  d.r.slots.forEach(function(s, idx){
+                    if((s.npc == undefined) && !f)
+                    {
+                      f = true;
+                      s.npc = new Enemy(en, s, d.r);
+                    }
+                  })
+                  t.changed = true;
+                }, (t.w - 30) + w, 6+((room.slots.length+0.2+h)*1.8), Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t)), {e: en, r: room});
+                t.buttons.push(n);
+                n.stamp(t.properties.context, 0+w, ((room.slots.length+0.2+h)*1.8));
+                w += n.r.width/CHAR_WIDTH;
+                if(w > 17) { h++; w = 0; }
+              });
+            }
+            else if(room.type.actions)
+              room.type.actions.forEach(function(a, i){
+                H.WriteText(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
+                H.WriteText(a.val, 195, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF', 'center');
+                var b = new Button('↑', function(d){
+                  d.a.val += 1;
+                  UI.setSelection(d.r);
+                }, (t.w - 30)+17, 6+(i*1.8), undefined, {r: room, a: a});
+                var c = new Button('↓', function(d){
+                  d.a.val += -1;
+                  UI.setSelection(d.r);
+                }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
+                if(a.val !== a.charge.t) {
+                  t.buttons.push(b);
+                  b.stamp(t.properties.context, 17, i*1.8);
+                }
+                if(a.val !== a.charge.b) {
+                  t.buttons.push(c);
+                  c.stamp(t.properties.context, 24, i*1.8);
+                }
+              });
+        }
       }
     }
   },
@@ -283,11 +296,12 @@ var t = global.UI = {
   makeSelection: function(x, y) {
     // t.selected_room = {x: x, y: y, room:  t.selected_room};
   },
-  drawSelection: function(ctx) {
-    var x =  t.selected_room.x;
-    var y =  t.selected_room.y;
+  drawSelection: function(ctx, x, y, width, height) {
     ctx.strokeStyle = "#25989B";
-    ctx.strokeRect((2+(x*ROOM_WIDTH))*CHAR_WIDTH, (6 + (y * ROOM_HEIGHT)) *CHAR_HEIGHT, ROOM_WIDTH*CHAR_WIDTH, ROOM_HEIGHT*CHAR_HEIGHT);
+    ctx.lineWidth = 3;
+    ctx.setLineDash([4, 2]);
+    ctx.lineDashOffset = -t.offset;
+    ctx.strokeRect(x*CHAR_WIDTH, y*CHAR_HEIGHT, width*CHAR_WIDTH, height*CHAR_HEIGHT);
   },
   draw: function() {
     var ctx =  t.renderer.context;
@@ -339,7 +353,10 @@ var t = global.UI = {
     t.fg.stamp(ctx);
 
     if( t.selected_room !== undefined)
-    t.drawSelection(ctx);
+      t.drawSelection(ctx, (2+(t.selected_room.x*ROOM_WIDTH)), (6 + (t.selected_room.y*ROOM_HEIGHT)), ROOM_WIDTH, ROOM_HEIGHT);
+    else if( t.selected_hero !== undefined)
+      t.drawSelection(ctx, t.selected_hero.body.x - 0.2, t.selected_hero.body.y -0.3, 1.8, 1.6);
+
     //  t.type.stamp(ctx,  t.w-27, 9);
 
     t.renderer.stamp(g_ctx);

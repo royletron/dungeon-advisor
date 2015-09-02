@@ -443,9 +443,12 @@ global.Hero = function(x, y, type) {
     console.log(c, t.entertaining, t.had_a_go);
     if(t.entertaining !== undefined)
       if(t.had_a_go === true)
-        t.experience.push({n: 1, r: 'Loved the '+t.currentRoom.type.name});
+        if(H.Contains(t.type.faves, t.currentRoom.type.code))
+          t.experience.push({n: 1, r: ' going to my fave the '+t.currentRoom.type.name});
+        else if(H.Contains(t.type.hates, t.currentRoom.type.code))
+          t.experience.push({n: 0.4, r: ' '})
       else
-      t.experience.push({n: -1, r: 'There was no room in '+t.currentRoom.type.name});
+      t.experience.push({n: -1, r: ' couldn\'t get in the '+t.currentRoom.type.name});
 
     t.had_a_go = undefined;
     t.entertaining = undefined;
@@ -457,7 +460,7 @@ global.Hero = function(x, y, type) {
         if(Math.random() < 0.95)
           t.entertaining = true;
       }
-      else if(h.Contains(t.type.hates, c.type.code))
+      else if(H.Contains(t.type.hates, c.type.code))
       {
         if(Math.random() < 0.2)
         {
