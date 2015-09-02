@@ -403,7 +403,7 @@ global.Hero = function(x, y, type) {
     t.lvl += 1;
     t.max_health = t.getHealth();
     console.log('lvl up');
-    t.experience.push({n: 1, r: 'Levelled up to '+t.lvl});
+    t.experience.push({n: 1, r: 'Levelled up to '+t.lvl, t:'5'});
   }
   t.room_action = function(room) {
     console.log(room);
@@ -446,15 +446,15 @@ global.Hero = function(x, y, type) {
       if(t.currentRoom.type.battle)
       {
         if(t.slot && t.slot.npc)
-          t.experience.push({n: 2, r: 'Great to fight against real enemies like '+t.slot.npc.name});
+          t.experience.push({n: 2, r: 'Great to fight against real enemies like '+t.slot.npc.name, t:'4'});
         else
-          t.experience.push({n: 1, r: 'Would have been better to fight real enemies'});
+          t.experience.push({n: 1, r: 'Would have been better to fight real enemies', t: '3'});
       }
       else
-        t.experience.push({n: 1, r: 'Loved the '+t.currentRoom.type.name});
+        t.experience.push({n: 1, r: 'Loved the '+t.currentRoom.type.name, t: '2'});
     }
     else if(t.had_a_go === false)
-      t.experience.push({n: -1, r: 'There was no room in '+t.currentRoom.type.name});
+      t.experience.push({n: -1, r: 'There was no room in '+t.currentRoom.type.name, t: '1'});
 
     t.had_a_go = undefined;
     t.entertaining = false;
@@ -506,7 +506,6 @@ global.Hero = function(x, y, type) {
   }
   this.end = function() {
     // UI.addStatus(t, t.name+" has left!", "A "+t.type.name.toLowerCase()+" from ...");
-
     t.active = false;
     t.sprite.kill();
     t.w.spr.kill();

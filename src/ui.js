@@ -106,9 +106,9 @@ var t = global.UI = {
       return t.floors[0][0]
     }
     else
-    if( t.floors[position.y] !== undefined) {
-      t.floors[position.y][position.x] = new Room(type, (position.y%2) == 1, position.x, position.y);
-      return t.floors[position.y][position.x];
+      if( t.floors[position.y] !== undefined) {
+        t.floors[position.y][position.x] = new Room(type, (position.y%2) == 1, position.x, position.y);
+        return t.floors[position.y][position.x];
     }
   },
   spawnHero: function() {
@@ -223,6 +223,7 @@ var t = global.UI = {
                 H.WriteText('empty', 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'EDEDED');
               }
             });
+
             var w = 0;
             var h = 0;
             room.type.enemies.split('').forEach(function(e, i){
@@ -248,24 +249,27 @@ var t = global.UI = {
             room.type.actions.forEach(function(a, i){
               H.WriteText(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF');
               H.WriteText(a.val, 195, 18 + (CHAR_HEIGHT*1.8)*i, t.properties.context, FONT, 'FFFFFF', 'center');
-              var b = new Button('↑', function(d){
-                d.a.val += 1;
-                UI.setSelection(d.r);
-              }, (t.w - 30)+17, 6+(i*1.8), undefined, {r: room, a: a});
-              var c = new Button('↓', function(d){
-                d.a.val += -1;
-                UI.setSelection(d.r);
-              }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
-              if(a.val !== a.charge.t) {
-                t.buttons.push(b);
-                b.stamp(t.properties.context, 17, i*1.8);
-              }
-              if(a.val !== a.charge.b) {
-                t.buttons.push(c);
-                c.stamp(t.properties.context, 24, i*1.8);
-              }
+              t.createStepper(room, t, a, i)
             });
       }
+    }
+  },
+  createStepper: function(room, t, a, i) {
+    var b = new Button('↑', function(d){
+      d.a.val += 1;
+      UI.setSelection(d.r);
+    }, (t.w - 30)+17, 6+(i*1.8), undefined, {r: room, a: a});
+    var c = new Button('↓', function(d){
+      d.a.val += -1;
+      UI.setSelection(d.r);
+    }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
+    if(a.val !== a.charge.t) {
+      t.buttons.push(b);
+      b.stamp(t.properties.context, 17, i*1.8);
+    }
+    if(a.val !== a.charge.b) {
+      t.buttons.push(c);
+      c.stamp(t.properties.context, 24, i*1.8);
     }
   },
   setGold: function(amount) {

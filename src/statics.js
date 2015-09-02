@@ -36,15 +36,31 @@ global.H = {
       hero.experience.push({n: -2, r: 'Not enough rooms'});
     if(empty + ((Math.random()*4) - 2) > 4)
       hero.experience.push({n: -1, r: 'Lots of empty rooms'});
+    var _tmp = [];
     hero.experience.forEach(function(exp, i){
       score += exp.n;
-      if(Math.random() > 0.5)
+      if((Math.random() > 0.5) && (!H.InArray(_tmp, exp, 't'))) {
+        _tmp.push(exp);
         if(exp.n > 0)
           review += H.GetRandomEntry(['I liked', 'It was good that', 'I enjoyed']) + ' '+ exp.r;
         else
           review += H.GetRandomEntry(['I hated', 'It was terrible that', 'I didn\'t enjoy']) + ' '+ exp.r
+      }
     })
     console.log(score, review);
+  },
+  InArray: function(arr, value, column) {
+    for(var i=0; i < arr.length; i++)
+    {
+      var ent = arr[i];
+      if(column)
+        if(ent[column] === value)
+          return true
+      else
+        if(ent === value)
+          return true
+    }
+    return false;
   },
   WriteText: function(t, x, y, c, f, l, a) {
     c.font = f;
