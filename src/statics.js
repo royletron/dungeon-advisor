@@ -26,24 +26,31 @@ global.H = {
     var review = '';
     if(loop == undefined)
     {
+      var r = [];
       UI.floors.forEach(function(floor){
         floor.forEach(function(room){
           if(room != undefined)
-            rooms++;
+            r.push(room);
           else
             empty++;
         })
       })
       if(hero.lvl/10 > UI.floors.length/4)
-        hero.experience.push({n: 0.2, r: 'there were not enough floors'});
+        hero.experience.push({n: 0.2, r: 'there were not enough floors', t: 12});
       if(empty + ((Math.random()*4) - 2) > 4)
-        hero.experience.push({n: 0, r: 'there are lots of empty rooms'});
+        hero.experience.push({n: 0, r: 'there are lots of empty rooms', t: 11});
+
+      hero.type.faves.split('').forEach(function(f){
+        var fave = R.get(f);
+        if(!H.InArray(r, fave, 'type'))
+          hero.experience.push({n: 0, r: 'they didn\'t have a '+fave.name.toLowerCase(), t: 10});
+      })
     }
     var _tmp = [];
     var first = true;
     hero.experience.forEach(function(exp, i){
       score += exp.n;
-      if((Math.random() > 0.5) && (!H.InArray(_tmp, exp, 't'))) {
+      if((Math.random() > 0.5) && (!H.InArray(_tmp, exp.t, 't'))) {
         _tmp.push(exp);
         if(!first)
           review += ' and ';
@@ -274,10 +281,18 @@ global.R = {
   random: function(){
     return R[H.GetRandomEntry(this.all())];
   },
+  get: function(c) {
+    var t
+    H.EachValueKey(R, function(k){
+      if(R[k].code == c)
+        t = R[k]
+    });
+    return t;
+  },
   all: function() {
     var sel = [];
     H.EachValueKey(R, function(k){
-      if((k != 'random') && (k !='all'))
+      if((k != 'random') && (k !='all') && (k!='get'))
         sel.push(k);
     });
     return sel;

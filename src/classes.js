@@ -441,7 +441,6 @@ global.Hero = function(x, y, type) {
     t.lvl += 1;
     t.max_health = t.getHealth();
     t.experience.push({n: 1, r: 'Levelled up to '+t.lvl, t: 4});
-    console.log('lvl up');
   }
   t.room_action = function(room) {
     console.log(room);
