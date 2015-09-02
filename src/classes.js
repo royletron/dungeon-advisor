@@ -446,9 +446,11 @@ global.Hero = function(x, y, type) {
         if(H.Contains(t.type.faves, t.currentRoom.type.code))
           t.experience.push({n: 1, r: ' going to my fave the '+t.currentRoom.type.name});
         else if(H.Contains(t.type.hates, t.currentRoom.type.code))
-          t.experience.push({n: 0.4, r: ' '})
+          t.experience.push({n: 0.6, r: ' '})
+        else
+          t.experience.push({n: 0.8, r: ' had fun in the '+t.currentRoom.type.name});
       else
-      t.experience.push({n: -1, r: ' couldn\'t get in the '+t.currentRoom.type.name});
+        t.experience.push({n: 0.1, r: ' couldn\'t get in the '+t.currentRoom.type.name});
 
     t.had_a_go = undefined;
     t.entertaining = undefined;

@@ -191,13 +191,13 @@ var t = global.UI = {
   },
   setSelection: function(room, isHero) {
     t.selected_hero = t.selected_room = undefined;
+    t.clearProperties();
     if(isHero) {
       t.selected_hero = room;
     }
     else
     {
       t.selected_room = room;
-      t.clearProperties();
       t.buttons.forEach(function(b) {
         b.kill();
       })
@@ -293,12 +293,9 @@ var t = global.UI = {
     hero.turnAround();
     return hero;
   },
-  makeSelection: function(x, y) {
-    // t.selected_room = {x: x, y: y, room:  t.selected_room};
-  },
   drawSelection: function(ctx, x, y, width, height) {
     ctx.strokeStyle = "#25989B";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2;
     ctx.setLineDash([4, 2]);
     ctx.lineDashOffset = -t.offset;
     ctx.strokeRect(x*CHAR_WIDTH, y*CHAR_HEIGHT, width*CHAR_WIDTH, height*CHAR_HEIGHT);
@@ -326,12 +323,6 @@ var t = global.UI = {
         else{
           S.ADD_ROOM.stamp.stamp(ctx, (x * ROOM_WIDTH) + 8, (y * ROOM_HEIGHT) + 8);
         }
-        if(UI.selected_room !== undefined)
-          if(room !== undefined)
-            if(room.id == UI.selected_room.id)
-              UI.makeSelection(x, y);
-            else if((x == UI.selected_room.x) && (y == UI.selected_room.y))
-              UI.makeSelection(x, y);
       });
     });
     t.heroes.forEach(function(hero) {
