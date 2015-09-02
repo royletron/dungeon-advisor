@@ -402,7 +402,6 @@ global.Hero = function(x, y, type) {
   t.levelUp = function() {
     t.lvl += 1;
     t.max_health = t.getHealth();
-    console.log('lvl up');
     t.experience.push({n: 1, r: 'Levelled up to '+t.lvl});
   }
   t.room_action = function(room) {
@@ -441,23 +440,32 @@ global.Hero = function(x, y, type) {
     }
   }
   t.roomChanged = function(c) {
-    if(t.had_a_go === true)
-      t.experience.push({n: 1, r: 'Loved the '+t.currentRoom.type.name});
-    else if(t.had_a_go === false)
+    console.log(c, t.entertaining, t.had_a_go);
+    if(t.entertaining !== undefined)
+      if(t.had_a_go === true)
+        t.experience.push({n: 1, r: 'Loved the '+t.currentRoom.type.name});
+      else
       t.experience.push({n: -1, r: 'There was no room in '+t.currentRoom.type.name});
 
     t.had_a_go = undefined;
-    t.entertaining = false;
+    t.entertaining = undefined;
     t.currentRoom = c;
     if(c !== undefined)
     {
       if(H.Contains(t.type.faves, c.type.code))
       {
-        if(Math.random() < 0.9)
+        if(Math.random() < 0.95)
           t.entertaining = true;
       }
+      else if(h.Contains(t.type.hates, c.type.code))
+      {
+        if(Math.random() < 0.2)
+        {
+          t.entertaining = true;
+        }
+      }
       else{
-        if(Math.random() < 0.1)
+        if(Math.random() < 0.5)
           t.entertaining = true;
       }
     }

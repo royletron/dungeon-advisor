@@ -119,6 +119,7 @@ var t = global.UI = {
   },
   removeHero: function(hero) {
     H.RemoveFromArray( t.heroes, hero, 'id');
+    console.log(hero.experience);
     hero.end();
     H.Null(hero);
     t.num_heroes =  t.heroes.length;
@@ -138,7 +139,7 @@ var t = global.UI = {
     {
       t.spawn_counter = 0;
       t.spawn_wait = H.GetRandom(24- ( t.popularity*4), (24 - ( t.popularity*4)) + ( 24 - ( t.popularity*4)));
-      t.spawnHero();
+      // t.spawnHero();
     }
     t.heroes.forEach(function(hero) {
       hero.update(dt);
