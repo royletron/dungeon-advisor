@@ -24,7 +24,7 @@ var t = global.UI = {
   statuses: [],
   counters: [],
   buttons: [],
-  room_buttons: [],
+  rb: [],
   changed: false,
   offset: 0,
   r_total: 0,
@@ -152,9 +152,9 @@ var t = global.UI = {
     }
     t.heroes.forEach(function(hero) {
       hero.update(dt);
-      if(hero.sprite.x < ( t.w - 32))
+      if(hero.s.x < ( t.w - 32))
       {
-        if(hero.sprite.x < ( t.spawn_point.x - 2))
+        if(hero.s.x < ( t.spawn_point.x - 2))
         if(hero.current_floor <  t.floors.length)
         t.flipHero(hero);
         else
@@ -184,7 +184,7 @@ var t = global.UI = {
     }
     if( t.selected_room !== undefined)
     if( t.selected_room.found === false) {
-      t.room_buttons.forEach(function(button){
+      t.rb.forEach(function(button){
         button.update(dt);
       });
     }
@@ -193,12 +193,12 @@ var t = global.UI = {
     })
     t.add_floor_button.update(dt);
   },
-  clearProperties: function() {
+  cPs: function() {
     t.properties.context.clearRect(0, 0,  t.properties.canvas.width,  t.properties.canvas.height);
   },
   setSelection: function(room, isHero) {
     t.selected_hero = t.selected_room = undefined;
-    t.clearProperties();
+    t.cPs();
     if(isHero) {
       t.selected_hero = room;
     }
@@ -215,15 +215,15 @@ var t = global.UI = {
           R.all().forEach(function(room, idx){
             var r = R[room];
             H.WriteText(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.properties.context, FONT, 'FFFFFF');
-            if( t.room_buttons[idx] === undefined)
+            if( t.rb[idx] === undefined)
             {
-              t.room_buttons.push(new Button('Add', function(d){
+              t.rb.push(new Button('Add', function(d){
                 var room = UI.addRoom(R[d], UI.selected_room);
                 UI.setSelection(room);
                 UI.gold += -room.type.cost;
               }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
             }
-            t.room_buttons[idx].stamp( t.properties.context, 16, idx*1.8);
+            t.rb[idx].stamp( t.properties.context, 16, idx*1.8);
           }.bind(t));
         }
         else

@@ -68,7 +68,7 @@ function update(timestamp) {
 
     dt = dt * TIME;
 
-    Physics.update(dt);
+    // Physics.update(dt);
     UI.update(dt);
 
     UI.draw();

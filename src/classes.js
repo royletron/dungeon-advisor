@@ -401,14 +401,13 @@ global.Hero = function(x, y, type) {
   var t = this;
   t.type = type;
   t.current_floor = 1;
-  t.sprite = new Char(type.symbol, type.color);
+  t.s = new Char(type.symbol, type.color);
   t.body = Physics.createBody(t.sprite, x, y, CHAR_WIDTH, CHAR_HEIGHT);
   t.w = {type: E.GetRandomWeapon(type.weapons), d:true};
   t.name = N.Random();
   t.w.x = x + t.w.type.offsetx;
   t.w.y = y + t.w.type.top;
   t.w.spr = new Char(t.w.type.symbol, t.w.type.color);
-  t.sprite.renderer.whole = t.w.spr.renderer.whole = false;
   t.active = true;
   t.experience = [];
   t.id = heroId;
@@ -447,8 +446,8 @@ global.Hero = function(x, y, type) {
   }
   t.update = function(dt) {
     t.body.update(dt);
-    t.sprite.x = t.body.x;
-    t.sprite.y = t.body.y;
+    t.s.x = t.body.x;
+    t.s.y = t.body.y;
     t.update_weapon(dt);
     var c = t.getCurrentRoom();
     if(t.entertaining)
@@ -544,16 +543,16 @@ global.Hero = function(x, y, type) {
     var wx, wy;
     if(x != undefined) wx = x + t.w.type.offsetx;
     if(y != undefined) wy = y + t.w.type.top;
-    if(t.sprite && t.active)
+    if(t.s && t.active)
     {
-      t.sprite.stamp(toCanvas, x || t.body.x, y || t.body.y);
+      t.s.stamp(toCanvas, x || t.body.x, y || t.body.y);
       t.w.spr.stamp(toCanvas, wx || t.w.x, wy || t.w.y);
     }
   }
   this.end = function() {
     // UI.addStatus(t, t.name+" has left!", "A "+t.type.name.toLowerCase()+" from ...");
     t.active = false;
-    t.sprite.kill();
+    t.s.kill();
     t.w.spr.kill();
     H.Null(t);
   }
