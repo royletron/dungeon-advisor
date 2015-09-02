@@ -67,6 +67,7 @@ global.Button = function(text, cb, x, y, cost, data) {
     if(H.MouseClick)
     {
       if(H.HitTestPoint(H.MouseCoords, t.getHitArea())) {
+        H.MouseClick = false;
         t._clicked = true;
         t.cb(t.data);
       }
@@ -173,11 +174,11 @@ global.TypeWriter = function(text, width, height, fixed) {
     }
     t.arr.push({c: text.charAt(i), x: cursorX, y: cursorY + CHAR_HEIGHT});
     i++;
-    cursorX += w; 
+    cursorX += w;
     t.renderer.canvas.height = (t.height+2) * CHAR_HEIGHT
   }
 
-  
+
   t.run = function() {
     var i = 0;
     t.interval = setInterval(function(){
@@ -528,14 +529,14 @@ global.Hero = function(x, y, type) {
       return undefined;
   }
   t.turnAround = function() {
-    t.sprite.renderer.flip();
+    t.s.renderer.flip();
     t.w.spr.renderer.flip();
     if(t.facing == RIGHT) {
       t.facing = LEFT;
       t.body.velocity.x = -t.speed;
     }
     else{
-      this.facing = RIGHT;
+      t.facing = RIGHT;
       t.body.velocity.x = t.speed;
     }
   }
