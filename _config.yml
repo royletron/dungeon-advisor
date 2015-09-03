@@ -19,7 +19,7 @@ show_social_icons:  false
 
 # Disqus post comments
 # (leave blank to disable Disqus)
-disqus_shortname:
+disqus_shortname: dungeonadvisor
 
 # Social icons
 github_username: royletron
@@ -40,11 +40,11 @@ share_text: 'Share this post!'
 # Change to 'true' to enable individual icons
 share_facebook: true
 share_twitter: true
-share_googleplus: false
+share_googleplus: true
 share_linkedin: false
 share_digg: false
 share_tumblr: true
-share_reddit: false
+share_reddit: true
 share_stumbleupon: false
 share_hackernews: false
 
