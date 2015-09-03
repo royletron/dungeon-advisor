@@ -3,3 +3,5 @@ node_modules
 game.min.js
 game.min.js.gz
 dist.zip
+.sass-cache
+_site
