@@ -10,7 +10,7 @@ categories: progress
 
 The first screenshots are coming out, and if I can be forgiven for saying this myself, it looks pretty excellent! Get your chops around this bad boy!
 
-_![First look!]({{ site.baseurl}}/images/posts/screen_2.png)_
+![First look!]({{ site.baseurl}}/images/posts/screen_2.png)
 
 So you can see a fully functional dungeon there with a whole load of different room types. The heroes are running through it and using the facilities and reviews are coming in with star ratings. It's all going on!
 
