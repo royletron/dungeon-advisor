@@ -63,7 +63,10 @@ var t = global.UI = {
                 else
                   P.FLOOR.stamp(t.bg.context, x, y);
                 else
-                  P.VOID.stamp(t.bg.context, x, y);
+                  if(y == t.h-1)
+                    P.randomSolid().stamp(t.bg.context, x, y);
+                  else
+                    P.VOID.stamp(t.bg.context, x, y);
       }
     }
     t.bg.context.font = HEADING_FONT;
@@ -81,7 +84,7 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
-    t.addRoom(R.SEWER);
+    t.addRoom(R.ENTRANCE);
   },
   addFloor: function() {
     if(t.gold >= 80)
@@ -127,6 +130,8 @@ var t = global.UI = {
     t.r_count += 1;
     t.rating.setNum((t.r_total/t.r_count)*5);
     t.addStatus(hero, (exp.r*5).toFixed(1)+' rating from '+hero.name, exp.s);
+    if(t.selected_hero && (t.selected_hero.id == hero.id))
+      t.selected_hero = undefined;
     H.RemoveFromArray( t.heroes, hero, 'id');
     hero.end();
     H.Null(hero);
@@ -148,7 +153,7 @@ var t = global.UI = {
     {
       t.spawn_counter = 0;
       t.spawn_wait = H.GetRandom(24- ( t.popularity*4), (24 - ( t.popularity*4)) + ( 24 - ( t.popularity*4)));
-      // t.spawnHero();
+      t.spawnHero();
     }
     t.heroes.forEach(function(hero) {
       hero.update(dt);
@@ -200,7 +205,18 @@ var t = global.UI = {
     t.selected_hero = t.selected_room = undefined;
     t.cPs();
     if(isHero) {
-      t.selected_hero = room;
+      var h = t.selected_hero = room;
+      var a = new Avatar(h);
+      a.stamp(t.properties.context, 0.5, 0.5);
+      a.kill();
+      H.Null(a);
+      H.WriteText(h.name+' (lvl '+h.lvl+' '+h.type.name+')', 34, 15 + CHAR_HEIGHT, t.properties.context, FONT, 'FFFFFF');
+      var r = H.Summarise(h);
+      console.log(r);
+      var w = new TypeWriter(r.s, 22, 200);
+      w.arr.forEach(function(l){
+        H.WriteText(l.c, l.x+34, l.y+30, t.properties.context, STATUS_FONT, 'FFFFFF');
+      });
     }
     else
     {
@@ -363,8 +379,10 @@ var t = global.UI = {
     if( t.selected_room !== undefined)
       t.drawSelection(ctx, (2+(t.selected_room.x*ROOM_WIDTH)), (6 + (t.selected_room.y*ROOM_HEIGHT)), ROOM_WIDTH, ROOM_HEIGHT);
     else if( t.selected_hero !== undefined)
-      t.drawSelection(ctx, t.selected_hero.body.x - 0.2, t.selected_hero.body.y -0.3, 1.8, 1.6);
-
+      if(t.selected_hero.facing == RIGHT)
+        t.drawSelection(ctx, t.selected_hero.body.x - 0.2, t.selected_hero.body.y -0.3, 1.8, 1.6);
+      else
+        t.drawSelection(ctx, t.selected_hero.body.x - 0.8, t.selected_hero.body.y -0.3, 1.8, 1.6);
     //  t.type.stamp(ctx,  t.w-27, 9);
 
     t.renderer.stamp(g_ctx);
