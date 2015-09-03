@@ -233,7 +233,7 @@ var t = global.UI = {
             if( t.rb[idx] === undefined)
             {
               t.rb.push(new Button('Add', function(d){
-                var room = UI.addRoom(R[d], UI.selected_room);
+                var room = UI.addRoom(R[d], UI.sr);
                 UI.setSelection(room);
                 UI.gold += -room.type.cost;
               }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
