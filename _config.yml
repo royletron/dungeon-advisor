@@ -4,7 +4,7 @@ email:       royletron@gmail.com
 author:      Royletron
 description: "The only place for your Dungeon Advisor development news."
 baseurl:     ""
-url:         "http://royletron.github.io/dungeon-advisor"
+url:         "http://royletron.github.io/dungeon-advisor/"
 date_format: "%b %-d, %Y"
 
 # Google services
