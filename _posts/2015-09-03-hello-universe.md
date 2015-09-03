@@ -24,7 +24,7 @@ Not quite - this has to squeeze into a 13kb zip file, so instead of high quality
 
 Oh-yesses more like, look at this highly detailed magic
 
-![ASCII MAGIC!](/images/posts/screen_1.png)
+![ASCII MAGIC!]({{ site.baseurl}}/images/posts/screen_1.png)
 
 ### When can I play it?
 
