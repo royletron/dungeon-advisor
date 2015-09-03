@@ -1,6 +1,6 @@
 ---
 layout: page
-title: About Pixyll
+title: About Dungeon Advisor
 permalink: /about/
 ---
 
