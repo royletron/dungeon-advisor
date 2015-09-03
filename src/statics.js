@@ -55,10 +55,10 @@ global.H = {
         if(!first)
           review += ' and ';
         first = false;
-        if(exp.n > 0.3)
-          review += H.RE(['I liked', 'It was good', 'I enjoyed']) + ' that '+ exp.r;
+        if(exp.n > 0.5)
+          review += H.RE(['I liked it', 'It was good', 'I enjoyed it']) + ' because '+ exp.r;
         else
-          review += H.RE(['I hated', 'It was terrible', 'I didn\'t enjoy']) + ' that '+ exp.r
+          review += H.RE(['I hated it', 'It was terrible', 'I didn\'t enjoy it']) + ' because '+ exp.r
       }
     })
     if(hero.experience.length == 0){
@@ -67,6 +67,16 @@ global.H = {
     if(review.length == 0)
       review = H.Summarise(hero, true).s;
     return {r: score/hero.experience.length, s: review}
+  },
+  G: function(c, v, h){
+    var m = c.b + ((c.t - c.b)/2);
+    var p = (v-m)/(c.t-m);
+    if(p>=h.type.m.t)
+      return -1;
+    else if(p<=h.type.m.b)
+      return 1;
+    else
+      return 0;
   },
   InArray: function(arr, value, column) {
     for(var i=0; i < arr.length; i++)
@@ -207,7 +217,7 @@ global.H = {
         if(R.hasOwnProperty(key)) {
           if(R[key].actions !== undefined)
             R[key].actions.forEach(function(r, i){
-              r.val = r.charge.b + ((r.charge.t - r.charge.b) /2);
+              r.val = r.c.b + ((r.c.t - r.c.b) /2);
             });
         }
       }
@@ -255,7 +265,9 @@ global.P = {
   B_STAR: new Char('☆', '490A3D'),
   STAR: new Char('★', 'E97F02'),
   FIGHT: new Char('⤧', 'FF0066'),
-  VOID: new Char(' ', '302222', '302222')
+  VOID: new Char(' ', '302222', '302222'),
+  CHAT_1: new Char('№', '8F1166'),
+  CHAT_2: new Char('Ⓢ', 'FFB643')
 };
 
 global.A = {
@@ -282,8 +294,11 @@ global.R = {
     code: 'h', 
     slots: [4, 9, 14, 19], 
     actions: [{
-      name: 'Nurse', 
-      charge: {t: 20, b: 10}
+      n: 'Nurse', 
+      c: {t: 18, b: 10}
+    },{
+      n: 'Doctor',
+      c: {t: 24, b: 12}
     }], 
     cost: 100, 
     stamp: S.HOSPITAL
@@ -293,8 +308,11 @@ global.R = {
     p: [P.DRINK, P.DRINK2], 
     code: 'i', slots: [3, 9, 14, 16, 18], 
     actions: [{
-      name: 'Drink', 
-      charge: {t: 8, b: 2}
+      n: 'Drink', 
+      c: {t: 8, b: 2}
+    },{
+      n: 'Eat',
+      c: {t: 13, b: 4}
     }], 
     cost: 100, 
     stamp: S.INN},
@@ -302,8 +320,8 @@ global.R = {
     name: 'Brothel', p: P.X, 
     code: 'b', slots: [5, 11], 
     actions: [{
-      name: 'Kiss', 
-      charge: {t: 11, b: 1}
+      n: 'Kiss', 
+      c: {t: 11, b: 1}
     }], 
     cost: 210, 
     stamp: S.BROTHEL
@@ -312,10 +330,12 @@ global.R = {
     name: 'Entrance', 
     code: 'e', 
     actions: [{
-      name: 'Chat', 
-      charge: {t: 10, b: 2}
+      n: 'Meeting', 
+      c: {t: 6, b: 2}
     }], 
+    slots: [3, 5, 7, 9, 11, 13, 15],
     cost: 100, 
+    p: [P.CHAT_1, P.CHAT_2],
     stamp: S.ENTRANCE
   },
   SEWER: {
@@ -333,10 +353,15 @@ global.R = {
     code: 'c', 
     cost: 140, 
     stamp: S.CHURCH, 
-    p: P.HOLY, slots: [5, 10, 15], 
+    p: P.HOLY, 
+    slots: [5, 10, 15], 
     actions: [{
-      name: 'Pray', 
-      charge: {t: 10, b: 0}
+      n: 'Pray', 
+      c: {t: 10, b: 0}
+    },
+    {
+      n: 'Confession',
+      c: {t: 13, b: 2}
     }]
   },
   LAIR: {
@@ -401,7 +426,8 @@ global.E = {
       l: {t: 10, b: 3},
       w: 'ls ss',
       s: {t: 1.5, b: 0.7},
-      c: 'FFE9BA'
+      c: 'FFE9BA',
+      m: {t: 0.5, b: -0.2}
     },
     {
       name: 'Peon',
@@ -413,7 +439,8 @@ global.E = {
       l: {t: 6, b: 0},
       w: 'ss kn sa',
       s: {t: 1.5, b: 0.8},
-      c: 'FFAD8B'
+      c: 'FFAD8B',
+      m: {t: 0.5, b: -0.2}
     },
     {
       name: 'Dwarf',
@@ -425,7 +452,8 @@ global.E = {
       s: {t:1, b:0.7},
       fee: 8,
       i: 0.9,
-      c: 'FFE9AA'
+      c: 'FFE9AA',
+      m: {t: 0.5, b: -0.2}
     },
     {
       name: 'Priest',
@@ -437,7 +465,8 @@ global.E = {
       l: {t: 10, b: 1},
       w: 'cf',
       s: {t: 1.1, b: 0.6},
-      c: 'FFE9AA'
+      c: 'FFE9AA',
+      m: {t: 0.5, b: -0.2}
     },
     {
       name: 'Mage',
@@ -449,7 +478,8 @@ global.E = {
       l: {t: 10, b: 3},
       w: 'st wd',
       s: {t: 1.1, b: 0.6},
-      c: 'FFE9AA'
+      c: 'FFE9AA',
+      m: {t: 0.5, b: -0.2}
     },
     {
       name: 'Rogue',
@@ -461,7 +491,8 @@ global.E = {
       l: {t: 8, b: 4},
       w: 'kn',
       s: {t: 1.1, b: 0.6},
-      c: 'FFE9AA'
+      c: 'FFE9AA',
+      m: {t: 0.5, b: -0.2}
     },
     {
       name: 'Archer',
@@ -473,7 +504,8 @@ global.E = {
       l: {t: 9, b: 2},
       w: 'bw',
       s: {t: 2.9, b: 1.8},
-      c: 'FFE9AA'
+      c: 'FFE9AA',
+      m: {t: 0.5, b: -0.2}
     },
     {
       name: 'Muse',
@@ -485,7 +517,8 @@ global.E = {
       l: {t: 10, b: 4},
       w: 'lt',
       s: {t: 1.1, b: 0.6},
-      c: 'FFE9AA'
+      c: 'FFE9AA',
+      m: {t: 0.5, b: -0.2}
     }
   ],
   enemies: [

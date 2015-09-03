@@ -3,12 +3,12 @@ global.Char = function(s, color, bg, alpha) {
   t.s = s;
   t.color = color;
   t.bg = bg;
-  t.r = t.renderer = new Renderer(CHAR_WIDTH, CHAR_HEIGHT, alpha);
+  t.r = t.renderer = new Renderer((CHAR_WIDTH*s.length), CHAR_HEIGHT, alpha);
   if(t.bg !== undefined)
   {
-    H.R(0, 0, CHAR_WIDTH, CHAR_HEIGHT, t.r.x, t.bg);
+    H.R(0, 0, (CHAR_WIDTH*s.length), CHAR_HEIGHT, t.r.x, t.bg);
   }
-  H.T(t.s, CHAR_WIDTH/2, CHAR_HEIGHT -1, t.r.x, FONT, t.color, 'center');
+  H.T(t.s, (CHAR_WIDTH*s.length)/2, CHAR_HEIGHT -1, t.r.x, FONT, t.color, 'center');
   t.stamp = function(d, x, y){
     t.r.stamp(d, x, y);
   };
@@ -221,7 +221,7 @@ global.Physics = {
 
 var roomID = 1;
 
-global.Particle = function(char, x, y) {
+global.Particle = function(char, x, y, kill) {
   var t = this;
   if(char.length > 0)
     t.char = H.RE(char);
@@ -232,7 +232,10 @@ global.Particle = function(char, x, y) {
   t.ux = (H.GR(0, 100) - 50)/75;
   t.rate = (H.GR(100, 150))/100;
   t.alpha = 1;
+  t.k = kill;
   t.destroy = function() {
+    if(t.k)
+      t.char.kill();
     H.Null(t);
   }
   t.cb = PUSH_CALLBACK(function(dt){
@@ -404,13 +407,22 @@ global.Hero = function(x, y, type) {
   t.getHealth = function(lvl) {
     return H.Moultonize(lvl || t.lvl, t.type.health.b, t.type.health.t);
   }
-  // UI.addStatus(t, t.name+" has entered!", "A "+t.type.name.toLowerCase()+" from ...");
   t.levelUp = function() {
     t.lvl += 1;
-    t.experience.push({n: 1, r: 'Levelled up to '+t.lvl, t: 4});
+    t.experience.push({n: 1, r: 'I levelled up to '+t.lvl, t: 4});
   }
   t.room_action = function(room) {
-    console.log(room);
+    var a=H.RE(room.type.actions);
+    var g=H.G(a.c, a.val, t);
+    UI.setGold(a.val);
+    var c = new Char(a.val.toString(), 'FFF566', '000000');
+    new Particle(c, t.body.x, t.body.y-1, true);
+    if(g === 0)
+      t.experience.push({n: 0.8, r: 'the prices for '+a.n.toLowerCase()+' were fair'});
+    if(g === 1)
+      t.experience.push({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!'})
+    if(g === -1)
+      t.experience.push({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.'})
   }
   t.update = function(dt) {
     t.body.update(dt);
@@ -449,17 +461,13 @@ global.Hero = function(x, y, type) {
       if(t.had_a_go === true)
         if(t.cr.type.battle)
           if(t.slot && t.slot.npc)
-            t.experience.push({n: 1, r: 'to fight against real enemies like '+t.slot.npc.name, t: 6});
+            t.experience.push({n: 1, r: 'I got to fight against '+t.slot.npc.name, t: 6});
           else
-            t.experience.push({n: 0.6, r: 'fight but I had to fight the wall, no enemies', t: 7});
+            t.experience.push({n: 0.8, r: 'I got to fight, but I would have preferred an enemy', t: 7});
         else if(H.Contains(t.type.faves, t.cr.type.code))
-          t.experience.push({n: 1, r: 'I got to go to my fave the '+t.cr.type.name, t: 1});
-        else if(H.Contains(t.type.hates, t.cr.type.code))
-          t.experience.push({n: 0.6, r: ' '})
-        else
-          t.experience.push({n: 0.8, r: 'I had fun in the '+t.cr.type.name, t: 2});
+            t.experience.push({n: 1, r: 'of the '+t.cr.type.name, t: 1});
       else
-        t.experience.push({n: 0.1, r: 'I couldn\'t get in the '+t.cr.type.name, t: 3});
+        t.experience.push({n: 0.4, r: 'I didn\'t get in the '+t.cr.type.name, t: 3});
 
     t.had_a_go = undefined;
     t.entertaining = undefined;
@@ -471,19 +479,11 @@ global.Hero = function(x, y, type) {
         if(Math.random() < 0.95)
           t.entertaining = true;
       }
-      else if(H.Contains(t.type.hates, c.type.code))
-      {
-        if(Math.random() < 0.2)
-        {
-          t.entertaining = true;
-        }
-      }
       else{
-        if(Math.random() < 0.5)
+        if(Math.random() < 1)
           t.entertaining = true;
       }
     }
-    // console.log(c.type, this.type);
   }
   t.gCR = function() {
     var x = t.body.x - UI.spawn_point.x;

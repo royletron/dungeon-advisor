@@ -282,7 +282,7 @@ var t = global.UI = {
             }
             else if(room.type.actions)
               room.type.actions.forEach(function(a, i){
-                H.T(a.name, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF');
+                H.T(a.n, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF');
                 H.T(a.val, 195, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF', 'center');
                 t.createStepper(room, t, a, i)
               });
@@ -299,11 +299,11 @@ var t = global.UI = {
       d.a.val += -1;
       UI.setSelection(d.r);
     }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
-    if(a.val !== a.charge.t) {
+    if(a.val !== a.c.t) {
       t.buttons.push(b);
       b.stamp(t.p.x, 17, i*1.8);
     }
-    if(a.val !== a.charge.b) {
+    if(a.val !== a.c.b) {
       t.buttons.push(c);
       c.stamp(t.p.x, 24, i*1.8);
     }
