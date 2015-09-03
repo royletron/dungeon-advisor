@@ -3,20 +3,20 @@ global.Char = function(s, color, bg, alpha) {
   t.s = s;
   t.color = color;
   t.bg = bg;
-  t.renderer = new Renderer(CHAR_WIDTH, CHAR_HEIGHT, alpha);
+  t.r = t.renderer = new Renderer(CHAR_WIDTH, CHAR_HEIGHT, alpha);
   if(t.bg !== undefined)
   {
-    H.DrawRect(0, 0, CHAR_WIDTH, CHAR_HEIGHT, t.renderer.context, t.bg);
+    H.R(0, 0, CHAR_WIDTH, CHAR_HEIGHT, t.r.x, t.bg);
   }
-  H.WriteText(t.s, CHAR_WIDTH/2, CHAR_HEIGHT -1, t.renderer.context, FONT, t.color, 'center');
-  t.stamp = function(toCanvas, x, y){
-    t.renderer.stamp(toCanvas, x, y);
+  H.T(t.s, CHAR_WIDTH/2, CHAR_HEIGHT -1, t.r.x, FONT, t.color, 'center');
+  t.stamp = function(d, x, y){
+    t.r.stamp(d, x, y);
   };
   t.flip = function(){
-    t.renderer.flip();
+    t.r.flip();
   }
   t.kill = function(){
-    t.renderer.kill();
+    t.r.kill();
     H.Null(t);
   }
 };
@@ -35,15 +35,15 @@ global.Button = function(text, cb, x, y, cost, data) {
   t.r = new Renderer(t.width, t.height);
   t.r.whole = false;
   t.cost = cost;
-  H.DrawRect(3, 3, t.width-5, t.height-5, t.r.context, '0D423D');
-  H.DrawRect(0, 0, t.width-5, t.height-5, t.r.context, '007A52');
+  H.R(3, 3, t.width-5, t.height-5, t.r.x, '0D423D');
+  H.R(0, 0, t.width-5, t.height-5, t.r.x, '007A52');
   t.data = data;
 
-  H.WriteText(text, CHAR_WIDTH, CHAR_HEIGHT * 1.2, t.r.context, FONT, 'EBE1CE');
+  H.T(text, CHAR_WIDTH, CHAR_HEIGHT * 1.2, t.r.x, FONT, 'EBE1CE');
   if(cost != undefined) {
-    t.r.context.fillText(cost.toString(), (text.length+4)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
+    t.r.x.fillText(cost.toString(), (text.length+4)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
     P.GOLD.renderer.whole = false;
-    P.GOLD.stamp(t.r.context, text.length+2.5, 0.2);
+    P.GOLD.stamp(t.r.x, text.length+2.5, 0.2);
   }
   t.x = x;
   t.y = y;
@@ -52,21 +52,21 @@ global.Button = function(text, cb, x, y, cost, data) {
     t.r.kill();
     H.Null(this);
   }
-  t.getHitArea = function() {
+  t.hit = function() {
     return {x: t.x*CHAR_WIDTH, y: t.y*CHAR_HEIGHT, width: t.r.width, height: t.r.height};
   }
-  t.stamp = function(toCanvas, x, y) {
+  t.stamp = function(d, x, y) {
     var s = true;
     if(t.cost != undefined)
       if(t.cost > UI.gold)
         s = false;
     if(s)
-      t.r.stamp(toCanvas, x === undefined ? t.x : x, y === undefined ? t.y : y);
+      t.r.stamp(d, x === undefined ? t.x : x, y === undefined ? t.y : y);
   }
   t.update = function(dt) {
     if(H.MouseClick)
     {
-      if(H.HitTestPoint(H.MouseCoords, t.getHitArea())) {
+      if(H.HT(H.MouseCoords, t.hit())) {
         H.MouseClick = false;
         t._clicked = true;
         t.cb(t.data);
@@ -78,26 +78,24 @@ global.Button = function(text, cb, x, y, cost, data) {
 global.Avatar = function(hero, center) {
   var t = this;
   t.color = '25989B';
-  t.hero = hero;
-  t.renderer = new Renderer(3 *CHAR_WIDTH, 3 * CHAR_HEIGHT);
-  t.renderer.whole = false;
-  t.stamped = false;
-  t.current_floor=0
-  t.center = center
+  t.h = hero;
+  t.r = new Renderer(3 *CHAR_WIDTH, 3 * CHAR_HEIGHT);
+  t.s = false;
+  t.c = center
   t.gen = function(){
-    H.WriteText('◜◝', 0, CHAR_HEIGHT, t.renderer.context, FONT, t.color);
-    H.WriteText('◟◞', 0, CHAR_HEIGHT*2, t.renderer.context, FONT, t.color);
-    t.hero.stamp(t.renderer.context, t.center ? 1:0.3, 0.65);
-    t.stamped = true;
+    H.T('◜◝', 0, CHAR_HEIGHT, t.r.x, FONT, t.color);
+    H.T('◟◞', 0, CHAR_HEIGHT*2, t.r.x, FONT, t.color);
+    t.h.stamp(t.r.x, t.c ? 1:0.3, 0.65);
+    t.s = true;
   }
-  if(t.hero.stamp != null)
+  if(t.h.stamp != null)
     t.gen();
-  t.stamp = function(toCanvas, x, y){
-    if(!t.stamped) t.gen();
-    t.renderer.stamp(toCanvas, x, y);
+  t.stamp = function(d, x, y){
+    if(!t.s) t.gen();
+    t.r.stamp(d, x, y);
   }
   t.kill = function(){
-    t.renderer.kill();
+    t.r.kill();
     H.Null(t);
   }
 }
@@ -109,15 +107,15 @@ global.StarRating = function(txt) {
   {
     if(val != t.num){
       t.num = val;
-      t.r.context.clearRect(0, 0, t.r.canvas.width, t.r.canvas.height);
+      t.r.x.clearRect(0, 0, t.r.c.width, t.r.c.height);
       for(var i=0; i < 5; i++)
       {
         if(Math.round(val) > i)
-          P.STAR.stamp(t.r.context, i, 0);
+          P.STAR.stamp(t.r.x, i, 0);
         else
-          P.B_STAR.stamp(t.r.context, i, 0);
+          P.B_STAR.stamp(t.r.x, i, 0);
       }
-      H.WriteText(t.num.toFixed(1), 5.5*CHAR_WIDTH, CHAR_HEIGHT-1, t.r.context, FONT, '000000');
+      H.T(t.num.toFixed(1), 5.5*CHAR_WIDTH, CHAR_HEIGHT-1, t.r.x, FONT, '000000');
     }
   }
   t.setNum(0);
@@ -128,22 +126,22 @@ global.StarRating = function(txt) {
 
 global.StatusUpdate = function(hero, title, text) {
   var t = this;
-  t.hero = hero;
-  t.avatar = new Avatar(hero);
+  t.h = hero;
+  t.a = new Avatar(hero);
   t.tw = new TypeWriter(text, 21, 4);
   t.height = t.tw.height + 2
   t.tw.run();
-  t.renderer = new Renderer(21 * CHAR_WIDTH, CHAR_HEIGHT);
-  H.WriteText(title, 0, CHAR_HEIGHT-2, t.renderer.context, STATUS_FONT, 'ffffff');
-  t.stamp = function(toCanvas, x, y){
-    t.avatar.stamp(toCanvas, x, y);
-    t.renderer.stamp(toCanvas, x+3, y);
-    t.tw.stamp(toCanvas, x+3, y+1);
+  t.r = new Renderer(21 * CHAR_WIDTH, CHAR_HEIGHT);
+  H.T(title, 0, CHAR_HEIGHT-2, t.r.x, STATUS_FONT, 'ffffff');
+  t.stamp = function(d, x, y){
+    t.a.stamp(d, x, y);
+    t.r.stamp(d, x+3, y);
+    t.tw.stamp(d, x+3, y+1);
   }
   t.kill = function(){
-    t.avatar.kill();
+    t.a.kill();
     t.tw.kill();
-    t.renderer.kill();
+    t.r.kill();
     H.Null(t);
   }
 }
@@ -152,7 +150,7 @@ global.TypeWriter = function(text, width, height, fixed) {
   var t = this;
   t.fixed = fixed || false;
   t.text = text;
-  t.renderer = new Renderer(width * CHAR_WIDTH, height * CHAR_HEIGHT);
+  t.r = new Renderer(width * CHAR_WIDTH, height * CHAR_HEIGHT);
   t.interval;
   t.height = 0;
   t.arr = [];
@@ -165,10 +163,10 @@ global.TypeWriter = function(text, width, height, fixed) {
     var rem = text.substr(i);
     var space = rem.indexOf(' ');
     space = (space === -1)?text.length:space;
-    t.renderer.context.font = STATUS_FONT;
-    var wordwidth = t.renderer.context.measureText(rem.substring(0, space)).width;
-    var w = t.renderer.context.measureText(text.charAt(i)).width;
-    if(cursorX + wordwidth >= t.renderer.canvas.width) {
+    t.r.x.font = STATUS_FONT;
+    var wordwidth = t.r.x.measureText(rem.substring(0, space)).width;
+    var w = t.r.x.measureText(text.charAt(i)).width;
+    if(cursorX + wordwidth >= t.r.c.width) {
       cursorX = 0;
       cursorY += lineHeight;
       t.height ++;
@@ -176,43 +174,36 @@ global.TypeWriter = function(text, width, height, fixed) {
     t.arr.push({c: text.charAt(i), x: cursorX, y: cursorY + CHAR_HEIGHT});
     i++;
     cursorX += w;
-    t.renderer.canvas.height = (t.height+2) * CHAR_HEIGHT
+    t.r.c.height = (t.height+2) * CHAR_HEIGHT
   }
 
 
   t.run = function() {
     var i = 0;
     t.interval = setInterval(function(){
-      H.WriteText(t.arr[i].c, t.arr[i].x, t.arr[i].y, t.renderer.context, STATUS_FONT, '25989b');
+      H.T(t.arr[i].c, t.arr[i].x, t.arr[i].y, t.r.x, STATUS_FONT, '25989b');
       if(i == t.arr.length-1)
         clearInterval(t.interval);
       i++;
     }.bind(t), 110);
   }
-  t.stamp = function(toCanvas, x, y) {
-    t.renderer.stamp(toCanvas, x, y);
+  t.stamp = function(d, x, y) {
+    t.r.stamp(d, x, y);
   }
   t.kill = function(){
     clearInterval(t.interval);
-    t.renderer.kill();
+    t.r.kill();
     H.Null(t);
   }
 }
 
-global.Body = function(x, y, width, height, fixed) {
+global.Body = function(x, y, width, height) {
   var t = this;
   t.x = x; t.y = y; t.width = width; t.height = height;
-  t.fixed = fixed || false;
-  t._lastposition = {x: x, y: y};
   t.velocity = {x: 0, y: 0};
-  t.maxvelocity = {x: -1, y: -1};
-  t.acceleration = {x: 0, y: 0};
   t.update = function(dt) {
-    t._lastposition = {x: t.x, y: t.y};
-    if(!t.fixed) {
-      t.x += t.velocity.x * dt;
-      t.y += t.velocity.y * dt;
-    }
+    t.x += t.velocity.x * dt;
+    t.y += t.velocity.y * dt;
   };
   // this.impact = function
 };
@@ -220,22 +211,11 @@ global.Body = function(x, y, width, height, fixed) {
 var p_i = 1;
 
 global.Physics = {
-  _bodies: [],
   createBody: function(entity, x, y, width, height, fixed) {
     var body = new Body(x, y, width, height, fixed);
     body.i = p_i;
     p_i ++;
     return body;
-  },
-  removeBody: function(body) {
-    H.RemoveFromArray(this._bodies, body, 'i');
-  },
-  update: function(dt) {
-    this._bodies.forEach(function(item, idx){
-      item.body.update(dt);
-      item.entity.x = item.body.x;
-      item.entity.y = item.body.y;
-    });
   }
 };
 
@@ -337,23 +317,23 @@ global.Room = function(type, flipped, x, y) {
 
 global.Renderer = function(width, height, alpha) {
   var t = this;
-  t.canvas = document.createElement('canvas');
+  t.canvas = t.c = document.createElement('canvas');
   t.canvas.width = t.width = width;
   t.canvas.height = t.height = height;
-  t.context = t.canvas.getContext('2d');
+  t.context = t.x = t.canvas.getContext('2d');
   t.context.globalAlpha = t.alpha = alpha || 1;
   t.context.imageSmoothingEnabled = false;
   t.context.fontStyle = FONT;
   t.whole = false;
-  this.stamp = function(toCanvas, x, y){
-    var coords = H.BufferToCoords(x || 0, y || 0, t.whole);
-    toCanvas.drawImage(t.canvas, coords.x, coords.y);
+  this.stamp = function(d, x, y){
+    var c = H.BufferToCoords(x || 0, y || 0, t.whole);
+    d.drawImage(t.c, c.x, c.y);
   };
   this.flip = function(){
-    H.FlipCanvas(t.canvas);
+    H.FlipCanvas(t.c);
   };
   this.kill = function() {
-    t.canvas = null;
+    t.c = null;
     H.Null(t);
   }
 };
@@ -378,22 +358,22 @@ global.Sprite = function(x, y, renderer) {
 
 global.Counter = function(symbol, object, value) {
   var t = this;
-  t.renderer = new Renderer(CHAR_WIDTH * 10, CHAR_HEIGHT);
-  t.symbol = symbol;
-  t.object = object;
-  t.value = value;
+  t.r = new Renderer(CHAR_WIDTH * 10, CHAR_HEIGHT);
+  t.s = symbol;
+  t.o = object;
+  t.v = value;
   t.draw = function(){
-    t.previous = t.object[t.value];
-    var txt = H.NumToText(t.previous);
-    t.renderer.context.clearRect(0, 0, CHAR_WIDTH * 10, CHAR_HEIGHT);
-    H.WriteText(txt, CHAR_WIDTH+4, CHAR_HEIGHT-1, t.renderer.context, FONT, '000000');
-    t.symbol.stamp(t.renderer.context);
+    t.p = t.o[t.v];
+    var txt = H.NumToText(t.p);
+    t.r.x.clearRect(0, 0, CHAR_WIDTH * 10, CHAR_HEIGHT);
+    H.T(txt, CHAR_WIDTH+4, CHAR_HEIGHT-1, t.r.x, FONT, '000000');
+    t.s.stamp(t.r.x);
   };
   t.draw();
-  this.stamp = function(toCanvas, x, y){
-    if(t.object[t.value] != t.previous)
+  this.stamp = function(d, x, y){
+    if(t.o[t.v] != t.p)
       t.draw();
-    t.renderer.stamp(toCanvas, x, y);
+    t.r.stamp(d, x, y);
   };
 };
 
@@ -425,13 +405,13 @@ global.Hero = function(x, y, type) {
   t.getHealth = function(lvl) {
     return H.Moultonize(lvl || t.lvl, t.type.health.b, t.type.health.t);
   }
-  t.health = t.max_health = t.getHealth();
+  t.health = t.mh = t.getHealth();
   t.xp = t.getXP(t.lvl-1);
   // UI.addStatus(t, t.name+" has entered!", "A "+t.type.name.toLowerCase()+" from ...");
   t.updateHealth = function(v) {
     t.health += v;
-    if(t.health > t.max_health)
-      t.health = t.max_health
+    if(t.health > t.mh)
+      t.health = t.mh
   }
   t.updateXP = function(v) {
     t.xp += v;
@@ -440,7 +420,7 @@ global.Hero = function(x, y, type) {
   }
   t.levelUp = function() {
     t.lvl += 1;
-    t.max_health = t.getHealth();
+    t.mh = t.getHealth();
     t.experience.push({n: 1, r: 'Levelled up to '+t.lvl, t: 4});
   }
   t.room_action = function(room) {
@@ -450,14 +430,14 @@ global.Hero = function(x, y, type) {
     t.body.update(dt);
     t.s.x = t.body.x;
     t.s.y = t.body.y;
-    t.update_weapon(dt);
+    t.uw(dt);
     var c = t.getCurrentRoom();
     if(t.entertaining)
       t.currentRoom.update(dt, t);
     if(c != t.currentRoom)
       t.roomChanged(c);
   }
-  t.update_weapon = function(dt) {
+  t.uw = function(dt) {
     var add = t.w.type.offsetx;
     if(t.facing == LEFT)
       add = -add;
@@ -479,7 +459,6 @@ global.Hero = function(x, y, type) {
     }
   }
   t.roomChanged = function(c) {
-    console.log(c, t.entertaining, t.had_a_go);
     if(t.entertaining !== undefined)
       if(t.had_a_go === true)
         if(t.currentRoom.type.battle)
@@ -541,18 +520,17 @@ global.Hero = function(x, y, type) {
       t.body.velocity.x = t.speed;
     }
   }
-  t.stamp = function(toCanvas, x, y) {
+  t.stamp = function(d, x, y) {
     var wx, wy;
     if(x != undefined) wx = x + t.w.type.offsetx;
     if(y != undefined) wy = y + t.w.type.top;
     if(t.s && t.active)
     {
-      t.s.stamp(toCanvas, x || t.body.x, y || t.body.y);
-      t.w.spr.stamp(toCanvas, wx || t.w.x, wy || t.w.y);
+      t.s.stamp(d, x || t.body.x, y || t.body.y);
+      t.w.spr.stamp(d, wx || t.w.x, wy || t.w.y);
     }
   }
   this.end = function() {
-    // UI.addStatus(t, t.name+" has left!", "A "+t.type.name.toLowerCase()+" from ...");
     t.active = false;
     t.s.kill();
     t.w.spr.kill();

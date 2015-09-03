@@ -81,13 +81,13 @@ global.H = {
     }
     return false;
   },
-  WriteText: function(t, x, y, c, f, l, a) {
+  T: function(t, x, y, c, f, l, a) {
     c.font = f;
     c.fillStyle = '#'+l;
     c.textAlign = a || 'left';
     c.fillText(t, x, y);
   },
-  DrawRect: function(x, y, w, h, c, f) {
+  R: function(x, y, w, h, c, f) {
     c.fillStyle = '#'+f;
     c.fillRect(x, y, w, h);
   },
@@ -122,7 +122,7 @@ global.H = {
       txt = Math.floor(txt/1000) +'k'+((txt%1000)!== 0 ? '+' : '');
     return txt;
   },
-  HitTestPoint: function(objA, objB) {
+  HT: function(objA, objB) {
     if((objA === null) || (objB === null))
       return false;
     if((objA.x >= objB.x) && (objA.x <= (objB.x + objB.width)) && (objA.y >= objB.y) && (objA.y < (objB.y + objB.height)))
