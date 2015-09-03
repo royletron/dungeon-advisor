@@ -224,13 +224,13 @@ var roomID = 1;
 global.Particle = function(char, x, y) {
   var t = this;
   if(char.length > 0)
-    t.char = H.GetRandomEntry(char);
+    t.char = H.RE(char);
   else
     t.char = char;
   t.x = x;
   t.y = y;
-  t.ux = (H.GetRandom(0, 100) - 50)/75;
-  t.rate = (H.GetRandom(100, 150))/100;
+  t.ux = (H.GR(0, 100) - 50)/75;
+  t.rate = (H.GR(100, 150))/100;
   t.alpha = 1;
   t.destroy = function() {
     H.Null(t);
@@ -289,7 +289,7 @@ global.Room = function(type, flipped, x, y) {
           h.slot = s;
           h.busy = true;
           h.room_time = h.last_tick = 0;
-          h.total_room_time = H.GetRandom(h.type.turn.b, h.type.turn.t);
+          h.total_room_time = H.GR(h.type.turn.b, h.type.turn.t);
           h.return_velocity = h.body.velocity.x;
           h.body.velocity.x = 0;
           h.had_a_go = true;
@@ -299,7 +299,7 @@ global.Room = function(type, flipped, x, y) {
     else{
       h.room_time += dt;
       h.last_tick += dt;
-      if(h.last_tick > h.type.increment)
+      if(h.last_tick > h.type.i)
         t.tick(h);
       if(h.room_time > h.total_room_time) {
         if(t.slots)
@@ -318,12 +318,12 @@ global.Room = function(type, flipped, x, y) {
 global.Renderer = function(width, height, alpha) {
   var t = this;
   t.canvas = t.c = document.createElement('canvas');
-  t.canvas.width = t.width = width;
-  t.canvas.height = t.height = height;
-  t.context = t.x = t.canvas.getContext('2d');
-  t.context.globalAlpha = t.alpha = alpha || 1;
-  t.context.imageSmoothingEnabled = false;
-  t.context.fontStyle = FONT;
+  t.c.width = t.width = width;
+  t.c.height = t.height = height;
+  t.context = t.x = t.c.getContext('2d');
+  t.x.globalAlpha = t.alpha = alpha || 1;
+  t.x.imageSmoothingEnabled = false;
+  t.x.fontStyle = FONT;
   t.whole = false;
   this.stamp = function(d, x, y){
     var c = H.BufferToCoords(x || 0, y || 0, t.whole);
@@ -364,7 +364,7 @@ global.Counter = function(symbol, object, value) {
   t.v = value;
   t.draw = function(){
     t.p = t.o[t.v];
-    var txt = H.NumToText(t.p);
+    var txt = H.NT(t.p);
     t.r.x.clearRect(0, 0, CHAR_WIDTH * 10, CHAR_HEIGHT);
     H.T(txt, CHAR_WIDTH+4, CHAR_HEIGHT-1, t.r.x, FONT, '000000');
     t.s.stamp(t.r.x);
@@ -383,20 +383,19 @@ global.Hero = function(x, y, type) {
   var t = this;
   t.type = type;
   t.current_floor = 1;
-  t.s = new Char(type.symbol, type.color);
-  t.body = Physics.createBody(t.sprite, x, y, CHAR_WIDTH, CHAR_HEIGHT);
-  t.w = {type: E.GetRandomWeapon(type.weapons), d:true};
+  t.s = new Char(type.x, type.c);
+  t.body = Physics.createBody(t.s, x, y, CHAR_WIDTH, CHAR_HEIGHT);
+  t.w = {type: E.GRWeapon(type.w), d:true};
   t.name = N.Random();
-  t.w.x = x + t.w.type.offsetx;
-  t.w.y = y + t.w.type.top;
-  t.w.spr = new Char(t.w.type.symbol, t.w.type.color);
+  t.w.x = x + t.w.type.ox;
+  t.w.y = y + t.w.type.t;
+  t.w.spr = new Char(t.w.type.x, t.w.type.c);
   t.active = true;
   t.experience = [];
   t.id = heroId;
   heroId ++;
   t.facing = RIGHT;
-  t.speed = H.GetRandom(type.speed.b * 100, type.speed.t * 100)/100;
-  t.money = H.GetRandom(type.money.b, type.money.t);
+  t.speed  = H.GR(type.s.b * 100, type.s.t * 100)/100;
   t.body.velocity.x = t.speed;
   t.lvl = H.WeightedRandom([(UI.lvl == 1 ? 1 : UI.lvl-1), UI.lvl, UI.lvl+1], [0.4, 1, 0.5]);
   t.getXP = function(lvl) {
@@ -405,22 +404,9 @@ global.Hero = function(x, y, type) {
   t.getHealth = function(lvl) {
     return H.Moultonize(lvl || t.lvl, t.type.health.b, t.type.health.t);
   }
-  t.health = t.mh = t.getHealth();
-  t.xp = t.getXP(t.lvl-1);
   // UI.addStatus(t, t.name+" has entered!", "A "+t.type.name.toLowerCase()+" from ...");
-  t.updateHealth = function(v) {
-    t.health += v;
-    if(t.health > t.mh)
-      t.health = t.mh
-  }
-  t.updateXP = function(v) {
-    t.xp += v;
-    if(t.getXP(t.lvl+1) < t.xp)
-      t.levelUp();
-  }
   t.levelUp = function() {
     t.lvl += 1;
-    t.mh = t.getHealth();
     t.experience.push({n: 1, r: 'Levelled up to '+t.lvl, t: 4});
   }
   t.room_action = function(room) {
@@ -431,14 +417,14 @@ global.Hero = function(x, y, type) {
     t.s.x = t.body.x;
     t.s.y = t.body.y;
     t.uw(dt);
-    var c = t.getCurrentRoom();
+    var c = t.gCR();
     if(t.entertaining)
-      t.currentRoom.update(dt, t);
-    if(c != t.currentRoom)
+      t.cr.update(dt, t);
+    if(c != t.cr)
       t.roomChanged(c);
   }
   t.uw = function(dt) {
-    var add = t.w.type.offsetx;
+    var add = t.w.type.ox;
     if(t.facing == LEFT)
       add = -add;
     t.w.x = t.body.x + add;
@@ -447,37 +433,37 @@ global.Hero = function(x, y, type) {
       t.w.y += m;
     else
       t.w.y += -m;
-    if(t.w.y > (t.body.y +  t.w.type.bottom))
+    if(t.w.y > (t.body.y +  t.w.type.b))
     {
-      t.w.y = t.body.y + t.w.type.bottom;
+      t.w.y = t.body.y + t.w.type.b;
       t.w.d = false;
     }
-    else if (t.w.y < (t.body.y + t.w.type.top))
+    else if (t.w.y < (t.body.y + t.w.type.t))
     {
-      t.w.y = t.body.y + t.w.type.top;
+      t.w.y = t.body.y + t.w.type.t;
       t.w.d = true;
     }
   }
   t.roomChanged = function(c) {
     if(t.entertaining !== undefined)
       if(t.had_a_go === true)
-        if(t.currentRoom.type.battle)
+        if(t.cr.type.battle)
           if(t.slot && t.slot.npc)
             t.experience.push({n: 1, r: 'to fight against real enemies like '+t.slot.npc.name, t: 6});
           else
             t.experience.push({n: 0.6, r: 'fight but I had to fight the wall, no enemies', t: 7});
-        else if(H.Contains(t.type.faves, t.currentRoom.type.code))
-          t.experience.push({n: 1, r: 'I got to go to my fave the '+t.currentRoom.type.name, t: 1});
-        else if(H.Contains(t.type.hates, t.currentRoom.type.code))
+        else if(H.Contains(t.type.faves, t.cr.type.code))
+          t.experience.push({n: 1, r: 'I got to go to my fave the '+t.cr.type.name, t: 1});
+        else if(H.Contains(t.type.hates, t.cr.type.code))
           t.experience.push({n: 0.6, r: ' '})
         else
-          t.experience.push({n: 0.8, r: 'I had fun in the '+t.currentRoom.type.name, t: 2});
+          t.experience.push({n: 0.8, r: 'I had fun in the '+t.cr.type.name, t: 2});
       else
-        t.experience.push({n: 0.1, r: 'I couldn\'t get in the '+t.currentRoom.type.name, t: 3});
+        t.experience.push({n: 0.1, r: 'I couldn\'t get in the '+t.cr.type.name, t: 3});
 
     t.had_a_go = undefined;
     t.entertaining = undefined;
-    t.currentRoom = c;
+    t.cr = c;
     if(c !== undefined)
     {
       if(H.Contains(t.type.faves, c.type.code))
@@ -499,7 +485,7 @@ global.Hero = function(x, y, type) {
     }
     // console.log(c.type, this.type);
   }
-  t.getCurrentRoom = function() {
+  t.gCR = function() {
     var x = t.body.x - UI.spawn_point.x;
     var y = t.body.y - UI.spawn_point.y;
     var r = UI.floors[Math.floor(y/ROOM_HEIGHT)];
@@ -522,8 +508,8 @@ global.Hero = function(x, y, type) {
   }
   t.stamp = function(d, x, y) {
     var wx, wy;
-    if(x != undefined) wx = x + t.w.type.offsetx;
-    if(y != undefined) wy = y + t.w.type.top;
+    if(x != undefined) wx = x + t.w.type.ox;
+    if(y != undefined) wy = y + t.w.type.t;
     if(t.s && t.active)
     {
       t.s.stamp(d, x || t.body.x, y || t.body.y);

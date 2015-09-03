@@ -56,9 +56,9 @@ global.H = {
           review += ' and ';
         first = false;
         if(exp.n > 0.3)
-          review += H.GetRandomEntry(['I liked', 'It was good', 'I enjoyed']) + ' that '+ exp.r;
+          review += H.RE(['I liked', 'It was good', 'I enjoyed']) + ' that '+ exp.r;
         else
-          review += H.GetRandomEntry(['I hated', 'It was terrible', 'I didn\'t enjoy']) + ' that '+ exp.r
+          review += H.RE(['I hated', 'It was terrible', 'I didn\'t enjoy']) + ' that '+ exp.r
       }
     })
     if(hero.experience.length == 0){
@@ -105,7 +105,7 @@ global.H = {
       return prev + cur;
     });
 
-    var rn = this.GetRandom(0, tw);
+    var rn = this.GR(0, tw);
     var ws = 0;
 
     for (var i = 0; i < l.length; i++) {
@@ -117,7 +117,7 @@ global.H = {
       }
     }
   },
-  NumToText: function(txt) {
+  NT: function(txt) {
     if(txt > 3000)
       txt = Math.floor(txt/1000) +'k'+((txt%1000)!== 0 ? '+' : '');
     return txt;
@@ -137,13 +137,13 @@ global.H = {
     if(a === undefined) return false;
     return a.split(b).length > 1;
   },
-  GetRandomEntry: function(arr) {
+  RE: function(arr) {
     return arr[Math.floor(Math.random()*arr.length)];
   },
-  GetRandom: function (low, high) {
+  GR: function (low, high) {
       return~~ (Math.random() * (high - low)) + low;
   },
-  EachValueKey: function(obj, cb){
+  EK: function(obj, cb){
     for(var k in obj)
     {
       if(obj.hasOwnProperty(k))
@@ -241,7 +241,7 @@ global.GAME = document.createElement('canvas');
 
 
 global.P = {
-  randomSolid: function(){ return H.GetRandomEntry(this.SOLID_TILES); },
+  randomSolid: function(){ return H.RE(this.SOLID_TILES); },
   SOLID_TILES: [new Char('∵', '84596F', '594B54'), new Char('#', '84596F', '594B54'), new Char('*', '84596F', '594B54')],
   BOX_MD: new Char(' ', BOX, BOX_B),
   HEALTH: new Char('+', '00ff00'),
@@ -276,19 +276,85 @@ global.S = {
 };
 
 global.R = {
-  HOSPITAL: {name: 'Hospital', p: P.HEALTH, code: 'h', slots: [4, 9, 14, 19], actions: [{name: 'Nurse', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 20, b: 10}}], cost: 100, stamp: S.HOSPITAL},
-  INN: {name: 'Inn', p: [P.DRINK, P.DRINK2], code: 'i', slots: [3, 9, 14, 16, 18], actions: [{name: 'Drink', effects: [{attribute: 'health', rate: {t: 10, b: 2}}], charge: {t: 8, b: 2}}], cost: 100, stamp: S.INN},
-  BROTHEL: {name: 'Brothel', p: P.X, code: 'b', slots: [5, 11], actions: [{name: 'Kiss', effects: [{attribute: 'health', rate: {t: 3, b: 0}}], charge: {t: 11, b: 1}}], cost: 210, stamp: S.BROTHEL},
-  ENTRANCE: {name: 'Entrance', code: 'e', actions: [{name: 'Chat', effects: [{attribute: 'xp', rate: {t: 5, b: 1}}], charge: {t: 10, b: 2}}], cost: 100, stamp: S.ENTRANCE},
-  SEWER: {name: 'Sewer', code: 's', slots: [3, 7, 12, 17], battle: true, enemies: 'rs', cost: 70, stamp: S.SEWER, p: P.FIGHT},
-  CHURCH: {name: 'Church', code: 'c', cost: 140, stamp: S.CHURCH, p: P.HOLY, slots: [5, 10, 15], actions: [{name: 'Pray', effects: [{attribute: 'health', rate: {t: 5, b: 0}}], charge: {t: 10, b: 0}}]},
-  LAIR: {name: 'Lair', code: 'l', slots: [4, 8, 12], battle: true, enemies: 'sdi', cost: 150, stamp: S.LAIR, p: P.FIGHT},
+  HOSPITAL: {
+    name: 'Hospital', 
+    p: P.HEALTH, 
+    code: 'h', 
+    slots: [4, 9, 14, 19], 
+    actions: [{
+      name: 'Nurse', 
+      charge: {t: 20, b: 10}
+    }], 
+    cost: 100, 
+    stamp: S.HOSPITAL
+  },
+  INN: {
+    name: 'Inn', 
+    p: [P.DRINK, P.DRINK2], 
+    code: 'i', slots: [3, 9, 14, 16, 18], 
+    actions: [{
+      name: 'Drink', 
+      charge: {t: 8, b: 2}
+    }], 
+    cost: 100, 
+    stamp: S.INN},
+  BROTHEL: {
+    name: 'Brothel', p: P.X, 
+    code: 'b', slots: [5, 11], 
+    actions: [{
+      name: 'Kiss', 
+      charge: {t: 11, b: 1}
+    }], 
+    cost: 210, 
+    stamp: S.BROTHEL
+  },
+  ENTRANCE: {
+    name: 'Entrance', 
+    code: 'e', 
+    actions: [{
+      name: 'Chat', 
+      charge: {t: 10, b: 2}
+    }], 
+    cost: 100, 
+    stamp: S.ENTRANCE
+  },
+  SEWER: {
+    name: 'Sewer', 
+    code: 's', 
+    slots: [3, 7, 12, 17], 
+    battle: true, 
+    enemies: 'rs', 
+    cost: 70, 
+    stamp: S.SEWER, 
+    p: P.FIGHT
+  },
+  CHURCH: {
+    name: 'Church', 
+    code: 'c', 
+    cost: 140, 
+    stamp: S.CHURCH, 
+    p: P.HOLY, slots: [5, 10, 15], 
+    actions: [{
+      name: 'Pray', 
+      charge: {t: 10, b: 0}
+    }]
+  },
+  LAIR: {
+    name: 'Lair', 
+    code: 'l', 
+    slots: [4, 8, 12], 
+    battle: true, 
+    enemies: 'sdi', 
+    cost: 150, 
+    stamp: S.LAIR, 
+    p: P.FIGHT
+  },
   random: function(){
-    return R[H.GetRandomEntry(this.all())];
+    return R[H.RE(this.all())];
   },
   get: function(c) {
     var t
-    H.EachValueKey(R, function(k){
+    H.EK(R, function(k){
       if(R[k].code == c)
         t = R[k]
     });
@@ -296,7 +362,7 @@ global.R = {
   },
   all: function() {
     var sel = [];
-    H.EachValueKey(R, function(k){
+    H.EK(R, function(k){
       if((k != 'random') && (k !='all') && (k!='get'))
         sel.push(k);
     });
@@ -308,152 +374,126 @@ global.R = {
 global.N = {
   names: 'Tom Thomas Brian Bobby Boromir Budgergy Bobbin Bilbo Bonzo Bongo Calvin Capitan Mr White Jack John Shirley Jonty Monty Cresswell Burgermeister Royletron Timon Aladdin Adolf Tony Antony Finn Jake Peter Pete Pele Persius Ponyo Pogo Serj Sergey Samir Todmorden Kevin Dante Colin Dennis Jake Solomon',
   Random: function() {
-    return H.GetRandomEntry(this.names.split(' '));
+    return H.RE(this.names.split(' '));
   }
 };
 
 global.E = {
   weapons: [
-    {name: 'Shortsword', symbol: '}', damage: 3, range: 3, code: 'ss', color: '00FF00', offsetx: 0.6, top: -0.5, bottom: -0.35},
-    {name: 'Longsword', symbol: '∤', damage: 4, range: 3, code: 'ls', color: 'A7FBEB', offsetx: 0.7, top: - 0.45, bottom: -0.2},
-    {name: 'Small Axe', symbol: '>', damage: 4, range: 1, code: 'sa', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
-    {name: 'Bow', symbol: '⦔', damage: 4, range: 1, code: 'bw', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
-    {name: 'Crucifix', symbol: '†', damage: 4, range: 1, code: 'cf', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
-    {name: 'Wand', symbol: '⊸', damage: 4, range: 1, code: 'wd', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
-    {name: 'Staff', symbol: '∣', damage: 4, range: 1, code: 'st', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
-    {name: 'Knife', symbol: '†', damage: 4, range: 1, code: 'kn', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3},
-    {name: 'Lute', symbol: '∝', damage: 4, range: 1, code: 'lt', color: 'FF0000', offsetx: 0.8, top: - 0.4, bottom: -0.3}
+    {name: 'Shortsword', x: '}', code: 'ss', c: '00FF00', ox: 0.6, t: -0.5, b: -0.35},
+    {name: 'Longsword', x: '∤', code: 'ls', c: 'A7FBEB', ox: 0.7, t: - 0.45, b: -0.2},
+    {name: 'Small Axe', x: '>', code: 'sa', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
+    {name: 'Bow', x: '⦔', code: 'bw', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
+    {name: 'Crucifix', x: '†', code: 'cf', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
+    {name: 'Wand', x: '⊸', code: 'wd', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
+    {name: 'Staff', x: '∣', code: 'st', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
+    {name: 'Knife', x: '†', code: 'kn', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
+    {name: 'Lute', x: '∝', code: 'lt', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3}
   ],
   heroes: [
     {
       name: 'Knight',
       faves: 'hlei',
-      hate: 's',
       turn: {t: 16, b: 5},
-      hates: 's',
-      money: {t: 200, b: 130},
-      health: {t: 200, b: 14},
       fee: 10,
-      increment: 0.5,
-      symbol: '$',
-      lvl_range: {t: 10, b: 3},
-      weapons: ['ls', 'ss'],
-      speed: {t: 1.5, b: 0.7},
-      color: 'FFE9BA'
+      i: 0.5,
+      x: '$',
+      l: {t: 10, b: 3},
+      w: 'ls ss',
+      s: {t: 1.5, b: 0.7},
+      c: 'FFE9BA'
     },
     {
       name: 'Peon',
       faves: 'sh',
-      hate: 'l',
       turn: {t: 20, b: 10},
       fee: 2,
-      increment: 0.3,
-      symbol: 'K',
-      lvl_range: {t: 6, b: 0},
-      weapons: ['ss', 'kn', 'sa'],
-      money: {t: 100, b: 20},
-      health: {t: 100, b: 12},
-      speed: {t: 1.5, b: 0.8},
-      color: 'FFAD8B'
+      i: 0.3,
+      x: 'K',
+      l: {t: 6, b: 0},
+      w: 'ss kn sa',
+      s: {t: 1.5, b: 0.8},
+      c: 'FFAD8B'
     },
     {
       name: 'Dwarf',
       faves: 'shil',
       turn: {t: 15, b: 8},
-      symbol: 'D',
-      lvl_range: {t: 9, b: 1},
-      weapons: ['sa'],
-      money: {t: 170, b: 140},
-      health: {t: 230, b: 24},
-      speed: {t:1, b:0.7},
+      x: 'D',
+      l: {t: 9, b: 1},
+      w: 'sa',
+      s: {t:1, b:0.7},
       fee: 8,
-      increment: 0.9,
-      color: 'FFE9AA'
+      i: 0.9,
+      c: 'FFE9AA'
     },
     {
       name: 'Priest',
       faves: 'cls',
       turn: {t: 18, b: 8},
       fee: 3,
-      increment: 0.4,
-      symbol: 'δ',
-      lvl_range: {t: 10, b: 1},
-      weapons: ['cf'],
-      money: {t: 70, b: 40},
-      health: {t: 330, b: 18},
-      speed: {t: 1.1, b: 0.6},
-      color: 'FFE9AA'
+      i: 0.4,
+      x: 'δ',
+      l: {t: 10, b: 1},
+      w: 'cf',
+      s: {t: 1.1, b: 0.6},
+      c: 'FFE9AA'
     },
     {
       name: 'Mage',
       faves: 'ishl',
       turn: {t: 11, b: 3},
       fee: 6,
-      increment: 0.6,
-      symbol: 'Î',
-      lvl_range: {t: 10, b: 3},
-      weapons: ['st', 'wd'],
-      money: {t: 120, b: 80},
-      health: {t: 160, b: 11},
-      speed: {t: 1.1, b: 0.6},
-      color: 'FFE9AA'
+      i: 0.6,
+      x: 'Î',
+      l: {t: 10, b: 3},
+      w: 'st wd',
+      s: {t: 1.1, b: 0.6},
+      c: 'FFE9AA'
     },
     {
       name: 'Rogue',
       faves: 'slihc',
       turn: {t: 20, b: 10},
       fee: 4,
-      increment: 0.8,
-      symbol: '∱',
-      lvl_range: {t: 8, b: 4},
-      weapons: ['kn'],
-      money: {t: 190, b: 40},
-      health: {t: 200, b: 8},
-      speed: {t: 1.1, b: 0.6},
-      color: 'FFE9AA'
+      i: 0.8,
+      x: '∱',
+      l: {t: 8, b: 4},
+      w: 'kn',
+      s: {t: 1.1, b: 0.6},
+      c: 'FFE9AA'
     },
     {
       name: 'Archer',
       faves: 'hlc',
       turn: {t: 21, b: 7},
       fee: 5,
-      increment: 0.9,
-      symbol: '∔',
-      lvl_range: {t: 9, b: 2},
-      weapons: ['bw'],
-      money: {t: 170, b: 140},
-      health: {t: 230, b: 24},
-      speed: {t: 2.9, b: 1.8},
-      color: 'FFE9AA'
+      i: 0.9,
+      x: '∔',
+      l: {t: 9, b: 2},
+      w: 'bw',
+      s: {t: 2.9, b: 1.8},
+      c: 'FFE9AA'
     },
     {
       name: 'Muse',
       faves: 'ihcls',
       turn: {t: 36, b: 11},
       fee: 2,
-      increment: 0.6,
-      symbol: '♭',
-      lvl_range: {t: 10, b: 4},
-      weapons: ['lt'],
-      money: {t: 200, b: 90},
-      health: {t: 120, b: 34},
-      speed: {t: 1.1, b: 0.6},
-      color: 'FFE9AA'
+      i: 0.6,
+      x: '♭',
+      l: {t: 10, b: 4},
+      w: 'lt',
+      s: {t: 1.1, b: 0.6},
+      c: 'FFE9AA'
     }
   ],
   enemies: [
-    {name: 'Rat', code: 'r', symbol: '%', color: 'C2B49A', cost: {t: 10, b: 2}, attack: {t: 8, b: 1}, defense: {t: 74, b: 10}},
-    {name: 'Skeleton', code: 's', symbol: '⥉', color: 'C6E5D9', cost: {t: 11, b: 3}, attack: {t: 11, b:2}, defense: {t: 101, b: 40}},
-    {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:40, b: 12}, attack: {t: 90, b: 30}, defense: {t: 130, b: 50}},
-    {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 21, b: 5}, attack: {t: 40, b: 7}, defense: {t: 80, b: 45}}
+    {name: 'Rat', code: 'r', symbol: '%', color: 'C2B49A', cost: {t: 10, b: 2}},
+    {name: 'Skeleton', code: 's', symbol: '⥉', color: 'C6E5D9', cost: {t: 11, b: 3}},
+    {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:40, b: 12}},
+    {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 21, b: 5}}
   ],
-  GetRandomWeapon: function(choice) {
-    var w = [];
-    choice.forEach(function (c){
-      w.push(this.GetWeapon(c))
-    }.bind(this));
-    return H.GetRandomEntry(w);
-  },
   GetEnemy: function(code) {
     var e;
     this.enemies.forEach(function(c){
@@ -461,20 +501,23 @@ global.E = {
     });
     return e;
   },
-  GetWeapon: function(code) {
+  GW: function(code) {
     var w;
     this.weapons.forEach(function(c){
       if(c.code == code) w = c;
     });
     return w;
   },
-  GetRandomHero: function(lvl) {
+  GRWeapon: function(choice) {
+    return this.GW(H.RE(choice.split(' ')));
+  },
+  GRHero: function(lvl) {
     var h = [];
     this.heroes.forEach(function(c){
-      if(c.lvl_range.b <= lvl)
+      if(c.l.b <= lvl)
         h.push(c)
     })
-    return new Hero(UI.spawn_point.x, UI.spawn_point.y, H.GetRandomEntry(h)); //H.GetRandomEntry(h));
+    return new Hero(UI.spawn_point.x, UI.spawn_point.y, H.RE(h)); //H.RE(h));
   }
 };
 

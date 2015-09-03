@@ -41,7 +41,7 @@ var t = global.UI = {
     for(var x=0; x < t.w; x++) {
       if(Math.random() > 0.95)
       {
-        var c = new Sprite(x, H.GetRandom(1, 3), new Char('@', 'FFFFFF', undefined, 0.2));
+        var c = new Sprite(x, H.GR(1, 3), new Char('@', 'FFFFFF', undefined, 0.2));
         c.body.velocity.x = 1;
         t.clouds.push(c);
       }
@@ -119,10 +119,10 @@ var t = global.UI = {
     }
   },
   spawnHero: function() {
-    var h = E.GetRandomHero(1);
+    var h = E.GRHero(1);
     t.heroes.push(h);
     t.num_heroes =  t.heroes.length;
-    t.setGold(H.DoMath(h.type.increment, h.lvl, h.type.fee));
+    t.setGold(h.type.fee * t.lvl);
   },
   removeHero: function(hero) {
     var exp = H.Summarise(hero);
@@ -130,8 +130,8 @@ var t = global.UI = {
     t.r_count += 1;
     t.rating.setNum((t.r_total/t.r_count)*5);
     t.addStatus(hero, (exp.r*5).toFixed(1)+' rating from '+hero.name, exp.s);
-    if(t.selected_hero && (t.selected_hero.id == hero.id))
-      t.selected_hero = undefined;
+    if(t.sh && (t.sh.id == hero.id))
+      t.sh = undefined;
     H.RemoveFromArray( t.heroes, hero, 'id');
     hero.end();
     H.Null(hero);
@@ -152,7 +152,7 @@ var t = global.UI = {
     if( t.spawn_counter >  t.spawn_wait)
     {
       t.spawn_counter = 0;
-      t.spawn_wait = H.GetRandom(24- ( t.popularity*4), (24 - ( t.popularity*4)) + ( 24 - ( t.popularity*4)));
+      t.spawn_wait = H.GR(24- ( t.popularity*4), (24 - ( t.popularity*4)) + ( 24 - ( t.popularity*4)));
       t.spawnHero();
     }
     t.heroes.forEach(function(hero) {
@@ -202,10 +202,10 @@ var t = global.UI = {
     t.p.x.clearRect(0, 0,  t.p.canvas.width,  t.p.canvas.height);
   },
   setSelection: function(room, isHero) {
-    t.selected_hero = t.sr = undefined;
+    t.sh = t.sr = undefined;
     t.cPs();
     if(isHero) {
-      var h = t.selected_hero = room;
+      var h = t.sh = room;
       var a = new Avatar(h);
       a.stamp(t.p.x, 0.5, 0.5);
       a.kill();
@@ -377,11 +377,11 @@ var t = global.UI = {
 
     if( t.sr !== undefined)
       t.drawSelection(ctx, (2+(t.sr.x*ROOM_WIDTH)), (6 + (t.sr.y*ROOM_HEIGHT)), ROOM_WIDTH, ROOM_HEIGHT);
-    else if( t.selected_hero !== undefined)
-      if(t.selected_hero.facing == RIGHT)
-        t.drawSelection(ctx, t.selected_hero.body.x - 0.2, t.selected_hero.body.y -0.3, 1.8, 1.6);
+    else if( t.sh !== undefined)
+      if(t.sh.facing == RIGHT)
+        t.drawSelection(ctx, t.sh.body.x - 0.2, t.sh.body.y -0.3, 1.8, 1.6);
       else
-        t.drawSelection(ctx, t.selected_hero.body.x - 0.8, t.selected_hero.body.y -0.3, 1.8, 1.6);
+        t.drawSelection(ctx, t.sh.body.x - 0.8, t.sh.body.y -0.3, 1.8, 1.6);
     //  t.type.stamp(ctx,  t.w-27, 9);
 
     t.renderer.stamp(g_ctx);
