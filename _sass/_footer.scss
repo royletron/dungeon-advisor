@@ -20,10 +20,16 @@
 
 footer {
   background-color: $footer-bg-color;
+  background: #22989B url('/images/footer.png');
   border-top: $footer-border-top;
   color: $footer-color;
   font-size: $footer-font-size;
   font-weight: $footer-font-weight;
   padding: $footer-padding;
   text-align: center;
+}
+
+footer > .measure{
+  background-color: #594B54;
+  color: white;
 }

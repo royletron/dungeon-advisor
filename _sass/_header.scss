@@ -1,10 +1,19 @@
 .site-header {
   padding-top: $space-1;
   padding-bottom: $space-2;
+  background: #22989B url('/images/header.png') bottom repeat-x;
+   -webkit-text-stroke: 1px white;
+   color: black;
+   text-shadow:
+       2px 2px 0 #fff,
+     -1px -1px 0 #fff,  
+      1px -1px 0 #fff,
+      -1px 1px 0 #fff,
+       1px 1px 0 #fff;
 }
 
 .site-header a {
-  color: #333;
+   color: black;
   font-size: $h3;
   font-weight: 300;
 }
@@ -18,13 +27,13 @@
 }
 
 .site-header nav a {
-  color: #666;
+  color: #44882B;
 }
 
 .site-header nav a:hover,
 .site-header nav a:focus,
 .site-header nav a:active {
-  color: #444;
+  color: #44882B;
   opacity: 1;
   border-bottom: 2px solid #444;
 }
