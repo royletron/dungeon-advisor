@@ -48,6 +48,9 @@ share_reddit: false
 share_stumbleupon: false
 share_hackernews: false
 
+gems:
+  - jemoji
+
 # Build settings
 markdown:     kramdown
 redcarpet:

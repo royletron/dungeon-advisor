@@ -22,4 +22,10 @@ Not quite - this has to squeeze into a 13kb zip file, so instead of high quality
 
 ### Oh-noes
 
-Oh-yesses more like, look at this highly detailed Inn: 
+Oh-yesses more like, look at this highly detailed magic
+
+![ASCII MAGIC!](/images/posts/screen_1.png)
+
+### When can I play it?
+
+I hope to have a pre-release up here soon, so that I can get some bug fixers in, prior to submission on the 13th September. Keep an eye out chums :seedling:
