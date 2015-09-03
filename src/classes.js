@@ -24,6 +24,7 @@ global.Char = function(s, color, bg, alpha) {
 global.Enemy = function(type) {
   var t = this;
   t.type = type
+  t.effort = 3;
   t.name = N.Random();
   t.c = new Char(type.symbol, type.color);
 }
@@ -85,7 +86,7 @@ global.Avatar = function(hero, center) {
   t.gen = function(){
     H.T('◜◝', 0, CHAR_HEIGHT, t.r.x, FONT, t.color);
     H.T('◟◞', 0, CHAR_HEIGHT*2, t.r.x, FONT, t.color);
-    t.h.stamp(t.r.x, t.c ? 1:0.3, 0.65);
+    t.h.stamp(t.r.x, t.c ? 0.5:0.3, 0.65);
     t.s = true;
   }
   if(t.h.stamp != null)
@@ -276,12 +277,6 @@ global.Room = function(type, flipped, x, y) {
   t.tick = function (h) {
     h.last_tick = 0;
     new Particle(t.type.p, h.body.x, h.body.y-1);
-    if(t.type.battle)
-      if(h.slot)
-      {
-        //fight?
-
-      }
   };
   t.update = function(dt, h) {
     if((h.busy != true) && t.slots)
@@ -412,17 +407,40 @@ global.Hero = function(x, y, type) {
     t.experience.push({n: 1, r: 'I levelled up to '+t.lvl, t: 4});
   }
   t.room_action = function(room) {
-    var a=H.RE(room.type.actions);
-    var g=H.G(a.c, a.val, t);
-    UI.setGold(a.val);
-    var c = new Char(a.val.toString(), 'FFF566', '000000');
-    new Particle(c, t.body.x, t.body.y-1, true);
-    if(g === 0)
-      t.experience.push({n: 0.8, r: 'the prices for '+a.n.toLowerCase()+' were fair'});
-    if(g === 1)
-      t.experience.push({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!'})
-    if(g === -1)
-      t.experience.push({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.'})
+    if(room.type.battle){
+      if(t.slot && t.slot.npc)
+      {
+        console.log(t.slot.npc.effort);
+        var g=H.G({t:5, b: 1}, t.slot.npc.effort, t);
+        var r = t.slot.npc.type.rate;
+        var c=Math.floor(r.b+((r.t-r.b) * (t.slot.npc.effort/5)));
+        UI.setGold(-c);
+        var o = new Char((-c).toString(), 'FFF566', '000000');
+        new Particle(o, t.body.x, t.body.y-1, true);
+        if(g === -1)
+          t.experience.push({n: 1, r: 'I had a great fight against '+t.slot.npc.name, t: 26});
+        if(g === 1)
+          t.experience.push({n: 0.8, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
+        else
+          t.experience.push({n: 0.9, r: 'I had an alright fight agaisnt '+t.slot.npc.name, t: 23});
+      }
+      else
+        t.experience.push({n: 0.6, r: 'I got to fight, but I would have preferred an enemy', t: 7});
+    }
+    else
+    {
+      var a=H.RE(room.type.actions);
+      var g=H.G(a.c, a.val, t);
+      UI.setGold(a.val);
+      var c = new Char(a.val.toString(), 'FFF566', '000000');
+      new Particle(c, t.body.x, t.body.y-1, true);
+      if(g === 0)
+        t.experience.push({n: 0.8, r: 'the prices for '+a.n.toLowerCase()+' were fair'});
+      if(g === 1)
+        t.experience.push({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!'})
+      if(g === -1)
+        t.experience.push({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.'})
+    }
   }
   t.update = function(dt) {
     t.body.update(dt);
@@ -459,13 +477,8 @@ global.Hero = function(x, y, type) {
   t.roomChanged = function(c) {
     if(t.entertaining !== undefined)
       if(t.had_a_go === true)
-        if(t.cr.type.battle)
-          if(t.slot && t.slot.npc)
-            t.experience.push({n: 1, r: 'I got to fight against '+t.slot.npc.name, t: 6});
-          else
-            t.experience.push({n: 0.8, r: 'I got to fight, but I would have preferred an enemy', t: 7});
-        else if(H.Contains(t.type.faves, t.cr.type.code))
-            t.experience.push({n: 1, r: 'of the '+t.cr.type.name, t: 1});
+        if(H.Contains(t.type.faves, t.cr.type.code))
+          t.experience.push({n: 1, r: 'of the '+t.cr.type.name, t: 1});
       else
         t.experience.push({n: 0.4, r: 'I didn\'t get in the '+t.cr.type.name, t: 3});
 
@@ -480,7 +493,7 @@ global.Hero = function(x, y, type) {
           t.entertaining = true;
       }
       else{
-        if(Math.random() < 1)
+        if(Math.random() < 0.6)
           t.entertaining = true;
       }
     }

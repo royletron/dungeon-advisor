@@ -522,10 +522,10 @@ global.E = {
     }
   ],
   enemies: [
-    {name: 'Rat', code: 'r', symbol: '%', color: 'C2B49A', cost: {t: 10, b: 2}},
-    {name: 'Skeleton', code: 's', symbol: '⥉', color: 'C6E5D9', cost: {t: 11, b: 3}},
-    {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:40, b: 12}},
-    {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 21, b: 5}}
+    {name: 'Rat', code: 'r', symbol: '%', color: 'C2B49A', cost: {t: 10, b: 2}, rate: {t: 8, b: 3}},
+    {name: 'Skeleton', code: 's', symbol: '⥉', color: 'C6E5D9', cost: {t: 11, b: 3}, rate: {t:12, b: 4}},
+    {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:40, b: 12}, rate: {t: 18, b: 13}},
+    {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 21, b: 5}, rate: {t: 10, b: 15}}
   ],
   GetEnemy: function(code) {
     var e;

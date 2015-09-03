@@ -253,6 +253,18 @@ var t = global.UI = {
                   H.T(s.npc.name+' ('+s.npc.type.name+')', 36, 18 + (CHAR_HEIGHT*1.8)*(i*2), t.p.x, FONT, 'FFFFFF');
                   a.stamp(t.p.x, 0, (i*2)*1.8);
                   H.Null(a);
+
+                  for(var j = 0; j < 5; j++)
+                  {
+                    var c = '☆';
+                    if((j) < s.npc.effort) c = '★';
+                    var b = new Button(c, function(d){
+                      d.n.effort = d.v+1;
+                      UI.setSelection(UI.sr);
+                    }, (t.w - 30)+4+(j*2.8), 6+(((i*2)+1.1)*1.8), undefined, {v: j, n: s.npc});
+                    t.buttons.push(b);
+                    b.stamp(t.p.x, 4+(j*2.8), ((i*2)+1.1)*1.8);
+                  }
                 }
                 else
                 {
@@ -273,9 +285,9 @@ var t = global.UI = {
                     }
                   })
                   t.changed = true;
-                }, (t.w - 30) + w, 6+(((room.slots.length*2)+0.2+h)*1.8), Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t)), {e: en, r: room});
+                }, (t.w - 30) + w, 6+(((room.slots.length*2)+1+h)*1.8), Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t)), {e: en, r: room});
                 t.buttons.push(n);
-                n.stamp(t.p.x, 0+w, (((room.slots.length * 2)+0.2+h)*1.8));
+                n.stamp(t.p.x, 0+w, (((room.slots.length * 2)+1+h)*1.8));
                 w += n.r.width/CHAR_WIDTH;
                 if(w > 17) { h++; w = 0; }
               });
