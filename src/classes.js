@@ -103,7 +103,8 @@ global.Avatar = function(hero, center) {
 
 global.StarRating = function(txt) {
   var t = this;
-  t.r = new Renderer(9*CHAR_WIDTH, CHAR_HEIGHT);
+  t.i = 0;
+  t.r = new Renderer(30*CHAR_WIDTH, CHAR_HEIGHT);
   t.setNum = function(val)
   {
     if(val != t.num){
@@ -116,8 +117,11 @@ global.StarRating = function(txt) {
         else
           P.B_STAR.stamp(t.r.x, i, 0);
       }
-      H.T(t.num.toFixed(1), 5.5*CHAR_WIDTH, CHAR_HEIGHT-1, t.r.x, FONT, '000000');
+      H.T(t.num.toFixed(1) + ' ('+t.i+' reviews)', 5.5*CHAR_WIDTH, CHAR_HEIGHT-1, t.r.x, FONT, '000000');
     }
+  }
+  t.increment = function() {
+    t.i ++;
   }
   t.setNum(0);
   t.stamp = function(c, x, y){

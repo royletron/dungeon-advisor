@@ -72,11 +72,11 @@ var t = global.UI = {
     t.bg.x.font = HEADING_FONT;
     t.bg.x.strokeStyle = 'white';
     t.bg.x.lineWidth = 5;
-    t.bg.x.strokeText('dungeon', 10, 44);
-    t.bg.x.fillText('dungeon', 10, 44);
+    t.bg.x.strokeText('dungeon', 10, 34);
+    t.bg.x.fillText('dungeon', 10, 34);
     t.bg.x.fillStyle = '#579441';
-    t.bg.x.strokeText('advisor', 135, 44);
-    t.bg.x.fillText('advisor', 135, 44);
+    t.bg.x.strokeText('advisor', 135, 34);
+    t.bg.x.fillText('advisor', 135, 34);
     t.renderer.stamp(ctx);
 
     t.add_floor_button.y = 10 + (t.floors.length * ROOM_HEIGHT);
@@ -84,6 +84,12 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
+    t.pb = new Button('◼', function(){
+      TIME=0;
+    }, 0, 3.2);
+    t.cb = new Button('▸', function(){
+      TIME=1;
+    }, 0, 3.2);
     t.addRoom(R.ENTRANCE);
   },
   addFloor: function() {
@@ -129,6 +135,7 @@ var t = global.UI = {
     t.r_total += exp.r;
     t.r_count += 1;
     t.rating.setNum((t.r_total/t.r_count)*5);
+    t.rating.increment();
     t.addStatus(hero, (exp.r*5).toFixed(1)+' rating from '+hero.name, exp.s);
     if(t.sh && (t.sh.id == hero.id))
       t.sh = undefined;
@@ -139,6 +146,10 @@ var t = global.UI = {
   },
   _clicked: false,
   update: function(dt){
+    if(TIME == 0)
+      t.cb.update(dt);
+    else
+      t.pb.update(dt);
     t.offset += dt*5;
     if(t.changed)
       t.setSelection(t.sr);
@@ -379,13 +390,17 @@ var t = global.UI = {
     t.p.stamp(ctx,  t.w -30, 6);
 
     t.counters.forEach(function (counter, x){
-      counter.stamp(ctx, 3 + (x*8), 4);
+      counter.stamp(ctx, 6 + (x*8), 3.6);
     }.bind( t));
 
     t.add_floor_button.stamp(ctx);
     t.fg.stamp(ctx);
 
-    t.rating.stamp(ctx, 16, 4);
+    t.rating.stamp(ctx, 19, 3.6);
+    if(TIME != 0)
+      t.pb.stamp(ctx)
+    else
+      t.cb.stamp(ctx)
 
     if( t.sr !== undefined)
       t.drawSelection(ctx, (2+(t.sr.x*ROOM_WIDTH)), (6 + (t.sr.y*ROOM_HEIGHT)), ROOM_WIDTH, ROOM_HEIGHT);
