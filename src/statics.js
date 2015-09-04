@@ -258,6 +258,7 @@ global.P = {
   X: new Char('X', 'CF3267'),
   DRINK2: new Char('#', 'F1D67D'),
   HOLY: new Char('†', '3CD9BC'),
+  HOLY2: new Char('†', 'F2A777'),
   FLOOR: new Char('┈', '63545E', '302222'),
   OFF_FLOOR: new Char('┈', '3b3539', '302222'),
   GOLD: new Char('●', 'FFE545'),
@@ -358,7 +359,7 @@ global.R = {
     code: 'c',
     cost: 100,
     stamp: S.CHURCH,
-    p: P.HOLY,
+    p: [P.HOLY, P.HOLY2],
     slots: [5, 10, 12, 17],
     actions: [{
       n: 'Pray',

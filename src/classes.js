@@ -147,7 +147,7 @@ global.StatusUpdate = function(hero, title, text) {
   t.tw = new TypeWriter(text, 21, 4);
   t.height = t.tw.height + 2
   t.tw.run();
-  t.r = new Renderer(21 * CHAR_WIDTH, CHAR_HEIGHT);
+  t.r = new Renderer(23 * CHAR_WIDTH, CHAR_HEIGHT);
   H.T(title, 0, CHAR_HEIGHT-2, t.r.x, STATUS_FONT, 'ffffff');
   t.stamp = function(d, x, y){
     t.a.stamp(d, x, y);
@@ -433,12 +433,12 @@ global.Hero = function(x, y, type) {
         if(g === -1)
           t.experience.push({n: 1, r: 'I had a great fight against '+t.slot.npc.name, t: 26});
         if(g === 1)
-          t.experience.push({n: 0.8, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
+          t.experience.push({n: 0.3, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
         else
-          t.experience.push({n: 0.9, r: 'I had an alright fight agaisnt '+t.slot.npc.name, t: 23});
+          t.experience.push({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
       }
       else
-        t.experience.push({n: 0.6, r: 'I got to fight, but I would have preferred an enemy', t: 7});
+        t.experience.push({n: 0.5, r: 'I got to fight, but I would have preferred an enemy', t: 7});
     }
     else
     {
@@ -448,12 +448,12 @@ global.Hero = function(x, y, type) {
       var c = new Char(a.val.toString(), 'FFF566', '000000');
       new Particle(c, t.body.x, t.body.y-1, true);
       if(g === 0)
-        t.experience.push({n: 0.8, r: 'the prices for '+a.n.toLowerCase()+' were fair'});
+        t.experience.push({n: 0.7, r: 'the prices for '+a.n.toLowerCase()+' were fair'});
       if(g === 1)
-        t.experience.push({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!'})
+        t.experience.push({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!'});
       if(g === -1)
-        t.experience.push({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.'})
-    }
+        t.experience.push({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.'});
+      }
   }
   t.update = function(dt) {
     t.body.update(dt);

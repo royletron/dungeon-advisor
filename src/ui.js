@@ -136,8 +136,8 @@ var t = global.UI = {
     var exp = H.Summarise(hero);
     t.r_total += exp.r;
     t.r_count += 1;
-    t.rating.setNum((t.r_total/t.r_count)*5);
     t.rating.increment();
+    t.rating.setNum((t.r_total/t.r_count)*5);
     t.addStatus(hero, (exp.r*5).toFixed(1)+' rating from '+hero.name, exp.s);
     if(t.sh && (t.sh.id == hero.id))
       t.sh = undefined;
