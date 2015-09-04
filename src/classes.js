@@ -186,7 +186,7 @@ global.TypeWriter = function(text, width, height, fixed) {
       if(i == t.arr.length-1)
         clearInterval(t.interval);
       i++;
-    }.bind(t), 110);
+    }.bind(t), 20);
   }
   t.stamp = function(d, x, y) {
     t.r.stamp(d, x, y);
