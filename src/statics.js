@@ -301,7 +301,8 @@ global.R = {
       c: {t: 24, b: 12}
     }],
     cost: 100,
-    stamp: S.HOSPITAL
+    stamp: S.HOSPITAL,
+    l: 4
   },
   INN: {
     name: 'Inn',
@@ -315,7 +316,9 @@ global.R = {
       c: {t: 13, b: 3}
     }],
     cost: 100,
-    stamp: S.INN},
+    stamp: S.INN,
+    l: 2
+  },
   BROTHEL: {
     name: 'Brothel', p: P.X,
     code: 'b', slots: [5, 11],
@@ -324,7 +327,8 @@ global.R = {
       c: {t: 11, b: 1}
     }],
     cost: 210,
-    stamp: S.BROTHEL
+    stamp: S.BROTHEL,
+    l: 6
   },
   ENTRANCE: {
     name: 'Entrance',
@@ -336,7 +340,8 @@ global.R = {
     slots: [3, 7, 11, 15],
     cost: 100,
     p: [P.CHAT_1, P.CHAT_2],
-    stamp: S.ENTRANCE
+    stamp: S.ENTRANCE,
+    l: 100
   },
   SEWER: {
     name: 'Sewer',
@@ -346,7 +351,8 @@ global.R = {
     enemies: 'rs',
     cost: 70,
     stamp: S.SEWER,
-    p: P.FIGHT
+    p: P.FIGHT,
+    l: 1
   },
   CHURCH: {
     name: 'Church',
@@ -362,7 +368,8 @@ global.R = {
     {
       n: 'Confession',
       c: {t: 13, b: 3}
-    }]
+    }],
+    l: 1
   },
   LAIR: {
     name: 'Lair',
@@ -372,7 +379,8 @@ global.R = {
     enemies: 'sdi',
     cost: 150,
     stamp: S.LAIR,
-    p: P.FIGHT
+    p: P.FIGHT,
+    l: 7
   },
   random: function(){
     return R[H.RE(this.all())];

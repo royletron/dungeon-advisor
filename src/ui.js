@@ -238,18 +238,24 @@ var t = global.UI = {
       if( t.sr !== undefined){
         if( t.sr.found === false)
         {
-          R.all().forEach(function(room, idx){
+          var idx = 0;
+          R.all().forEach(function(room){
             var r = R[room];
-            H.T(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.p.x, FONT, 'FFFFFF');
-            if( t.rb[idx] === undefined)
+            console.log(r.l, UI.lvl);
+            if(r.l <= UI.lvl)
             {
-              t.rb.push(new Button('Add', function(d){
-                var room = UI.addRoom(R[d], UI.sr);
-                UI.setSelection(room);
-                UI.gold += -room.type.cost;
-              }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
+              H.T(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.p.x, FONT, 'FFFFFF');
+              if( t.rb[idx] === undefined)
+              {
+                t.rb.push(new Button('Add', function(d){
+                  var room = UI.addRoom(R[d], UI.sr);
+                  UI.setSelection(room);
+                  UI.gold += -room.type.cost;
+                }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
+              }
+              t.rb[idx].stamp( t.p.x, 16, idx*1.8);
+              idx ++;
             }
-            t.rb[idx].stamp( t.p.x, 16, idx*1.8);
           }.bind(t));
         }
         else

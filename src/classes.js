@@ -65,7 +65,11 @@ global.Button = function(text, cb, x, y, cost, data) {
       t.r.stamp(d, x === undefined ? t.x : x, y === undefined ? t.y : y);
   }
   t.update = function(dt) {
-    if(H.MouseClick)
+    var s = true;
+    if(t.cost != undefined)
+      if(t.cost > UI.gold)
+        s = false;
+    if(H.MouseClick && s)
     {
       if(H.HT(H.MouseCoords, t.hit())) {
         H.MouseClick = false;
