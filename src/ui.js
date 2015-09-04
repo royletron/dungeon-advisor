@@ -38,7 +38,7 @@ var t = global.UI = {
     t.rating = new StarRating();
     t.p = new Renderer(CHAR_WIDTH*28, CHAR_HEIGHT*20, 1);
     for(var x=0; x < t.w; x++) {
-      if(Math.random() > 0.95)
+      if(Math.random() > 0.90)
       {
         var c = new Sprite(x, H.GR(1, 3), new Char('@', 'FFFFFF', undefined, 0.2));
         c.body.velocity.x = 1;
@@ -83,7 +83,7 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
-    t.counters.push(new Counter(new Char('✓', '857989'), t, 'lvl'));
+    t.counters.push(new Counter(new Char('✓', 'C3FF68'), t, 'lvl'));
     t.pb = new Button('◼', function(){
       TIME=0;
     }, 0, 3.2);
@@ -156,8 +156,8 @@ var t = global.UI = {
     t.changed = false;
     t.clouds.forEach(function(cloud, idx){
       cloud.update(dt);
-      if(cloud.x > ( t.w + 2))
-      cloud.body.x = -1;
+      if(cloud.body.x > ( t.w + 2))
+        cloud.body.x = -1;
     }.bind( t));
     t.spawn_counter += dt;
     if( t.spawn_counter >  t.spawn_wait)
