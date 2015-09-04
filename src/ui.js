@@ -11,7 +11,6 @@ var t = global.UI = {
   clouds: [],
   spawn_counter: 0,
   spawn_wait: 0,
-  popularity: 5,
   spawn_point: {x: 0, y: 13.5},
   heroes: [],
   num_heroes: 0,
@@ -84,6 +83,7 @@ var t = global.UI = {
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
+    t.counters.push(new Counter(new Char('✓', '857989'), t, 'lvl'));
     t.pb = new Button('◼', function(){
       TIME=0;
     }, 0, 3.2);
@@ -125,10 +125,10 @@ var t = global.UI = {
     }
   },
   spawnHero: function() {
-    var h = E.GRHero(1);
+    var h = E.GRHero(t.lvl);
     t.heroes.push(h);
     t.num_heroes =  t.heroes.length;
-    t.setGold(h.type.fee * t.lvl);
+    t.setGold(h.type.fee);
   },
   removeHero: function(hero) {
     var exp = H.Summarise(hero);
@@ -163,7 +163,7 @@ var t = global.UI = {
     if( t.spawn_counter >  t.spawn_wait)
     {
       t.spawn_counter = 0;
-      t.spawn_wait = H.GR(24- ( t.popularity*4), (24 - ( t.popularity*4)) + ( 24 - ( t.popularity*4)));
+      t.spawn_wait = H.GR(24- ( t.lvl*4), (24 - ( t.lvl*4)) + ( 24 - ( t.lvl*4)));
       t.spawnHero();
     }
     t.heroes.forEach(function(hero) {
@@ -390,13 +390,15 @@ var t = global.UI = {
     t.p.stamp(ctx,  t.w -30, 6);
 
     t.counters.forEach(function (counter, x){
+      if(x == 2)
+        x = 1.6;
       counter.stamp(ctx, 6 + (x*8), 3.6);
     }.bind( t));
 
     t.add_floor_button.stamp(ctx);
     t.fg.stamp(ctx);
 
-    t.rating.stamp(ctx, 19, 3.6);
+    t.rating.stamp(ctx, 24, 3.6);
     if(TIME != 0)
       t.pb.stamp(ctx)
     else
