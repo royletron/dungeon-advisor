@@ -1,6 +1,6 @@
 var t = global.UI = {
   renderer: null,
-  gold: 1000,
+  gold: 100,
   lvl: 1,
   w: null,
   h: null,
@@ -210,7 +210,18 @@ var t = global.UI = {
     t.buttons.forEach(function(b){
       b.update(dt);
     })
-    t.add_floor_button.update(dt);
+    if(UI.SR())
+      t.add_floor_button.update(dt);
+  },
+  SR: function() {
+    var l = UI.lvl;
+    var f = UI.floors.length;
+    var s = false;
+    if((l > 2) && (f < 2)) s = true;
+    if((l > 4) && (f < 3)) s = true;
+    if((l > 6) && (f < 4)) s = true;
+    if(l > 8) s = true;
+    return s
   },
   cPs: function() {
     t.p.x.clearRect(0, 0,  t.p.canvas.width,  t.p.canvas.height);
@@ -405,8 +416,8 @@ var t = global.UI = {
         x = 1.6;
       counter.stamp(ctx, 6 + (x*8), 3.6);
     }.bind( t));
-
-    t.add_floor_button.stamp(ctx);
+    if(UI.SR())
+      t.add_floor_button.stamp(ctx);
     t.fg.stamp(ctx);
 
     t.rating.stamp(ctx, 24, 3.6);

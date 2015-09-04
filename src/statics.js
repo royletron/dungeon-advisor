@@ -42,19 +42,19 @@ global.H = {
       var fave = R.get(f);
       if(!H.InArray(r, fave, 'type'))
         hero.experience.push({n: 0, r: 'they didn\'t have a '+fave.name.toLowerCase(), t: 10});
-    })
+    });
     var _tmp = {p: [], n: []};
     hero.experience.forEach(function(exp, i){
       score += exp.n;
       if(exp.n > 0.5){
         if(!H.InArray(_tmp.p, exp.t, 't'))
-          _tmp.p.push(H.RE(['I liked it', 'It was good', 'I enjoyed it']) + ' because '+ exp.r)
+          _tmp.p.push(H.RE(['I liked it', 'It was good', 'I enjoyed it']) + ' because '+ exp.r);
       }
       else
         if(!H.InArray(_tmp.n, exp.t, 't'))
-          _tmp.n.push(H.RE(['I hated it', 'It was terrible', 'I didn\'t enjoy it']) + ' because '+ exp.r)
-    })
-    if(hero.experience.length == 0){
+          _tmp.n.push(H.RE(['I hated it', 'It was terrible', 'I didn\'t enjoy it']) + ' because '+ exp.r);
+    });
+    if(hero.experience.length === 0){
       return {r: 0, s: 'Terrible'};
     }
     if(_tmp.p.length > 0){
@@ -348,7 +348,7 @@ global.R = {
     slots: [3, 7, 12, 17],
     battle: true,
     enemies: 'rs',
-    cost: 70,
+    cost: 150,
     stamp: S.SEWER,
     p: P.FIGHT,
     l: 1
@@ -356,17 +356,17 @@ global.R = {
   CHURCH: {
     name: 'Church',
     code: 'c',
-    cost: 140,
+    cost: 70,
     stamp: S.CHURCH,
     p: P.HOLY,
     slots: [5, 10, 15],
     actions: [{
       n: 'Pray',
-      c: {t: 10, b: 0}
+      c: {t: 14, b: 2}
     },
     {
       n: 'Confession',
-      c: {t: 13, b: 3}
+      c: {t: 20, b: 4}
     }],
     l: 1
   },

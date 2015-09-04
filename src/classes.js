@@ -52,28 +52,31 @@ global.Button = function(text, cb, x, y, cost, data) {
   }
   t.x = x;
   t.y = y;
+  t.s = false;
   t.cb = cb;
   t.kill = function() {
     t.r.kill();
     H.Null(this);
   }
+  t.u = function() {
+    t.s = true;
+    if(t.cost != undefined)
+      if(t.cost > UI.gold)
+        t.s = false;
+  }
   t.hit = function() {
     return {x: t.x*CHAR_WIDTH, y: t.y*CHAR_HEIGHT, width: t.r.width, height: t.r.height};
   }
   t.stamp = function(d, x, y) {
-    var s = true;
-    if(t.cost != undefined)
-      if(t.cost > UI.gold)
-        s = false;
-    if(s)
-      t.r.stamp(d, x === undefined ? t.x : x, y === undefined ? t.y : y);
+    t.u();
+    if(!t.s)
+      d.globalAlpha = 0.4;
+    t.r.stamp(d, x === undefined ? t.x : x, y === undefined ? t.y : y);
+    d.globalAlpha = 1;
   }
   t.update = function(dt) {
-    var s = true;
-    if(t.cost != undefined)
-      if(t.cost > UI.gold)
-        s = false;
-    if(H.MouseClick && s)
+    t.u();
+    if(H.MouseClick && t.s)
     {
       if(H.HT(H.MouseCoords, t.hit())) {
         H.MouseClick = false;
