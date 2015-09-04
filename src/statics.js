@@ -312,7 +312,7 @@ global.R = {
       c: {t: 8, b: 2}
     },{
       n: 'Eat',
-      c: {t: 13, b: 4}
+      c: {t: 13, b: 3}
     }], 
     cost: 100, 
     stamp: S.INN},
@@ -361,7 +361,7 @@ global.R = {
     },
     {
       n: 'Confession',
-      c: {t: 13, b: 2}
+      c: {t: 13, b: 3}
     }]
   },
   LAIR: {
