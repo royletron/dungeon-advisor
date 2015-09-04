@@ -256,7 +256,7 @@ global.Particle = function(char, x, y, kill) {
   }
   t.cb = PUSH_CALLBACK(function(dt){
     dt = dt * this.rate;
-    this.alpha += -dt/4;
+    this.alpha += -dt/3;
     if(this.alpha < 0) {
       POP_CALLBACK(this.cb);
       this.destroy();

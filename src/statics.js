@@ -265,8 +265,8 @@ global.P = {
   STAR: new Char('★', 'E97F02'),
   FIGHT: new Char('⤧', 'FF0066'),
   VOID: new Char(' ', '302222', '302222'),
-  CHAT_1: new Char('№', '8F1166'),
-  CHAT_2: new Char('Ⓢ', 'FFB643')
+  CHAT_1: new Char('⩹', 'D7F6FC'),
+  CHAT_2: new Char('⩺', 'FECE98')
 };
 
 global.A = {
@@ -348,7 +348,7 @@ global.R = {
     slots: [3, 7, 12, 17],
     battle: true,
     enemies: 'rs',
-    cost: 150,
+    cost: 160,
     stamp: S.SEWER,
     p: P.FIGHT,
     l: 1
@@ -356,7 +356,7 @@ global.R = {
   CHURCH: {
     name: 'Church',
     code: 'c',
-    cost: 70,
+    cost: 100,
     stamp: S.CHURCH,
     p: P.HOLY,
     slots: [5, 10, 12, 17],
