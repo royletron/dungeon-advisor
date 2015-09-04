@@ -65,7 +65,6 @@ global.H = {
     if(_tmp.n.length > 0)
       review += H.RE(_tmp.n);
 
-    console.log(_tmp);
     return {r: score/hero.experience.length, s: review}
   },
   G: function(c, v, h){
@@ -91,7 +90,7 @@ global.H = {
     }
     return false;
   },
-  T: function(t, x, y, c, f, l, a) {
+  T: function(t, x, y, c, f, l, a, w) {
     c.font = f;
     c.fillStyle = '#'+l;
     c.textAlign = a || 'left';

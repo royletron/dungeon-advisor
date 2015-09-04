@@ -27,6 +27,10 @@ global.Enemy = function(type) {
   t.effort = 3;
   t.name = N.Random();
   t.c = new Char(type.symbol, type.color);
+  t.charge = function() {
+    var r = t.type.rate;
+    return Math.floor(r.b+((r.t-r.b) * (t.effort/5)));
+  }
 }
 
 global.Button = function(text, cb, x, y, cost, data) {
@@ -415,14 +419,12 @@ global.Hero = function(x, y, type) {
     t.experience.push({n: 1, r: 'I levelled up to '+t.lvl, t: 4});
   }
   t.room_action = function(room) {
+    L.inc(0.5);
     if(room.type.battle){
       if(t.slot && t.slot.npc)
       {
-        console.log(t.slot.npc.effort);
         var g=H.G({t:5, b: 1}, t.slot.npc.effort, t);
-        var r = t.slot.npc.type.rate;
-        var c=Math.floor(r.b+((r.t-r.b) * (t.slot.npc.effort/5)));
-        UI.setGold(-c);
+        UI.setGold(-t.slot.npc.charge());
         var o = new Char((-c).toString(), 'FFF566', '000000');
         new Particle(o, t.body.x, t.body.y-1, true);
         if(g === -1)

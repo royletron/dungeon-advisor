@@ -93,6 +93,7 @@ var t = global.UI = {
     t.addRoom(R.ENTRANCE);
   },
   addFloor: function() {
+    L.inc(10*UI.lvl);
     if(t.gold >= 80)
     {
       t.floors.push([undefined, undefined, undefined, undefined]);
@@ -113,6 +114,7 @@ var t = global.UI = {
     t.statuses = tmp;
   },
   addRoom: function(type, position){
+    L.inc();
     if(position === undefined)
     {
       t.floors[0][0] = new Room(type, false, 0, 0);
@@ -142,6 +144,7 @@ var t = global.UI = {
     H.RemoveFromArray( t.heroes, hero, 'id');
     hero.end();
     H.Null(hero);
+    L.inc();
     t.num_heroes =  t.heroes.length;
   },
   _clicked: false,
@@ -241,7 +244,6 @@ var t = global.UI = {
           var idx = 0;
           R.all().forEach(function(room){
             var r = R[room];
-            console.log(r.l, UI.lvl);
             if(r.l <= UI.lvl)
             {
               H.T(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.p.x, FONT, 'FFFFFF');
@@ -282,6 +284,9 @@ var t = global.UI = {
                     t.buttons.push(b);
                     b.stamp(t.p.x, 4+(j*2.8), ((i*2)+1.1)*1.8);
                   }
+                  console.log(s.npc);
+                  H.T('cost='+s.npc.charge()+'', 175, 18 + (CHAR_HEIGHT*1.8)*((i*2)+1), t.p.x, FONT, 'BFBBB8');
+
                 }
                 else
                 {
@@ -312,7 +317,7 @@ var t = global.UI = {
             else if(room.type.actions)
               room.type.actions.forEach(function(a, i){
                 H.T(a.n, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF');
-                H.T(a.val, 195, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF', 'center');
+                H.T(a.val, 202, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF', 'center');
                 t.createStepper(room, t, a, i)
               });
         }
@@ -327,14 +332,14 @@ var t = global.UI = {
     var c = new Button('↓', function(d){
       d.a.val += -1;
       UI.setSelection(d.r);
-    }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
+    }, (t.w - 30)+24, 6.5+(i*1.8), undefined, {r: room, a: a});
     if(a.val !== a.c.t) {
       t.buttons.push(b);
       b.stamp(t.p.x, 17, i*1.8);
     }
     if(a.val !== a.c.b) {
       t.buttons.push(c);
-      c.stamp(t.p.x, 24, i*1.8);
+      c.stamp(t.p.x, 24.5, i*1.8);
     }
   },
   setGold: function(amount) {
