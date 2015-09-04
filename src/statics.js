@@ -24,48 +24,48 @@ global.H = {
     var rooms = 0;
     var empty = 0;
     var review = '';
-    if(loop == undefined)
-    {
-      var r = [];
-      UI.floors.forEach(function(floor){
-        floor.forEach(function(room){
-          if(room != undefined)
-            r.push(room);
-          else
-            empty++;
-        })
+    var r = [];
+    UI.floors.forEach(function(floor){
+      floor.forEach(function(room){
+        if(room != undefined)
+          r.push(room);
+        else
+          empty++;
       })
-      if(hero.lvl/10 > UI.floors.length/4)
-        hero.experience.push({n: 0.2, r: 'there were not enough floors', t: 12});
-      if(empty + ((Math.random()*4) - 2) > 4)
-        hero.experience.push({n: 0, r: 'there are lots of empty rooms', t: 11});
+    })
+    if(hero.lvl/10 > UI.floors.length/4)
+      hero.experience.push({n: 0.2, r: 'there were not enough floors', t: 12});
+    if(empty + ((Math.random()*4) - 2) > 4)
+      hero.experience.push({n: 0, r: 'there are lots of empty rooms', t: 11});
 
-      hero.type.faves.split('').forEach(function(f){
-        var fave = R.get(f);
-        if(!H.InArray(r, fave, 'type'))
-          hero.experience.push({n: 0, r: 'they didn\'t have a '+fave.name.toLowerCase(), t: 10});
-      })
-    }
-    var _tmp = [];
-    var first = true;
+    hero.type.faves.split('').forEach(function(f){
+      var fave = R.get(f);
+      if(!H.InArray(r, fave, 'type'))
+        hero.experience.push({n: 0, r: 'they didn\'t have a '+fave.name.toLowerCase(), t: 10});
+    })
+    var _tmp = {p: [], n: []};
     hero.experience.forEach(function(exp, i){
       score += exp.n;
-      if((Math.random() > 0.5) && (!H.InArray(_tmp, exp.t, 't'))) {
-        _tmp.push(exp);
-        if(!first)
-          review += ' and ';
-        first = false;
-        if(exp.n > 0.5)
-          review += H.RE(['I liked it', 'It was good', 'I enjoyed it']) + ' because '+ exp.r;
-        else
-          review += H.RE(['I hated it', 'It was terrible', 'I didn\'t enjoy it']) + ' because '+ exp.r
+      if(exp.n > 0.5){
+        if(!H.InArray(_tmp.p, exp.t, 't'))
+          _tmp.p.push(H.RE(['I liked it', 'It was good', 'I enjoyed it']) + ' because '+ exp.r)
       }
+      else
+        if(!H.InArray(_tmp.n, exp.t, 't'))
+          _tmp.n.push(H.RE(['I hated it', 'It was terrible', 'I didn\'t enjoy it']) + ' because '+ exp.r)
     })
     if(hero.experience.length == 0){
       return {r: 0, s: 'Terrible'};
     }
-    if(review.length == 0)
-      review = H.Summarise(hero, true).s;
+    if(_tmp.p.length > 0){
+      review += H.RE(_tmp.p);
+      if(_tmp.n.length > 0)
+        review += ' but '
+    }
+    if(_tmp.n.length > 0)
+      review += H.RE(_tmp.n);
+
+    console.log(_tmp);
     return {r: score/hero.experience.length, s: review}
   },
   G: function(c, v, h){
