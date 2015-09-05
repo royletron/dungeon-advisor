@@ -1,6 +1,6 @@
 var t = global.UI = {
   renderer: null,
-  gold: 100,
+  gold: 180,
   lvl: 1,
   w: null,
   h: null,
@@ -144,7 +144,7 @@ var t = global.UI = {
     H.RemoveFromArray( t.heroes, hero, 'id');
     hero.end();
     H.Null(hero);
-    L.inc();
+    L.inc(exp.r*5);
     t.num_heroes =  t.heroes.length;
   },
   _clicked: false,
@@ -217,14 +217,18 @@ var t = global.UI = {
     var l = UI.lvl;
     var f = UI.floors.length;
     var s = false;
-    if((l > 2) && (f < 2)) s = true;
-    if((l > 4) && (f < 3)) s = true;
+    if((l > 1) && (f < 2)) s = true;
+    if((l > 3) && (f < 3)) s = true;
     if((l > 6) && (f < 4)) s = true;
     if(l > 8) s = true;
     return s
   },
   cPs: function() {
     t.p.x.clearRect(0, 0,  t.p.canvas.width,  t.p.canvas.height);
+    t.buttons.forEach(function(b) {
+      b.kill();
+    })
+    t.buttons = [];
   },
   setSelection: function(room, isHero) {
     t.sh = t.sr = undefined;
@@ -245,10 +249,6 @@ var t = global.UI = {
     else
     {
       t.sr = room;
-      t.buttons.forEach(function(b) {
-        b.kill();
-      })
-      t.buttons = [];
       if( t.sr !== undefined){
         if( t.sr.found === false)
         {
@@ -258,15 +258,13 @@ var t = global.UI = {
             if(r.l <= UI.lvl)
             {
               H.T(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.p.x, FONT, 'FFFFFF');
-              if( t.rb[idx] === undefined)
-              {
-                t.rb.push(new Button('Add', function(d){
-                  var room = UI.addRoom(R[d], UI.sr);
-                  UI.setSelection(room);
-                  UI.gold += -room.type.cost;
-                }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room));
-              }
-              t.rb[idx].stamp( t.p.x, 16, idx*1.8);
+              var b = new Button('Add', function(d){
+                var room = UI.addRoom(R[d], UI.sr);
+                UI.setSelection(room);
+                UI.gold += -room.type.cost;
+              }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room);
+              t.buttons.push(b);
+              b.stamp(t.p.x, 16, (idx*1.8));
               idx ++;
             }
           }.bind(t));
