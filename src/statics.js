@@ -315,7 +315,7 @@ global.R = {
       n: 'Eat',
       c: {t: 13, b: 3}
     }],
-    cost: 100,
+    cost: 220,
     stamp: S.INN,
     l: 2
   },
@@ -349,7 +349,7 @@ global.R = {
     slots: [3, 7, 12, 17],
     battle: true,
     enemies: 'rs',
-    cost: 160,
+    cost: 120,
     stamp: S.SEWER,
     p: P.FIGHT,
     l: 1
@@ -357,7 +357,7 @@ global.R = {
   CHURCH: {
     name: 'Church',
     code: 'c',
-    cost: 100,
+    cost: 60,
     stamp: S.CHURCH,
     p: [P.HOLY, P.HOLY2],
     slots: [5, 10, 12, 17],
@@ -450,7 +450,7 @@ global.E = {
       x: '$',
       l: {t: 10, b: 3},
       w: 'ls ss',
-      s: {t: 1.5, b: 0.7},
+      s: {t: 2.5, b: 1.3},
       c: 'FFE9BA',
       m: {t: 0.5, b: -0.2}
     },
@@ -463,7 +463,7 @@ global.E = {
       x: 'K',
       l: {t: 6, b: 0},
       w: 'ss kn sa',
-      s: {t: 1.5, b: 0.8},
+      s: {t: 2.5, b: 1.8},
       c: 'FFAD8B',
       m: {t: 0.5, b: -0.2}
     },
@@ -474,7 +474,7 @@ global.E = {
       x: 'D',
       l: {t: 9, b: 1},
       w: 'sa',
-      s: {t:1, b:0.7},
+      s: {t:2, b:1.7},
       fee: 8,
       i: 0.9,
       c: 'FFE9AA',
@@ -489,7 +489,7 @@ global.E = {
       x: 'δ',
       l: {t: 10, b: 1},
       w: 'cf',
-      s: {t: 1.1, b: 0.6},
+      s: {t: 2.1, b: 1.6},
       c: 'FFE9AA',
       m: {t: 0.5, b: -0.2}
     },
@@ -502,7 +502,7 @@ global.E = {
       x: 'Î',
       l: {t: 10, b: 3},
       w: 'st wd',
-      s: {t: 1.1, b: 0.6},
+      s: {t: 2.1, b: 1.6},
       c: 'FFE9AA',
       m: {t: 0.5, b: -0.2}
     },
@@ -515,7 +515,7 @@ global.E = {
       x: '∱',
       l: {t: 8, b: 4},
       w: 'kn',
-      s: {t: 1.1, b: 0.6},
+      s: {t: 3.1, b: 1.9},
       c: 'FFE9AA',
       m: {t: 0.5, b: -0.2}
     },
@@ -528,7 +528,7 @@ global.E = {
       x: '∔',
       l: {t: 9, b: 2},
       w: 'bw',
-      s: {t: 2.9, b: 1.8},
+      s: {t: 3.9, b: 1.8},
       c: 'FFE9AA',
       m: {t: 0.5, b: -0.2}
     },

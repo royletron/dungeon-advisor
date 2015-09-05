@@ -138,7 +138,7 @@ var t = global.UI = {
     t.r_count += 1;
     t.rating.increment();
     t.rating.setNum((t.r_total/t.r_count)*5);
-    t.addStatus(hero, (exp.r*5).toFixed(1)+' rating from '+hero.name, exp.s);
+    t.addStatus(hero, (exp.r*5).toFixed(1)+' ★\'s from '+hero.name, exp.s);
     if(t.sh && (t.sh.id == hero.id))
       t.sh = undefined;
     H.RemoveFromArray( t.heroes, hero, 'id');
@@ -309,16 +309,18 @@ var t = global.UI = {
               room.type.enemies.split('').forEach(function(e, i){
                 var en = E.GetEnemy(e);
                 var f = false;
+                var c = Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t))
                 var n = new Button(en.name, function(d){
                   d.r.slots.forEach(function(s, idx){
                     if((s.npc == undefined) && !f)
                     {
                       f = true;
                       s.npc = new Enemy(en, s, d.r);
+                      UI.setGold(-d.c)
                     }
                   })
                   t.changed = true;
-                }, (t.w - 30) + w, 6+(((room.slots.length*2)+1+h)*1.8), Math.floor(H.Moultonize(UI.lvl, en.cost.b, en.cost.t)), {e: en, r: room});
+                }, (t.w - 30) + w, 6+(((room.slots.length*2)+1+h)*1.8), c, {e: en, r: room, c: c});
                 t.buttons.push(n);
                 n.stamp(t.p.x, 0+w, (((room.slots.length * 2)+1+h)*1.8));
                 w += n.r.width/CHAR_WIDTH;
@@ -355,7 +357,7 @@ var t = global.UI = {
   },
   setGold: function(amount) {
     t.gold += amount;
-    // this.setSelection(this.selected_room);
+    this.setSelection(this.sr);
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)

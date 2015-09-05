@@ -427,8 +427,9 @@ global.Hero = function(x, y, type) {
       if(t.slot && t.slot.npc)
       {
         var g=H.G({t:5, b: 1}, t.slot.npc.effort, t);
-        UI.setGold(-t.slot.npc.charge());
-        var o = new Char((-c).toString(), 'FFF566', '000000');
+        var c=-t.slot.npc.charge()
+        UI.setGold(c);
+        var o = new Char((c).toString(), 'FFF566', '000000');
         new Particle(o, t.body.x, t.body.y-1, true);
         if(g === -1)
           t.experience.push({n: 1, r: 'I had a great fight against '+t.slot.npc.name, t: 26});
