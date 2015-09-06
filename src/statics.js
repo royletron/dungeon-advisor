@@ -445,27 +445,27 @@ global.E = {
       name: 'Knight',
       faves: 'hlei',
       turn: {t: 16, b: 5},
-      fee: 10,
+      fee: 15,
       i: 0.5,
       x: '$',
-      l: {t: 10, b: 3},
+      l: {t: 10, b: 5},
       w: 'ls ss',
       s: {t: 2.5, b: 1.3},
       c: 'FFE9BA',
-      m: {t: 0.5, b: -0.2}
+      m: {t: 0.8, b: 0.1}
     },
     {
       name: 'Peon',
       faves: 'sh',
       turn: {t: 20, b: 10},
-      fee: 2,
+      fee: 3,
       i: 0.3,
       x: 'K',
       l: {t: 6, b: 0},
       w: 'ss kn sa',
       s: {t: 2.5, b: 1.8},
       c: 'FFAD8B',
-      m: {t: 0.5, b: -0.2}
+      m: {t: 0.2, b: -0.4}
     },
     {
       name: 'Dwarf',
@@ -478,29 +478,29 @@ global.E = {
       fee: 8,
       i: 0.9,
       c: 'FFE9AA',
-      m: {t: 0.5, b: -0.2}
+      m: {t: 0.3, b: -0.6}
     },
     {
       name: 'Priest',
       faves: 'cls',
       turn: {t: 18, b: 8},
-      fee: 3,
+      fee: 5,
       i: 0.4,
       x: 'δ',
-      l: {t: 10, b: 1},
+      l: {t: 6, b: 2},
       w: 'cf',
       s: {t: 2.1, b: 1.6},
       c: 'FFE9AA',
-      m: {t: 0.5, b: -0.2}
+      m: {t: 0.2, b: -0.7}
     },
     {
       name: 'Mage',
       faves: 'ishl',
-      turn: {t: 11, b: 3},
-      fee: 6,
+      turn: {t: 11, b: 4},
+      fee: 16,
       i: 0.6,
       x: 'Î',
-      l: {t: 10, b: 3},
+      l: {t: 9, b: 3},
       w: 'st wd',
       s: {t: 2.1, b: 1.6},
       c: 'FFE9AA',
@@ -510,44 +510,44 @@ global.E = {
       name: 'Rogue',
       faves: 'slihc',
       turn: {t: 20, b: 10},
-      fee: 4,
+      fee: 24,
       i: 0.8,
       x: '∱',
-      l: {t: 8, b: 4},
+      l: {t: 10, b: 4},
       w: 'kn',
       s: {t: 3.1, b: 1.9},
       c: 'FFE9AA',
-      m: {t: 0.5, b: -0.2}
+      m: {t: 0.9, b: -0.9}
     },
     {
       name: 'Archer',
       faves: 'hlc',
       turn: {t: 21, b: 7},
-      fee: 5,
+      fee: 15,
       i: 0.9,
       x: '∔',
-      l: {t: 9, b: 2},
+      l: {t: 10, b: 5},
       w: 'bw',
       s: {t: 3.9, b: 1.8},
       c: 'FFE9AA',
-      m: {t: 0.5, b: -0.2}
+      m: {t: 0.7, b: 0}
     },
     {
       name: 'Muse',
       faves: 'ihcls',
       turn: {t: 36, b: 11},
-      fee: 2,
+      fee: 32,
       i: 0.6,
       x: '♭',
-      l: {t: 10, b: 4},
+      l: {t: 10, b: 6},
       w: 'lt',
       s: {t: 1.1, b: 0.6},
       c: 'FFE9AA',
-      m: {t: 0.5, b: -0.2}
+      m: {t: 0.1, b: -0.6}
     }
   ],
   enemies: [
-    {name: 'Rat', code: 'r', symbol: '%', color: 'C2B49A', cost: {t: 10, b: 2}, rate: {t: 8, b: 3}},
+    {name: 'Rat', code: 'r', symbol: '%', color: 'C2B49A', cost: {t: 10, b: 2}, rate: {t: 28, b: 13}},
     {name: 'Skeleton', code: 's', symbol: '⥉', color: 'C6E5D9', cost: {t: 11, b: 3}, rate: {t:12, b: 4}},
     {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:40, b: 12}, rate: {t: 18, b: 13}},
     {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 21, b: 5}, rate: {t: 10, b: 15}}
