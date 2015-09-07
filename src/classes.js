@@ -31,17 +31,21 @@ global.Enemy = function(type) {
     var r = t.type.rate;
     return Math.floor(r.b+((r.t-r.b) * (t.effort/5)));
   }
+  t.kill = function(){
+    t.c.kill();
+    H.Null(this);
+  }
 }
 
-global.Button = function(text, cb, x, y, cost, data) {
+global.Button = function(text, cb, x, y, cost, data, r) {
   var t = this;
   t.width = ((text.length + 2) + (cost != undefined ? cost.toString().length + 4 : 0.75)) * CHAR_WIDTH;
   t.height = CHAR_HEIGHT*2;
   t.r = new Renderer(t.width, t.height);
   t.r.whole = false;
   t.cost = cost;
-  H.R(3, 3, t.width-5, t.height-5, t.r.x, '0D423D');
-  H.R(0, 0, t.width-5, t.height-5, t.r.x, '007A52');
+  H.R(3, 3, t.width-5, t.height-5, t.r.x, r ? 'FF0000':'0D423D');
+  H.R(0, 0, t.width-5, t.height-5, t.r.x, r ? 'AA0000':'007A52');
   t.data = data;
 
   H.T(text, CHAR_WIDTH, CHAR_HEIGHT * 1.2, t.r.x, FONT, 'EBE1CE');
@@ -439,7 +443,7 @@ global.Hero = function(x, y, type) {
           t.experience.push({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
       }
       else
-        t.experience.push({n: 0.5, r: 'I got to fight, but I would have preferred an enemy', t: 7});
+        t.experience.push({n: 0.5, r: 'There was no one to fight in the '+t.type.name.toLowerCase(), t: 7});
     }
     else
     {

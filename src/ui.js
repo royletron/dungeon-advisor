@@ -293,7 +293,23 @@ var t = global.UI = {
                     t.buttons.push(b);
                     b.stamp(t.p.x, 4+(j*2.8), ((i*2)+1.1)*1.8);
                   }
-                  console.log(s.npc);
+                  var r = new Button('X', function(d){
+                    d.s.npc.kill();
+                    d.s.npc = undefined;
+                    for(var i = d.i; i < d.r.slots.length; i++)
+                    {
+                      var s = d.r.slots[i]
+                      if(s.npc !== undefined)
+                      {
+                        d.r.slots[i-1].npc = s.npc;
+                        d.r.slots[i].npc = undefined;
+                      }
+                    }
+                    t.changed = true;
+                  }, (t.w - 5.5), 6+((i*2)*1.8), undefined, {s: s, i: i, r: room}, true);
+                  r.stamp(t.p.x, 24.5, ((i*2)*1.8));
+                  t.buttons.push(r);
+
                   H.T('cost='+s.npc.charge()+'', 175, 18 + (CHAR_HEIGHT*1.8)*((i*2)+1), t.p.x, FONT, 'BFBBB8');
 
                 }
