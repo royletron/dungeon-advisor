@@ -336,7 +336,7 @@ global.R = {
       n: 'Drink',
       c: {t: 8, b: 2}
     },{
-      n: 'Eat',
+      n: 'Eats',
       c: {t: 13, b: 3}
     }],
     cost: 220,

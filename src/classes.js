@@ -279,6 +279,9 @@ global.Room = function(type, flipped, x, y) {
   var t = this;
   t.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   t.type = type;
+  t.actions = type.actions.map(function(a){
+    return {val: a.val, n: a.n, c: {t: a.c.t, b: a.c.b}};
+  })
   t.flipped = flipped;
   t.id = roomID;
   t.x = x;

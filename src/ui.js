@@ -235,7 +235,7 @@ var t = global.UI = {
     t.buttons = [];
   },
   setSelection: function(room, isHero) {
-    console.log(room);
+    console.log('r',room);
     t.sh = t.sr = t.k = undefined;
     t.cPs();
     if(isHero) {
@@ -355,9 +355,9 @@ var t = global.UI = {
                 if(w > 17) { h++; w = 0; }
               });
             }
-            else if(room.type.actions){
+            else if(room.actions){
               P.GOLD.stamp(t.p.x, 22, 0.4)
-              room.type.actions.forEach(function(a, i){
+              room.actions.forEach(function(a, i){
                 i = i+1
                 H.T(a.n, 10, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF');
                 H.T(a.val, 202, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF', 'center');
@@ -370,7 +370,6 @@ var t = global.UI = {
                 d.kill();
                 UI.floors[d.y][d.x] = UI.sr = undefined
                 UI.changed = true;
-                console.log(UI.changed);
               }, 7+(room.x*ROOM_WIDTH), 6.5+(room.y*ROOM_HEIGHT), undefined, room, true);
           }
         }
