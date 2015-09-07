@@ -423,7 +423,7 @@ global.R = {
     code: 'e',
     actions: [{
       n: 'Meeting',
-      c: {t: 6, b: 2}
+      c: {t: 10, b: 0}
     }],
     slots: [3, 7, 11, 15],
     cost: 100,

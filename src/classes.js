@@ -453,7 +453,7 @@ global.Hero = function(x, y, type) {
           t.experience.push({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
       }
       else
-        t.experience.push({n: 0.5, r: 'There was no one to fight in the '+t.type.name.toLowerCase(), t: 7});
+        t.experience.push({n: 0.5, r: 'There was no one to fight in the '+room.type.name.toLowerCase(), t: 7});
     }
     else
     {
