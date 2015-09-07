@@ -299,6 +299,8 @@ global.Room = function(type, flipped, x, y) {
   };
   t.kill = function() {
     t.slots.forEach(function(s){
+      if(s.hero !== undefined)
+        s.hero.room_action(t);
       if(s.npc !== undefined)
         s.npc.kill();
     });
@@ -333,8 +335,6 @@ global.Room = function(type, flipped, x, y) {
               s.hero = undefined;
         })
         h.room_action(t)
-        h.busy = h.entertaining = false;
-        h.body.velocity.x = h.return_velocity;
       }
     }
   }
@@ -434,6 +434,8 @@ global.Hero = function(x, y, type) {
     t.experience.push({n: 1, r: 'I levelled up to '+t.lvl, t: 4});
   }
   t.room_action = function(room) {
+    t.busy = t.entertaining = false;
+    t.body.velocity.x = t.return_velocity;
     L.inc(0.5);
     if(room.type.battle){
       if(t.slot && t.slot.npc)

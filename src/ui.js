@@ -155,7 +155,10 @@ var t = global.UI = {
       t.pb.update(dt);
     t.offset += dt*5;
     if(t.changed)
-      t.setSelection(t.sr);
+      if(t.sh !== undefined)
+        t.setSelection(t.sh, true);
+      else
+        t.setSelection(t.sr);
     t.changed = false;
     t.clouds.forEach(function(cloud, idx){
       cloud.update(dt);
@@ -188,6 +191,7 @@ var t = global.UI = {
       }
     }.bind( t));
 
+    if(t.k !== undefined) t.k.update(dt);
     if(H.MouseClick)
     {
       t.floors.forEach(function(floor, y){
@@ -202,15 +206,14 @@ var t = global.UI = {
       }.bind(t))
     }
     if( t.sr !== undefined)
-    if( t.sr.found === false) {
-      t.rb.forEach(function(button){
-        button.update(dt);
-      });
-    }
+      if( t.sr.found === false) {
+        t.rb.forEach(function(button){
+          button.update(dt);
+        });
+      }
     t.buttons.forEach(function(b){
       b.update(dt);
     })
-    if(t.k !== undefined) t.k.update(dt);
     if(UI.SR())
       t.add_floor_button.update(dt);
   },
@@ -232,6 +235,7 @@ var t = global.UI = {
     t.buttons = [];
   },
   setSelection: function(room, isHero) {
+    console.log(room);
     t.sh = t.sr = t.k = undefined;
     t.cPs();
     if(isHero) {
@@ -272,12 +276,8 @@ var t = global.UI = {
         }
         else
         {
-          t.k = new Button('Remove', function(d){
-            d.kill();
-            t.floors[d.y][d.x] = undefined
-            t.changed = true;
-          }, 7+(room.x*ROOM_WIDTH), 6.5+(room.y*ROOM_HEIGHT), undefined, room, true);
           if(room.type)
+          {
             if(room.type.battle)
             {
               room.slots.forEach(function(s, i){
@@ -353,6 +353,15 @@ var t = global.UI = {
                 H.T(a.val, 202, 18 + (CHAR_HEIGHT*1.8)*i, t.p.x, FONT, 'FFFFFF', 'center');
                 t.createStepper(room, t, a, i)
               });
+
+            if(room.type.name != 'Entrance')
+              t.k = new Button('Remove', function(d){
+                d.kill();
+                UI.floors[d.y][d.x] = UI.sr = undefined
+                UI.changed = true;
+                console.log(UI.changed);
+              }, 7+(room.x*ROOM_WIDTH), 6.5+(room.y*ROOM_HEIGHT), undefined, room, true);
+          }
         }
       }
     }
@@ -377,7 +386,7 @@ var t = global.UI = {
   },
   setGold: function(amount) {
     t.gold += amount;
-    this.setSelection(this.sr);
+    t.changed = true;
   },
   flipHero: function(hero) {
     if(hero.current_floor === undefined)
