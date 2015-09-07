@@ -210,6 +210,7 @@ var t = global.UI = {
     t.buttons.forEach(function(b){
       b.update(dt);
     })
+    if(t.k !== undefined) t.k.update(dt);
     if(UI.SR())
       t.add_floor_button.update(dt);
   },
@@ -231,7 +232,7 @@ var t = global.UI = {
     t.buttons = [];
   },
   setSelection: function(room, isHero) {
-    t.sh = t.sr = undefined;
+    t.sh = t.sr = t.k = undefined;
     t.cPs();
     if(isHero) {
       var h = t.sh = room;
@@ -271,6 +272,11 @@ var t = global.UI = {
         }
         else
         {
+          t.k = new Button('Remove', function(d){
+            d.kill();
+            t.floors[d.y][d.x] = undefined
+            t.changed = true;
+          }, 7+(room.x*ROOM_WIDTH), 6.5+(room.y*ROOM_HEIGHT), undefined, room, true);
           if(room.type)
             if(room.type.battle)
             {
@@ -450,7 +456,7 @@ var t = global.UI = {
       else
         t.drawSelection(ctx, t.sh.body.x - 0.8, t.sh.body.y -0.3, 1.8, 1.6);
     //  t.type.stamp(ctx,  t.w-27, 9);
-
+    if(t.k !== undefined) t.k.stamp(ctx);
     t.renderer.stamp(g_ctx);
   }
 };

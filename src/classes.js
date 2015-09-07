@@ -297,6 +297,14 @@ global.Room = function(type, flipped, x, y) {
     h.last_tick = 0;
     new Particle(t.type.p, h.body.x, h.body.y-1);
   };
+  t.kill = function() {
+    t.slots.forEach(function(s){
+      if(s.npc !== undefined)
+        s.npc.kill();
+    });
+    t.renderer.kill();
+    H.Null(this);
+  }
   t.update = function(dt, h) {
     if((h.busy != true) && t.slots)
     {
