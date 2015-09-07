@@ -259,17 +259,23 @@ var t = global.UI = {
         {
           var idx = 0;
           R.all().forEach(function(room){
-            var r = R[room];
-            if(r.l <= UI.lvl)
+            if(room != 'ENTRANCE')
             {
+              var r = R[room];
               H.T(r.name, 10, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.p.x, FONT, 'FFFFFF');
-              var b = new Button('Add', function(d){
-                var room = UI.addRoom(R[d], UI.sr);
-                UI.setSelection(room);
-                UI.gold += -room.type.cost;
-              }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room);
-              t.buttons.push(b);
-              b.stamp(t.p.x, 16, (idx*1.8));
+              if(r.l <= UI.lvl)
+              {
+                var b = new Button('Add', function(d){
+                  var room = UI.addRoom(R[d], UI.sr);
+                  UI.setSelection(room);
+                  UI.gold += -room.type.cost;
+                }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room);
+                t.buttons.push(b);
+                b.stamp(t.p.x, 16, (idx*1.8));
+              }
+              else{
+                H.T('need lvl '+r.l, 144, 18+ (CHAR_HEIGHT*1.8)*(idx),  t.p.x, FONT, 'FF4444')
+              }
               idx ++;
             }
           }.bind(t));
