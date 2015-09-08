@@ -459,7 +459,7 @@ global.R = {
 
 global.L = {
   xp: 0,
-  boundaries: [0, 3, 10, 25, 40, 100, 300, 800, 2000, 6000],
+  boundaries: [0, 3, 10, 25, 40, 100, 200, 450, 700, 1000],
   inc: function(val) {
     if(val)
       this.xp += val;
