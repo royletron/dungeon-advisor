@@ -270,8 +270,8 @@ var t = global.UI = {
               {
                 var b = new Button('Add', function(d){
                   var room = UI.addRoom(R[d], UI.sr);
-                  UI.setSelection(room);
                   UI.gold += -room.type.cost;
+                  UI.setSelection(room);
                 }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room);
                 t.buttons.push(b);
                 b.stamp(t.p.x, 16, (idx*1.8));

@@ -459,7 +459,7 @@ global.R = {
 
 global.L = {
   xp: 0,
-  boundaries: [0, 3, 6, 15, 40, 100, 300, 800, 2000, 6000],
+  boundaries: [0, 3, 10, 25, 40, 100, 300, 800, 2000, 6000],
   inc: function(val) {
     if(val)
       this.xp += val;
@@ -526,7 +526,7 @@ global.E = {
       faves: 'shil',
       turn: {t: 15, b: 8},
       x: 'D',
-      l: {t: 7, b: 2},
+      l: {t: 9, b: 5},
       w: 'sa',
       s: {t:2, b:1.7},
       fee: 8,
@@ -554,7 +554,7 @@ global.E = {
       fee: 16,
       i: 0.6,
       x: 'Î',
-      l: {t: 9, b: 3},
+      l: {t: 9, b: 5},
       w: 'st wd',
       s: {t: 2.1, b: 1.6},
       c: 'FFE9AA',
@@ -567,7 +567,7 @@ global.E = {
       fee: 24,
       i: 0.8,
       x: '∱',
-      l: {t: 10, b: 4},
+      l: {t: 10, b: 5},
       w: 'kn',
       s: {t: 3.1, b: 1.9},
       c: 'FFE9AA',
@@ -580,7 +580,7 @@ global.E = {
       fee: 15,
       i: 0.9,
       x: '∔',
-      l: {t: 10, b: 5},
+      l: {t: 10, b: 6},
       w: 'bw',
       s: {t: 3.9, b: 1.8},
       c: 'FFE9AA',
@@ -588,7 +588,7 @@ global.E = {
     },
     {
       name: 'Muse',
-      faves: 'ihcxla',
+      faves: 'ihcxlab',
       turn: {t: 36, b: 11},
       fee: 32,
       i: 0.6,
