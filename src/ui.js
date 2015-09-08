@@ -235,7 +235,6 @@ var t = global.UI = {
     t.buttons = [];
   },
   setSelection: function(room, isHero) {
-    console.log('r',room);
     t.sh = t.sr = t.k = undefined;
     t.cPs();
     if(isHero) {
