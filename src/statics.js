@@ -306,13 +306,13 @@ global.R = {
     cost: 60,
     stamp: S.CHURCH,
     p: [P.HOLY, P.HOLY2],
-    slots: [3, 7, 9, 11],
+    slots: [4, 8, 10, 12, 16],
     actions: [{
-      n: 'Pray',
+      n: 'Prayers',
       c: {t: 14, b: 2}
     },
     {
-      n: 'Confession',
+      n: 'Confessions',
       c: {t: 20, b: 4}
     }],
     l: 1
@@ -333,7 +333,7 @@ global.R = {
     p: [P.DRINK, P.DRINK2],
     code: 'i', slots: [3, 9, 14, 16, 18],
     actions: [{
-      n: 'Drink',
+      n: 'Drinks',
       c: {t: 8, b: 2}
     },{
       n: 'Eats',
@@ -346,8 +346,8 @@ global.R = {
   ARENA: {
     name: 'Arena',
     code: 'a',
-    slots: [4, 9, 14],
-    enemies: 'w',
+    slots: [4, 9, 14, 18],
+    enemies: 'wc',
     battle: true,
     cost: 260,
     p: [P.FIGHT, P.FIGHT2],
@@ -360,10 +360,10 @@ global.R = {
     code: 'h',
     slots: [4, 9, 14, 19],
     actions: [{
-      n: 'Nurse',
+      n: 'Nurses',
       c: {t: 18, b: 10}
     },{
-      n: 'Doctor',
+      n: 'Doctors',
       c: {t: 24, b: 12}
     }],
     cost: 350,
@@ -374,7 +374,7 @@ global.R = {
     name: 'Shop',
     p: [P.BULLET, P.BULLET2],
     code: 'x',
-    slots: [5, 10, 15],
+    slots: [4, 8, 12, 16, 20],
     actions: [{
       n: 'Weapons',
       c: {t: 22, b: 14}
@@ -392,15 +392,15 @@ global.R = {
   BROTHEL: {
     name: 'Brothel',
     p: [P.X, P.XX, P.XXX],
-    code: 'b', slots: [5, 11],
+    code: 'b', slots: [5, 11, 18],
     actions: [{
-      n: 'Kiss',
+      n: 'Kisses',
       c: {t: 76, b: 40}
     },{
-      n: 'Hug',
+      n: 'Hugs',
       c: {t: 100, b: 50}
     },{
-      n: 'Cuddle',
+      n: 'Cuddles',
       c: {t: 120, b: 70}
     }],
     cost: 700,
@@ -410,9 +410,9 @@ global.R = {
   LAIR: {
     name: 'Lair',
     code: 'l',
-    slots: [4, 8, 12],
+    slots: [4, 8, 12, 16],
     battle: true,
-    enemies: 'sdi',
+    enemies: 'di',
     cost: 950,
     stamp: S.LAIR,
     p: [P.FIGHT, P.FIGHT2, P.FIGHT3, P.BULLET],
@@ -422,10 +422,13 @@ global.R = {
     name: 'Entrance',
     code: 'e',
     actions: [{
-      n: 'Meeting',
+      n: 'Nibbles',
+      c: {t: 12, b: 2}
+    },{
+      n: 'Introductions',
       c: {t: 10, b: 0}
     }],
-    slots: [3, 7, 11, 15],
+    slots: [3, 6, 9, 12, 15, 18],
     cost: 100,
     p: [P.CHAT_1, P.CHAT_2],
     stamp: S.ENTRANCE,
@@ -493,7 +496,7 @@ global.E = {
     {
       name: 'Knight',
       faves: 'hxlei',
-      turn: {t: 16, b: 5},
+      turn: {t: 9, b: 5},
       fee: 15,
       i: 0.5,
       x: '$',
@@ -505,7 +508,7 @@ global.E = {
     },
     {
       name: 'Peon',
-      faves: 'sh',
+      faves: 'sce',
       turn: {t: 20, b: 10},
       fee: 3,
       i: 0.3,
@@ -521,7 +524,7 @@ global.E = {
       faves: 'shil',
       turn: {t: 15, b: 8},
       x: 'D',
-      l: {t: 9, b: 1},
+      l: {t: 7, b: 2},
       w: 'sa',
       s: {t:2, b:1.7},
       fee: 8,
@@ -531,7 +534,7 @@ global.E = {
     },
     {
       name: 'Priest',
-      faves: 'cls',
+      faves: 'csi',
       turn: {t: 18, b: 8},
       fee: 5,
       i: 0.4,
@@ -599,7 +602,7 @@ global.E = {
     {name: 'Rat', code: 'r', symbol: '%', color: 'C2B49A', cost: {t: 50, b: 12}, rate: {t: 15, b: 4}},
     {name: 'Skeleton', code: 's', symbol: '⥉', color: 'C6E5D9', cost: {t: 60, b: 26}, rate: {t:10, b: 4}},
     {name: 'Warrior', code: 'w', symbol: '¥', color: 'F5F2E8', cost: {t: 90, b: 40}, rate: {t: 30, b: 10}},
-    {name: 'Champion', code: 'c', symbol: '⨳', color: 'ACA287', cost: {t: 80, b: 34}, rate: {t: 26, b: 8}},
+    {name: 'Champ', code: 'c', symbol: '⨳', color: 'ACA287', cost: {t: 80, b: 34}, rate: {t: 26, b: 8}},
     {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:190, b: 70}, rate: {t: 60, b: 20}},
     {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 140, b: 50}, rate: {t: 80, b: 30}}
   ],

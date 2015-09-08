@@ -430,12 +430,39 @@ global.Hero = function(x, y, type) {
   t.getXP = function(lvl) {
     return H.Moultonize(lvl || t.lvl, 1, 100000);
   }
+  t.exp = function(exp){
+    if(exp.t >= 0)
+    {
+      t.experience.push(exp);
+      if(exp.d != undefined)
+        t.experience = t.experience.filter(function(i){
+          if(i.d === undefined)
+            return i
+          else if((i.t < 0) && (i.d.name === exp.d.name))
+            return null
+          else
+            return i;
+        });
+    }
+    else{
+      var n = t.experience.filter(function(i){
+        if(i.d == undefined)
+          return null
+        else if(i.d.name === exp.d.name)
+          return true;
+        else
+          return null;
+      });   
+      if(n.length == 0)
+        t.experience.push(exp);
+    }
+  }
   t.getHealth = function(lvl) {
     return H.Moultonize(lvl || t.lvl, t.type.health.b, t.type.health.t);
   }
   t.levelUp = function() {
     t.lvl += 1;
-    t.experience.push({n: 1, r: 'I levelled up to '+t.lvl, t: 4});
+    t.exp({n: 1, r: 'I levelled up to '+t.lvl, t: 4});
   }
   t.gc = function() {
     if(!t.sum)
@@ -443,8 +470,6 @@ global.Hero = function(x, y, type) {
     return t.sum;
   }
   t.room_action = function(room) {
-    t.busy = t.entertaining = false;
-    t.had_a_go = true;
     t.body.velocity.x = t.return_velocity;
     L.inc(0.5);
     if(room.type.battle){
@@ -458,14 +483,14 @@ global.Hero = function(x, y, type) {
           var o = new Char((c).toString(), 'FFF566', '000000');
           new Particle(o, t.body.x, t.body.y-1, true);
           if(g === -1)
-            t.experience.push({n: 1, r: 'I had a great fight against '+t.slot.npc.name, t: 26});
+            t.exp({n: 1, r: 'I had a great fight against '+t.slot.npc.name, t: 26});
           if(g === 1)
-            t.experience.push({n: 0.3, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
+            t.exp({n: 0.3, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
           else
-            t.experience.push({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
+            t.exp({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
         }
         else
-          t.experience.push({n: 0.5, r: 'There was no one to fight in the '+room.type.name.toLowerCase(), t: 7});
+          t.exp({n: 0.5, r: 'There was no one to fight in the '+room.type.name.toLowerCase(), t: 7});
         t.slot = undefined;
       }
     }
@@ -477,12 +502,14 @@ global.Hero = function(x, y, type) {
       var c = new Char(a.val.toString(), 'FFF566', '000000');
       new Particle(c, t.body.x, t.body.y-1, true);
       if(g === 0)
-        t.experience.push({n: 0.7, r: 'the prices for '+a.n.toLowerCase()+' were fair'});
+        t.exp({n: 0.7, r: 'the prices for '+a.n.toLowerCase()+' were fair', t: 51, d: room.type});
       if(g === 1)
-        t.experience.push({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!'});
+        t.exp({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!', t: 53, d: room.type});
       if(g === -1)
-        t.experience.push({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.'});
+        t.exp({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.', t: 52, d: room.type});
     }
+    t.busy = t.entertaining = false;
+    t.had_a_go = true;
     t.sum = undefined;
   }
   t.update = function(dt) {
@@ -518,14 +545,17 @@ global.Hero = function(x, y, type) {
     }
   }
   t.roomChanged = function(c) {
-    if(t.entertaining !== undefined)
-      if(t.had_a_go === true)
-        if(H.Contains(t.type.faves, t.cr.type.code))
-          t.experience.push({n: 1, r: 'of the '+t.cr.type.name, t: 1});
-      else
-        t.experience.push({n: 0.4, r: 'I didn\'t get in the '+t.cr.type.name, t: 3});
-
-    t.had_a_go = undefined;
+    if(t.entertaining !== undefined){
+      if(t.had_a_go === true){
+        if(H.Contains(t.type.faves, t.cr.type.code)){
+          t.exp({n: 1, r: 'of the '+t.cr.type.name, t: 1, d: t.cr.type});
+        }
+      }
+      else{
+        t.exp({n: 0.4, r: 'I didn\'t get in the '+t.cr.type.name, t: -3, d: t.cr.type});
+      }
+    }
+    t.had_a_go = false;
     t.entertaining = undefined;
     t.cr = c;
     if(c !== undefined)

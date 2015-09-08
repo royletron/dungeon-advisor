@@ -171,7 +171,6 @@ var t = global.UI = {
       t.spawn_counter = 0;
       var m = t.lvl - (Math.random());
       t.spawn_wait = H.GR(10-m, (10-m) + (Math.random() * (10-m)));
-      console.log(t.spawn_wait);
       t.spawnHero();
     }
     t.heroes.forEach(function(hero) {
