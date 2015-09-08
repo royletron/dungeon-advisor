@@ -306,7 +306,7 @@ global.R = {
     cost: 60,
     stamp: S.CHURCH,
     p: [P.HOLY, P.HOLY2],
-    slots: [5, 10, 12, 17],
+    slots: [3, 7, 9, 11],
     actions: [{
       n: 'Pray',
       c: {t: 14, b: 2}
@@ -557,7 +557,7 @@ global.E = {
     },
     {
       name: 'Rogue',
-      faves: 'slihc',
+      faves: 'slihcb',
       turn: {t: 20, b: 10},
       fee: 24,
       i: 0.8,

@@ -29,7 +29,6 @@ H.GenerateStamps();
 // D.Draw(map, m_ctx);
 
 UI.init(m_ctx);
-HELP.init();
 
 global.CALLBACKS = new Array();
 var c_id = 0

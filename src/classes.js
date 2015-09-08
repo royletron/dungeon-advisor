@@ -279,9 +279,10 @@ global.Room = function(type, flipped, x, y) {
   var t = this;
   t.renderer = new Renderer(ROOM_WIDTH * CHAR_WIDTH, ROOM_HEIGHT * CHAR_HEIGHT, 1);
   t.type = type;
-  t.actions = type.actions.map(function(a){
-    return {val: a.val, n: a.n, c: {t: a.c.t, b: a.c.b}};
-  })
+  if(type.actions != undefined)
+    t.actions = type.actions.map(function(a){
+      return {val: a.val, n: a.n, c: {t: a.c.t, b: a.c.b}};
+    });
   t.flipped = flipped;
   t.id = roomID;
   t.x = x;
@@ -436,27 +437,37 @@ global.Hero = function(x, y, type) {
     t.lvl += 1;
     t.experience.push({n: 1, r: 'I levelled up to '+t.lvl, t: 4});
   }
+  t.gc = function() {
+    if(!t.sum)
+      t.sum = H.Summarise(t)
+    return t.sum;
+  }
   t.room_action = function(room) {
     t.busy = t.entertaining = false;
+    t.had_a_go = true;
     t.body.velocity.x = t.return_velocity;
     L.inc(0.5);
     if(room.type.battle){
-      if(t.slot && t.slot.npc)
+      if(t.slot)
       {
-        var g=H.G({t:5, b: 1}, t.slot.npc.effort, t);
-        var c=-t.slot.npc.charge()
-        UI.setGold(c);
-        var o = new Char((c).toString(), 'FFF566', '000000');
-        new Particle(o, t.body.x, t.body.y-1, true);
-        if(g === -1)
-          t.experience.push({n: 1, r: 'I had a great fight against '+t.slot.npc.name, t: 26});
-        if(g === 1)
-          t.experience.push({n: 0.3, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
+        if(t.slot.npc)
+        {
+          var g=H.G({t:5, b: 1}, t.slot.npc.effort, t);
+          var c=-t.slot.npc.charge()
+          UI.setGold(c);
+          var o = new Char((c).toString(), 'FFF566', '000000');
+          new Particle(o, t.body.x, t.body.y-1, true);
+          if(g === -1)
+            t.experience.push({n: 1, r: 'I had a great fight against '+t.slot.npc.name, t: 26});
+          if(g === 1)
+            t.experience.push({n: 0.3, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
+          else
+            t.experience.push({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
+        }
         else
-          t.experience.push({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
+          t.experience.push({n: 0.5, r: 'There was no one to fight in the '+room.type.name.toLowerCase(), t: 7});
+        t.slot = undefined;
       }
-      else
-        t.experience.push({n: 0.5, r: 'There was no one to fight in the '+room.type.name.toLowerCase(), t: 7});
     }
     else
     {
@@ -471,7 +482,8 @@ global.Hero = function(x, y, type) {
         t.experience.push({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!'});
       if(g === -1)
         t.experience.push({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.'});
-      }
+    }
+    t.sum = undefined;
   }
   t.update = function(dt) {
     t.body.update(dt);
@@ -520,11 +532,11 @@ global.Hero = function(x, y, type) {
     {
       if(H.Contains(t.type.faves, c.type.code))
       {
-        if(Math.random() < 0.95)
+        if(Math.random() < 0.98)
           t.entertaining = true;
       }
       else{
-        if(Math.random() < 0.6)
+        if(Math.random() < 0.7)
           t.entertaining = true;
       }
     }

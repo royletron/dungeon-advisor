@@ -169,7 +169,9 @@ var t = global.UI = {
     if( t.spawn_counter >  t.spawn_wait)
     {
       t.spawn_counter = 0;
-      t.spawn_wait = H.GR(24- ( t.lvl*4), (24 - ( t.lvl*4)) + ( 24 - ( t.lvl*4)));
+      var m = t.lvl - (Math.random());
+      t.spawn_wait = H.GR(10-m, (10-m) + (Math.random() * (10-m)));
+      console.log(t.spawn_wait);
       t.spawnHero();
     }
     t.heroes.forEach(function(hero) {
@@ -244,7 +246,7 @@ var t = global.UI = {
       a.kill();
       H.Null(a);
       H.T(h.name+' (lvl '+h.lvl+' '+h.type.name+')', 34, 15 + CHAR_HEIGHT, t.p.x, FONT, 'FFFFFF');
-      var r = H.Summarise(h);
+      var r = h.gc();
       var w = new TypeWriter(r.s, 22, 200);
       w.arr.forEach(function(l){
         H.T(l.c, l.x+34, l.y+30, t.p.x, STATUS_FONT, 'FFFFFF');
