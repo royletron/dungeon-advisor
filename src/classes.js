@@ -469,6 +469,14 @@ global.Hero = function(x, y, type) {
       t.sum = H.Summarise(t)
     return t.sum;
   }
+  t.died = function(e) {
+    t.exp({n: -5, r: 'dead', t: 100});
+    for(var i = 0; i < 5; i++){
+      new Particle(P.BLOOD, t.body.x, t.body.y-1);
+    }
+    L.inc(-5 * UI.lvl);
+    UI.removeHero(t, 'I was killed by '+e+' which I just don\'t expect in a dungeon experience.');
+  }
   t.room_action = function(room) {
     t.body.velocity.x = t.return_velocity;
     L.inc(0.5);
@@ -488,6 +496,8 @@ global.Hero = function(x, y, type) {
             t.exp({n: 0.3, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
           else
             t.exp({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
+          if(Math.random() > 0.85) t.levelUp();
+          if(Math.random() > 0.99) t.died(t.slot.npc.name);
         }
         else
           t.exp({n: 0.5, r: 'There was no one to fight in the '+room.type.name.toLowerCase(), t: 7});
@@ -548,11 +558,11 @@ global.Hero = function(x, y, type) {
     if(t.entertaining !== undefined){
       if(t.had_a_go === true){
         if(H.Contains(t.type.faves, t.cr.type.code)){
-          t.exp({n: 1, r: 'of the '+t.cr.type.name, t: 1, d: t.cr.type});
+          t.exp({n: 1, r: 'of the '+t.cr.type.name.toLowerCase(), t: 1, d: t.cr.type});
         }
       }
       else{
-        t.exp({n: 0.4, r: 'I didn\'t get in the '+t.cr.type.name, t: -3, d: t.cr.type});
+        t.exp({n: 0.4, r: 'I didn\'t get in the '+t.cr.type.name.toLowerCase(), t: -3, d: t.cr.type});
       }
     }
     t.had_a_go = false;

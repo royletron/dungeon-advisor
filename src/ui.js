@@ -132,12 +132,14 @@ var t = global.UI = {
     t.num_heroes =  t.heroes.length;
     t.setGold(h.type.fee);
   },
-  removeHero: function(hero) {
+  removeHero: function(hero, r) {
     var exp = H.Summarise(hero);
     t.r_total += exp.r;
     t.r_count += 1;
     t.rating.increment();
     t.rating.setNum((t.r_total/t.r_count)*5);
+    if(r)
+      exp.s = r;
     t.addStatus(hero, (exp.r*5).toFixed(1)+' ★\'s from '+hero.name, exp.s);
     if(t.sh && (t.sh.id == hero.id))
       t.sh = undefined;
@@ -145,7 +147,7 @@ var t = global.UI = {
     hero.end();
     H.Null(hero);
     L.inc(exp.r*5);
-    t.num_heroes =  t.heroes.length;
+    t.num_heroes = t.heroes.length;
   },
   _clicked: false,
   update: function(dt){

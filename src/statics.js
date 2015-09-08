@@ -64,8 +64,9 @@ global.H = {
     }
     if(_tmp.n.length > 0)
       review += H.RE(_tmp.n);
-
-    return {r: score/hero.experience.length, s: review}
+    var rtn = {r: score/hero.experience.length, s: review}
+    if(rtn.r < 0) rtn.r = 0.1;
+    return rtn;
   },
   G: function(c, v, h){
     var m = c.b + ((c.t - c.b)/2);
@@ -252,6 +253,7 @@ global.GAME = document.createElement('canvas');
 global.P = {
   randomSolid: function(){ return H.RE(this.SOLID_TILES); },
   SOLID_TILES: [new Char('∵', '84596F', '594B54'), new Char('#', '84596F', '594B54'), new Char('*', '84596F', '594B54')],
+  BLOOD: new Char('∵', 'FF0000'),
   BOX_MD: new Char(' ', BOX, BOX_B),
   HEALTH: new Char('+', '00ff00'),
   DRINK: new Char('¡', 'B85456'),
