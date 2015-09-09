@@ -199,8 +199,17 @@ var t = global.UI = {
     {
       t.floors.forEach(function(floor, y){
         floor.forEach(function(room, x){
-          if(H.HT(H.MouseCoords, {x: (2+(x * ROOM_WIDTH)) * CHAR_WIDTH, y: (6 + (y * ROOM_HEIGHT)) * CHAR_HEIGHT, width: ROOM_WIDTH*CHAR_WIDTH, height: ROOM_HEIGHT*CHAR_HEIGHT}))
-          t.setSelection(room || {x: x, y: y, found: false});
+          if(H.HT(H.MouseCoords, {x: (2+(x * ROOM_WIDTH)) * CHAR_WIDTH, y: (6 + (y * ROOM_HEIGHT)) * CHAR_HEIGHT, width: ROOM_WIDTH*CHAR_WIDTH, height: ROOM_HEIGHT*CHAR_HEIGHT})){
+            var f = false;
+            if(room)
+              if(t.sr)
+                if(t.sr.id == room.id)
+                  f = true;
+            if(f)
+              t.sr = undefined;
+            else
+              t.setSelection(room || {x: x, y: y, found: false});
+          }
         }.bind( t));
       }.bind( t));
       t.heroes.forEach(function(hero){
