@@ -236,7 +236,6 @@ global.H = {
   }
 };
 
-global.MAX_LVL = 60;
 
 var buffer = document.createElement('canvas');
 
@@ -476,7 +475,7 @@ global.L = {
 
 
 global.N = {
-  names: 'Tom Thomas Brian Bobby Boromir Budgergy Bobbin Bilbo Bonzo Bongo Calvin Capitan Mr White Jack John Shirley Jonty Monty Cresswell Burgermeister Royletron Timon Aladdin Adolf Tony Antony Finn Jake Peter Pete Pele Persius Ponyo Pogo Serj Sergey Samir Todmorden Kevin Dante Colin Dennis Jake Solomon',
+  names: 'Tom Brian Bob Tim Lorna Jess Toby Simon Ed Joao Alan Neil Pete Fred Marge Sully Terry Eric Bill Carol Chris Dan Holly Jenny Jonathan Serj Pele Jerry Robin Pip Roz Merry Brad Ross Ralph Ian Henry Lloyd John Tarquin Ann Lily Alex Julia Sarah Nigel',
   Random: function() {
     return H.RE(this.names.split(' '));
   }
@@ -484,15 +483,15 @@ global.N = {
 
 global.E = {
   weapons: [
-    {name: 'Shortsword', x: '}', code: 'ss', c: '00FF00', ox: 0.6, t: -0.5, b: -0.35},
-    {name: 'Longsword', x: '∤', code: 'ls', c: 'A7FBEB', ox: 0.7, t: - 0.45, b: -0.2},
-    {name: 'Small Axe', x: '>', code: 'sa', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
-    {name: 'Bow', x: '⦔', code: 'bw', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
-    {name: 'Crucifix', x: '†', code: 'cf', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
-    {name: 'Wand', x: '⊸', code: 'wd', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
-    {name: 'Staff', x: '∣', code: 'st', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
-    {name: 'Knife', x: '†', code: 'kn', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3},
-    {name: 'Lute', x: '∝', code: 'lt', c: 'FF0000', ox: 0.8, t: - 0.4, b: -0.3}
+    {x: '}', code: 's', c: '00FF00', ox: 0.6, t: -0.5, b: -0.35},
+    {x: '∤', code: 'ls', c: 'A7FBEB', ox: 0.7, t: - 0.45, b: -0.2},
+    {x: '>', code: 'sa', c: '4072DA', ox: 0.8, t: - 0.4, b: -0.3},
+    {x: '⦔', code: 'bw', c: 'FA8FC2', ox: 0.8, t: - 0.4, b: -0.3},
+    {x: '†', code: 'cf', c: '86D5FA', ox: 0.8, t: - 0.4, b: -0.3},
+    {x: '⊸', code: 'wd', c: 'EEAE23', ox: 0.8, t: - 0.4, b: -0.3},
+    {x: '∣', code: 'st', c: 'D1CBDA', ox: 0.8, t: - 0.4, b: -0.3},
+    {x: '†', code: 'kn', c: 'D3E373', ox: 0.8, t: - 0.4, b: -0.3},
+    {x: '∝', code: 'lt', c: '0176F4', ox: 0.8, t: - 0.4, b: -0.3}
   ],
   heroes: [
     {
@@ -503,9 +502,9 @@ global.E = {
       i: 0.5,
       x: '$',
       l: {t: 10, b: 5},
-      w: 'ls ss',
+      w: 'ls s',
       s: {t: 2.5, b: 1.3},
-      c: 'FFE9BA',
+      c: 'F0DDD2',
       m: {t: 0.8, b: 0.1}
     },
     {
@@ -516,9 +515,9 @@ global.E = {
       i: 0.3,
       x: 'K',
       l: {t: 6, b: 0},
-      w: 'ss kn sa',
+      w: 's kn sa',
       s: {t: 2.5, b: 1.8},
-      c: 'FFAD8B',
+      c: '8FAF8E',
       m: {t: 0.2, b: -0.4}
     },
     {
@@ -531,7 +530,7 @@ global.E = {
       s: {t:2, b:1.7},
       fee: 8,
       i: 0.9,
-      c: 'FFE9AA',
+      c: '8FAF8E',
       m: {t: 0.3, b: -0.6}
     },
     {
@@ -544,7 +543,7 @@ global.E = {
       l: {t: 6, b: 2},
       w: 'cf',
       s: {t: 2.1, b: 1.6},
-      c: 'FFE9AA',
+      c: '8BE1BC',
       m: {t: 0.2, b: -0.7}
     },
     {
@@ -557,7 +556,7 @@ global.E = {
       l: {t: 9, b: 5},
       w: 'st wd',
       s: {t: 2.1, b: 1.6},
-      c: 'FFE9AA',
+      c: '3B9FB6',
       m: {t: 0.5, b: -0.2}
     },
     {
@@ -568,9 +567,9 @@ global.E = {
       i: 0.8,
       x: '∱',
       l: {t: 10, b: 5},
-      w: 'kn',
+      w: 'kn s',
       s: {t: 3.1, b: 1.9},
-      c: 'FFE9AA',
+      c: 'ADD8C7',
       m: {t: 0.9, b: -0.9}
     },
     {
@@ -583,21 +582,34 @@ global.E = {
       l: {t: 10, b: 6},
       w: 'bw',
       s: {t: 3.9, b: 1.8},
-      c: 'FFE9AA',
+      c: 'D7B9DC',
       m: {t: 0.7, b: 0}
     },
     {
       name: 'Muse',
       faves: 'ihcxlab',
-      turn: {t: 36, b: 11},
+      turn: {t: 6, b: 1},
       fee: 32,
       i: 0.6,
       x: '♭',
       l: {t: 10, b: 6},
       w: 'lt',
       s: {t: 1.1, b: 0.6},
-      c: 'FFE9AA',
+      c: 'BD0628',
       m: {t: 0.1, b: -0.6}
+    },
+    {
+      name: 'Hellbeast',
+      faves: 'ecsaixhbl',
+      turn: {t: 1, b: 1},
+      fee: 1,
+      i: 1,
+      x: 'H',
+      l: {t: 10, b: 8},
+      w: 's kn lt',
+      s: {t: 4, b: 3},
+      c: 'E491A1',
+      m: {t: 1, b: 0.5}
     }
   ],
   enemies: [

@@ -246,11 +246,11 @@ var t = global.UI = {
       a.stamp(t.p.x, 0.5, 0.5);
       a.kill();
       H.Null(a);
-      H.T(h.name+' (lvl '+h.lvl+' '+h.type.name+')', 34, 15 + CHAR_HEIGHT, t.p.x, FONT, 'FFFFFF');
+      H.T(h.name+' (lvl '+h.lvl+' '+h.type.name+')', 34, 12 + CHAR_HEIGHT, t.p.x, FONT, 'F8BC10');
       var r = h.gc();
-      var w = new TypeWriter(r.s, 22, 200);
+      var w = new TypeWriter(r.s, 22, 200, false, FONT);
       w.arr.forEach(function(l){
-        H.T(l.c, l.x+34, l.y+30, t.p.x, STATUS_FONT, 'FFFFFF');
+        H.T(l.c, l.x+34, l.y+35, t.p.x, FONT, 'FFFFFF');
       });
     }
     else
@@ -259,7 +259,7 @@ var t = global.UI = {
       if( t.sr !== undefined){
         if( t.sr.found === false)
         {
-          H.T('Rooms', 10, 18, t.p.x, FONT, '302222');
+          H.T('Rooms', 10, 18, t.p.x, FONT, 'F8BC10');
           var idx = 1;
           R.all().forEach(function(room){
             if(room != 'ENTRANCE')
@@ -287,7 +287,7 @@ var t = global.UI = {
         {
           if(room.type)
           {
-            H.T(room.type.name, 10, 18, t.p.x, FONT, '302222');
+            H.T(room.type.name, 10, 18, t.p.x, FONT, 'F8BC10');
             if(room.type.battle)
             {
               room.slots.forEach(function(s, i){

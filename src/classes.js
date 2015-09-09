@@ -93,7 +93,7 @@ global.Button = function(text, cb, x, y, cost, data, r) {
 
 global.Avatar = function(hero, center) {
   var t = this;
-  t.color = '25989B';
+  t.color = 'FB6707';
   t.h = hero;
   t.r = new Renderer(3 *CHAR_WIDTH, 3 * CHAR_HEIGHT);
   t.s = false;
@@ -152,7 +152,7 @@ global.StatusUpdate = function(hero, title, text) {
   t.height = t.tw.height + 2
   t.tw.run();
   t.r = new Renderer(23 * CHAR_WIDTH, CHAR_HEIGHT);
-  H.T(title, 0, CHAR_HEIGHT-2, t.r.x, STATUS_FONT, 'ffffff');
+  H.T(title, 0, CHAR_HEIGHT-2, t.r.x, STATUS_FONT, 'EAEB38');
   t.stamp = function(d, x, y){
     t.a.stamp(d, x, y);
     t.r.stamp(d, x+3, y);
@@ -166,8 +166,9 @@ global.StatusUpdate = function(hero, title, text) {
   }
 }
 
-global.TypeWriter = function(text, width, height, fixed) {
+global.TypeWriter = function(text, width, height, fixed, font) {
   var t = this;
+  t.font = font || STATUS_FONT
   t.fixed = fixed || false;
   t.text = text;
   t.r = new Renderer(width * CHAR_WIDTH, height * CHAR_HEIGHT);
@@ -183,7 +184,7 @@ global.TypeWriter = function(text, width, height, fixed) {
     var rem = text.substr(i);
     var space = rem.indexOf(' ');
     space = (space === -1)?text.length:space;
-    t.r.x.font = STATUS_FONT;
+    t.r.x.font = t.font;
     var wordwidth = t.r.x.measureText(rem.substring(0, space)).width;
     var w = t.r.x.measureText(text.charAt(i)).width;
     if(cursorX + wordwidth >= t.r.c.width) {
@@ -201,7 +202,7 @@ global.TypeWriter = function(text, width, height, fixed) {
   t.run = function() {
     var i = 0;
     t.interval = setInterval(function(){
-      H.T(t.arr[i].c, t.arr[i].x, t.arr[i].y, t.r.x, STATUS_FONT, '25989b');
+      H.T(t.arr[i].c, t.arr[i].x, t.arr[i].y, t.r.x, t.font, 'F8BC10');
       if(i == t.arr.length-1)
         clearInterval(t.interval);
       i++;
