@@ -405,7 +405,7 @@ var t = global.UI = {
     var c = new Button('↓', function(d){
       d.a.val += -1;
       UI.setSelection(d.r);
-    }, (t.w - 30)+24, 6.5+(i*1.8), undefined, {r: room, a: a});
+    }, (t.w - 30)+24, 6+(i*1.8), undefined, {r: room, a: a});
     if(a.val !== a.c.t) {
       t.bs.push(b);
       b.stamp(t.p.x, 17, i*1.8);
