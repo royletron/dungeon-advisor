@@ -1,4 +1,4 @@
-![Imgur](http://i.imgur.com/z4QajnJ.png)
+![Imgur](http://i.imgur.com/aKM5iZl.png)
 
 **Dungeon Advisor** is my entry to the 2015 [JS13k](http://js13kgames.com/) game jam - where you have to make a Javascript game in less than 13kb!
 
