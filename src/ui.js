@@ -93,7 +93,6 @@ var t = global.UI = {
     t.addRoom(R.ENTRANCE);
   },
   addFloor: function() {
-    L.inc(10*UI.lvl);
     if(t.gold >= 80)
     {
       t.floors.push([undefined, undefined, undefined, undefined]);
@@ -406,7 +405,7 @@ var t = global.UI = {
     }
   },
   setGold: function(amount) {
-    t.gold += amount;
+    t.gold += Math.floor(amount);
     t.changed = true;
   },
   flipHero: function(hero) {

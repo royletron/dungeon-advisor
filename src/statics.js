@@ -335,10 +335,10 @@ global.R = {
     code: 'i', slots: [3, 9, 14, 16, 18],
     actions: [{
       n: 'Drinks',
-      c: {t: 8, b: 2}
+      c: {t: 18, b: 12}
     },{
       n: 'Eats',
-      c: {t: 13, b: 3}
+      c: {t: 23, b: 13}
     }],
     cost: 220,
     stamp: S.INN,
@@ -350,7 +350,7 @@ global.R = {
     slots: [4, 9, 14, 18],
     enemies: 'wc',
     battle: true,
-    cost: 260,
+    cost: 360,
     p: [P.FIGHT, P.FIGHT2],
     stamp: S.ARENA,
     l: 3
@@ -362,12 +362,12 @@ global.R = {
     slots: [4, 9, 14, 19],
     actions: [{
       n: 'Nurses',
-      c: {t: 18, b: 10}
+      c: {t: 32, b: 24}
     },{
       n: 'Doctors',
-      c: {t: 24, b: 12}
+      c: {t: 40, b: 28}
     }],
-    cost: 350,
+    cost: 450,
     stamp: S.HOSPITAL,
     l: 4
   },
@@ -378,15 +378,15 @@ global.R = {
     slots: [4, 8, 12, 16, 20],
     actions: [{
       n: 'Weapons',
-      c: {t: 22, b: 14}
+      c: {t: 32, b: 18}
     },{
       n: 'Armour',
-      c: {t: 30, b: 20}
+      c: {t: 34, b: 22}
     },{
       n: 'Items',
-      c: {t: 50, b: 10}
+      c: {t: 40, b: 20}
     }],
-    cost: 500,
+    cost: 600,
     stamp: S.SHOP,
     l: 5
   },
@@ -396,15 +396,15 @@ global.R = {
     code: 'b', slots: [5, 11, 18],
     actions: [{
       n: 'Kisses',
-      c: {t: 76, b: 40}
+      c: {t: 50, b: 30}
     },{
       n: 'Hugs',
-      c: {t: 100, b: 50}
+      c: {t: 58, b: 36}
     },{
       n: 'Cuddles',
-      c: {t: 120, b: 70}
+      c: {t: 66, b: 28}
     }],
-    cost: 700,
+    cost: 900,
     stamp: S.BROTHEL,
     l: 7
   },
@@ -414,7 +414,7 @@ global.R = {
     slots: [4, 8, 12, 16],
     battle: true,
     enemies: 'di',
-    cost: 950,
+    cost: 999,
     stamp: S.LAIR,
     p: [P.FIGHT, P.FIGHT2, P.FIGHT3, P.BULLET],
     l: 7
@@ -458,7 +458,7 @@ global.R = {
 
 global.L = {
   xp: 0,
-  boundaries: [0, 3, 10, 25, 40, 100, 200, 450, 700, 1000],
+  boundaries: [0, 3, 10, 25, 40, 100, 200, 450, 700, 1200],
   inc: function(val) {
     if(val)
       this.xp += val;
@@ -469,13 +469,15 @@ global.L = {
       if(this.xp > (v*10)) return i;
       else return p;
     }.bind(this));
+    if(UI.lvl < (lvl + 1))
+      UI.setGold(Math.pow(lvl+1, 1.5) * 10);
     UI.lvl = lvl+1;
   }
 };
 
 
 global.N = {
-  names: 'Tom Brian Bob Tim Lorna Jess Toby Simon Ed Joao Alan Neil Pete Fred Marge Sully Terry Eric Bill Carol Chris Dan Holly Jenny Jonathan Serj Pele Jerry Robin Pip Roz Merry Brad Ross Ralph Ian Henry Lloyd John Tarquin Ann Lily Alex Julia Sarah Nigel',
+  names: 'Tom Brian Bob Tim Lorna Jess Toby Simon Ed Joao Alan Neil Pete Fred Marge Sully Terry Eric Bill Carol Chris Dan Holly Jenny Jonathan Serj Pele Jerry Robin Pip Roz Merry Brad Ross Ralph Ian Henry Lloyd John Tarquin Ann Lily Alex Julia Sarah Nigel Kristie',
   Random: function() {
     return H.RE(this.names.split(' '));
   }
@@ -498,14 +500,14 @@ global.E = {
       name: 'Knight',
       faves: 'hxlei',
       turn: {t: 9, b: 5},
-      fee: 15,
+      fee: 31,
       i: 0.5,
       x: '$',
       l: {t: 10, b: 5},
       w: 'ls s',
       s: {t: 2.5, b: 1.3},
       c: 'F0DDD2',
-      m: {t: 0.8, b: 0.1}
+      m: {t: 0.8, b: -0.1}
     },
     {
       name: 'Peon',
@@ -528,7 +530,7 @@ global.E = {
       l: {t: 9, b: 5},
       w: 'sa',
       s: {t:2, b:1.7},
-      fee: 8,
+      fee: 32,
       i: 0.9,
       c: '8FAF8E',
       m: {t: 0.3, b: -0.6}
@@ -537,7 +539,7 @@ global.E = {
       name: 'Priest',
       faves: 'csi',
       turn: {t: 18, b: 8},
-      fee: 5,
+      fee: 8,
       i: 0.4,
       x: 'δ',
       l: {t: 6, b: 2},
@@ -550,7 +552,7 @@ global.E = {
       name: 'Mage',
       faves: 'isxhl',
       turn: {t: 11, b: 4},
-      fee: 16,
+      fee: 36,
       i: 0.6,
       x: 'Î',
       l: {t: 9, b: 5},
@@ -563,20 +565,20 @@ global.E = {
       name: 'Rogue',
       faves: 'slihcb',
       turn: {t: 20, b: 10},
-      fee: 24,
+      fee: 39,
       i: 0.8,
       x: '∱',
       l: {t: 10, b: 5},
       w: 'kn s',
       s: {t: 3.1, b: 1.9},
       c: 'ADD8C7',
-      m: {t: 0.9, b: -0.9}
+      m: {t: 0.9, b: -0.6}
     },
     {
       name: 'Archer',
       faves: 'halxc',
       turn: {t: 21, b: 7},
-      fee: 15,
+      fee: 42,
       i: 0.9,
       x: '∔',
       l: {t: 10, b: 6},
@@ -589,7 +591,7 @@ global.E = {
       name: 'Muse',
       faves: 'ihcxlab',
       turn: {t: 6, b: 1},
-      fee: 32,
+      fee: 42,
       i: 0.6,
       x: '♭',
       l: {t: 10, b: 6},
@@ -602,7 +604,7 @@ global.E = {
       name: 'Hellbeast',
       faves: 'ecsaixhbl',
       turn: {t: 1, b: 1},
-      fee: 1,
+      fee: 80,
       i: 1,
       x: 'H',
       l: {t: 10, b: 8},
@@ -615,10 +617,10 @@ global.E = {
   enemies: [
     {name: 'Rat', code: 'r', symbol: '%', color: 'C2B49A', cost: {t: 50, b: 12}, rate: {t: 15, b: 4}},
     {name: 'Skeleton', code: 's', symbol: '⥉', color: 'C6E5D9', cost: {t: 60, b: 26}, rate: {t:10, b: 4}},
-    {name: 'Warrior', code: 'w', symbol: '¥', color: 'F5F2E8', cost: {t: 90, b: 40}, rate: {t: 30, b: 10}},
-    {name: 'Champ', code: 'c', symbol: '⨳', color: 'ACA287', cost: {t: 80, b: 34}, rate: {t: 26, b: 8}},
-    {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:190, b: 70}, rate: {t: 60, b: 20}},
-    {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 140, b: 50}, rate: {t: 80, b: 30}}
+    {name: 'Warrior', code: 'w', symbol: '¥', color: 'F5F2E8', cost: {t: 99, b: 40}, rate: {t: 120, b: 40}},
+    {name: 'Champ', code: 'c', symbol: '⨳', color: 'ACA287', cost: {t: 90, b: 34}, rate: {t: 140, b: 40}},
+    {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:390, b: 190}, rate: {t: 300, b: 100}},
+    {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 290, b: 150}, rate: {t: 340, b: 160}}
   ],
   GetEnemy: function(code) {
     var e;
@@ -655,22 +657,6 @@ function getMousePos(canvas, evt) {
   else
     return H.MouseCoords;
 }
-
-// function onDown() {
-//   H.MouseDown = true;
-//   H.MouseUp = false;
-//   if(!H._clicked)
-//     if(!H.MouseClick)
-//       H._clicked = H.MouseClick = true;
-//     else
-//       H.MouseClick = false;
-// };
-
-// function onUp() {
-//   H.MouseDown = false;
-//   H.MouseUp = true;
-//   H.MouseClick = H._clicked = false;
-// }
 
 GAME.addEventListener('click', function(event) {
   H.MouseCoords = getMousePos(GAME, event);

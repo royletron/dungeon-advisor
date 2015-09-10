@@ -499,9 +499,9 @@ global.Hero = function(x, y, type) {
           if(g === -1)
             t.exp({n: 1, r: 'I had a great fight against '+t.slot.npc.name, t: 26});
           if(g === 1)
-            t.exp({n: 0.3, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
+            t.exp({n: -1, r: 'I had a terrible fight against '+t.slot.npc.name, t: 22});
           else
-            t.exp({n: 0.7, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
+            t.exp({n: 0.6, r: 'I had an alright fight against '+t.slot.npc.name, t: 23});
           if(Math.random() > 0.85) t.levelUp();
           if(Math.random() > 0.99) t.died(t.slot.npc.name);
         }
@@ -518,11 +518,11 @@ global.Hero = function(x, y, type) {
       var c = new Char(a.val.toString(), 'FFF566', '000000');
       new Particle(c, t.body.x, t.body.y-1, true);
       if(g === 0)
-        t.exp({n: 0.7, r: 'the prices for '+a.n.toLowerCase()+' were fair', t: 51, d: room.type});
+        t.exp({n: 0.6, r: 'the prices for '+a.n.toLowerCase()+' were fair', t: 51, d: room.type});
       if(g === 1)
         t.exp({n: 1, r: 'the '+a.n.toLowerCase()+' were cheap!', t: 53, d: room.type});
       if(g === -1)
-        t.exp({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.', t: 52, d: room.type});
+        t.exp({n: -0.8, r: 'the cost of '+a.n.toLowerCase()+' was expensive.', t: 52, d: room.type});
     }
     t.busy = t.entertaining = false;
     t.had_a_go = true;
