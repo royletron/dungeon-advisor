@@ -512,7 +512,7 @@ global.Hero = function(x, y, type) {
     }
     else
     {
-      var a=H.RE(room.type.actions);
+      var a=H.RE(room.actions);
       var g=H.G(a.c, a.val, t);
       UI.setGold(a.val);
       var c = new Char(a.val.toString(), 'FFF566', '000000');
