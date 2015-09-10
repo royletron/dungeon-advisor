@@ -520,7 +520,7 @@ global.Hero = function(x, y, type) {
       if(g === 0)
         t.exp({n: 0.7, r: 'the prices for '+a.n.toLowerCase()+' were fair', t: 51, d: room.type});
       if(g === 1)
-        t.exp({n: 1, r: 'the '+a.n.toLowerCase()+'s were cheap!', t: 53, d: room.type});
+        t.exp({n: 1, r: 'the '+a.n.toLowerCase()+' were cheap!', t: 53, d: room.type});
       if(g === -1)
         t.exp({n: 0.4, r: 'the cost of '+a.n.toLowerCase()+' was expensive.', t: 52, d: room.type});
     }
