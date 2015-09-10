@@ -39,7 +39,7 @@ global.Enemy = function(type) {
 
 global.Button = function(text, cb, x, y, cost, data, r) {
   var t = this;
-  t.width = ((text.length + 2) + (cost != undefined ? cost.toString().length + 4 : 0.75)) * CHAR_WIDTH;
+  t.width = ((text.length + 2) + (cost !== undefined ? H.NT(cost).length + 4 : 0.75)) * CHAR_WIDTH;
   t.height = CHAR_HEIGHT*2;
   t.r = new Renderer(t.width, t.height);
   t.r.whole = false;
@@ -50,7 +50,7 @@ global.Button = function(text, cb, x, y, cost, data, r) {
 
   H.T(text, CHAR_WIDTH, CHAR_HEIGHT * 1.2, t.r.x, FONT, 'EBE1CE');
   if(cost != undefined) {
-    t.r.x.fillText(cost.toString(), (text.length+4)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
+    t.r.x.fillText(H.NT(cost), (text.length+4)*CHAR_WIDTH, CHAR_HEIGHT*1.2);
     P.GOLD.renderer.whole = false;
     P.GOLD.stamp(t.r.x, text.length+2.5, 0.2);
   }
@@ -271,7 +271,7 @@ global.Particle = function(char, x, y, kill) {
       this.y += -dt;
       this.x += (this.ux * dt)
       g_ctx.save();
-      var c = H.BufferToCoords(this.x || 0, this.y || 0, false);
+      var c = H.sp(this.x || 0, this.y || 0, false);
       g_ctx.translate(c.x, c.y);
       g_ctx.scale(this.alpha, this.alpha);
       this.char.stamp(g_ctx, 0, 0);
@@ -361,7 +361,7 @@ global.Renderer = function(width, height, alpha) {
   t.x.fontStyle = FONT;
   t.whole = false;
   this.stamp = function(d, x, y){
-    var c = H.BufferToCoords(x || 0, y || 0, t.whole);
+    var c = H.sp(x || 0, y || 0, t.whole);
     d.drawImage(t.c, c.x, c.y);
   };
   this.flip = function(){
@@ -588,8 +588,8 @@ global.Hero = function(x, y, type) {
     }
   }
   t.gCR = function() {
-    var x = t.body.x - UI.spawn_point.x;
-    var y = t.body.y - UI.spawn_point.y;
+    var x = t.body.x - UI.sp.x;
+    var y = t.body.y - UI.sp.y;
     var r = UI.floors[Math.floor(y/ROOM_HEIGHT)];
     if(r !== undefined)
       return r[Math.floor(x/ROOM_WIDTH)];

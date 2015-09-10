@@ -10,19 +10,19 @@ var t = global.UI = {
   change: false,
   clouds: [],
   spawn_counter: 0,
-  spawn_wait: 0,
-  spawn_point: {x: 0, y: 13.5},
+  sw: 0,
+  sp: {x: 0, y: 13.5},
   heroes: [],
   num_heroes: 0,
   bg: null,
   fg: null,
   ctx: null,
-  add_floor_button: new Button('Add Floor', function(){
+  afb: new Button('Add Floor', function(){
     UI.addFloor();
   },1, 1, 80),
   statuses: [],
   counters: [],
-  buttons: [],
+  bs: [],
   rb: [],
   changed: false,
   offset: 0,
@@ -78,8 +78,8 @@ var t = global.UI = {
     t.bg.x.fillText('advisor', 135, 34);
     t.renderer.stamp(ctx);
 
-    t.add_floor_button.y = 10 + (t.floors.length * ROOM_HEIGHT);
-    t.add_floor_button.x =((t.w-29)/2) - 8;
+    t.afb.y = 10 + (t.floors.length * ROOM_HEIGHT);
+    t.afb.x =((t.w-29)/2) - 8;
 
     t.counters.push(new Counter(P.GOLD, t, 'gold'));
     t.counters.push(new Counter(new Char('#', 'FA6728'), t, 'num_heroes'));
@@ -90,6 +90,15 @@ var t = global.UI = {
     t.cb = new Button('▸', function(){
       TIME=1;
     }, 0, 3.2);
+    t.bb = new Button('Bribe', function() {
+      for(var i=0; i < H.GR(10, 60); i++)
+      {
+        UI.spawnHero();
+      }
+      UI.r_total = UI.r_count = UI.rating.i = 0;
+      UI.rating.setNum(0);
+      UI.setGold(-20000);
+    }, 100, 3.2, 20000);
     t.addRoom(R.ENTRANCE);
   },
   addFloor: function() {
@@ -99,7 +108,7 @@ var t = global.UI = {
       t.setGold(-80);
       for(x = 2; x <  t.w-32; x++)
       P.FLOOR.stamp(t.bg.x, x, ((t.floors.length+1)* ROOM_HEIGHT) - 4);
-      t.add_floor_button.y += ROOM_HEIGHT;
+      t.afb.y += ROOM_HEIGHT;
     }
   },
   addStatus: function(hero, title, text){
@@ -155,6 +164,8 @@ var t = global.UI = {
     else
       t.pb.update(dt);
     t.offset += dt*5;
+    if(t.r_count > 0)
+      t.bb.update(dt);
     if(t.changed)
       if(t.sh !== undefined)
         t.setSelection(t.sh, true);
@@ -167,18 +178,18 @@ var t = global.UI = {
         cloud.body.x = -1;
     }.bind( t));
     t.spawn_counter += dt;
-    if( t.spawn_counter >  t.spawn_wait)
+    if( t.spawn_counter >  t.sw)
     {
       t.spawn_counter = 0;
       var m = t.lvl - (Math.random());
-      t.spawn_wait = H.GR(10-m, (10-m) + (Math.random() * (10-m)));
+      t.sw = H.GR(10-m, (10-m) + (Math.random() * (10-m)));
       t.spawnHero();
     }
     t.heroes.forEach(function(hero) {
       hero.update(dt);
       if(hero.s.x < ( t.w - 32))
       {
-        if(hero.s.x < ( t.spawn_point.x - 2))
+        if(hero.s.x < ( t.sp.x - 2))
         if(hero.current_floor <  t.floors.length)
         t.flipHero(hero);
         else
@@ -222,11 +233,11 @@ var t = global.UI = {
           button.update(dt);
         });
       }
-    t.buttons.forEach(function(b){
+    t.bs.forEach(function(b){
       b.update(dt);
     })
     if(UI.SR())
-      t.add_floor_button.update(dt);
+      t.afb.update(dt);
   },
   SR: function() {
     var l = UI.lvl;
@@ -240,10 +251,10 @@ var t = global.UI = {
   },
   cPs: function() {
     t.p.x.clearRect(0, 0,  t.p.canvas.width,  t.p.canvas.height);
-    t.buttons.forEach(function(b) {
+    t.bs.forEach(function(b) {
       b.kill();
     })
-    t.buttons = [];
+    t.bs = [];
   },
   setSelection: function(room, isHero) {
     t.sh = t.sr = t.k = undefined;
@@ -281,7 +292,7 @@ var t = global.UI = {
                   UI.gold += -room.type.cost;
                   UI.setSelection(room);
                 }, ( t.w - 30)+16, 6+(idx*1.8), r.cost, room);
-                t.buttons.push(b);
+                t.bs.push(b);
                 b.stamp(t.p.x, 16, (idx*1.8));
               }
               else{
@@ -314,7 +325,7 @@ var t = global.UI = {
                       d.n.effort = d.v+1;
                       UI.setSelection(UI.sr);
                     }, (t.w - 30)+4+(j*2.8), 7.5+(((i*2)+1.1)*1.8), undefined, {v: j, n: s.npc});
-                    t.buttons.push(b);
+                    t.bs.push(b);
                     b.stamp(t.p.x, 4+(j*2.8), 1.5+((i*2)+1.1)*1.8);
                   }
                   var r = new Button('X', function(d){
@@ -332,7 +343,7 @@ var t = global.UI = {
                     t.changed = true;
                   }, (t.w - 5.5), 7.5+((i*2)*1.8), undefined, {s: s, i: i, r: room}, true);
                   r.stamp(t.p.x, 24.5, 1.5+((i*2)*1.8));
-                  t.buttons.push(r);
+                  t.bs.push(r);
                   P.GOLD.stamp(t.p.x, 19.2, ((i*2)*1.8)+3.7)
                   H.T(s.npc.charge()+'', 187, 40 + (CHAR_HEIGHT*1.8)*((i*2)+1), t.p.x, FONT, 'BFBBB8');
 
@@ -359,7 +370,7 @@ var t = global.UI = {
                   })
                   t.changed = true;
                 }, (t.w - 30) + w, 6+(((room.slots.length*2)+1+h)*1.8), c, {e: en, r: room, c: c});
-                t.buttons.push(n);
+                t.bs.push(n);
                 n.stamp(t.p.x, 0+w, (((room.slots.length * 2)+1+h)*1.8));
                 w += n.r.width/CHAR_WIDTH;
                 if(w > 17) { h++; w = 0; }
@@ -396,11 +407,11 @@ var t = global.UI = {
       UI.setSelection(d.r);
     }, (t.w - 30)+24, 6.5+(i*1.8), undefined, {r: room, a: a});
     if(a.val !== a.c.t) {
-      t.buttons.push(b);
+      t.bs.push(b);
       b.stamp(t.p.x, 17, i*1.8);
     }
     if(a.val !== a.c.b) {
-      t.buttons.push(c);
+      t.bs.push(c);
       c.stamp(t.p.x, 24.5, i*1.8);
     }
   },
@@ -464,19 +475,20 @@ var t = global.UI = {
 
     t.counters.forEach(function (counter, x){
       if(x == 2)
-        x = 1.6;
+        x = 1.8;
       counter.stamp(ctx, 6 + (x*8), 3.6);
     }.bind( t));
     if(UI.SR())
-      t.add_floor_button.stamp(ctx);
+      t.afb.stamp(ctx);
     t.fg.stamp(ctx);
 
-    t.rating.stamp(ctx, 24, 3.6);
+    t.rating.stamp(ctx, 26, 3.6);
     if(TIME != 0)
       t.pb.stamp(ctx)
     else
       t.cb.stamp(ctx)
-
+    if(t.r_count > 0)
+      t.bb.stamp(ctx);
     if( t.sr !== undefined)
       t.drawSelection(ctx, (2+(t.sr.x*ROOM_WIDTH)), (6 + (t.sr.y*ROOM_HEIGHT)), ROOM_WIDTH, ROOM_HEIGHT);
     else if( t.sh !== undefined)
@@ -484,7 +496,6 @@ var t = global.UI = {
         t.drawSelection(ctx, t.sh.body.x - 0.2, t.sh.body.y -0.3, 1.8, 1.6);
       else
         t.drawSelection(ctx, t.sh.body.x - 0.8, t.sh.body.y -0.3, 1.8, 1.6);
-    //  t.type.stamp(ctx,  t.w-27, 9);
     if(t.k !== undefined) t.k.stamp(ctx);
     t.renderer.stamp(g_ctx);
   }

@@ -12,7 +12,7 @@ var Helpers = {
     GetRandom: function (low, high) {
         return~~ (Math.random() * (high - low)) + low;
     },
-    BufferToCoords: function(x, y) {
+    sp: function(x, y) {
       return {x: x*CHAR_WIDTH, y: y*CHAR_HEIGHT};
     },
     CoordsToBuffer: function(x, y) {

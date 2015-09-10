@@ -25,7 +25,7 @@ function Char (symbol, color, bg, alpha) {
       if(to === undefined)
         to = content;
 
-      var coords = Helpers.BufferToCoords(x, y);
+      var coords = Helpers.sp(x, y);
       to.drawImage(this.canvas, coords.x, coords.y);
     };
 }
@@ -58,7 +58,7 @@ function Menu() {
     this.frame.update(this.x, this.y);
   };
   this.render = function(to) {
-    var coords = Helpers.BufferToCoords(this.x, this.y);
+    var coords = Helpers.sp(this.x, this.y);
     // console.log(to);
     //to.drawImage(this.heading.renderer.canvas, coords.x, coords.y);
 

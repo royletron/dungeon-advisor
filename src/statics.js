@@ -130,7 +130,7 @@ global.H = {
   NT: function(txt) {
     if(txt > 3000)
       txt = Math.floor(txt/1000) +'k'+((txt%1000)!== 0 ? '+' : '');
-    return txt;
+    return txt.toString();
   },
   HT: function(objA, objB) {
     if((objA === null) || (objB === null))
@@ -169,7 +169,7 @@ global.H = {
     ctx.clearRect(0, 0, c.width, c.height);
     ctx.drawImage(tmp, 0, 0);
   },
-  BufferToCoords: function(x, y, whole) {
+  sp: function(x, y, whole) {
     if(whole || (whole === undefined))
       return {x: parseInt(x)*CHAR_WIDTH, y: parseInt(y)*CHAR_HEIGHT};
     else
@@ -477,7 +477,7 @@ global.L = {
 
 
 global.N = {
-  names: 'Tom Brian Bob Tim Lorna Jess Toby Simon Ed Joao Alan Neil Pete Fred Marge Sully Terry Eric Bill Carol Chris Dan Holly Jenny Jonathan Serj Pele Jerry Robin Pip Roz Merry Brad Ross Ralph Ian Henry Lloyd John Tarquin Ann Lily Alex Julia Sarah Nigel Kristie',
+  names: 'Tom Brian Bob Tim Lorna Jess Toby Simon Ed Joao Alan Neil Pete Fred Marge Sully Terry Eric Bill Carol Chris Dan Holly Jenny Jonathan Serj Pele Jerry Robin Pip Roz Merry Brad Ross Ralph Ian Henry Lloyd John Tarquin Ann Lily Alex Julia Sarah Nigel Kristie Paul',
   Random: function() {
     return H.RE(this.names.split(' '));
   }
@@ -619,8 +619,8 @@ global.E = {
     {name: 'Skeleton', code: 's', symbol: '⥉', color: 'C6E5D9', cost: {t: 60, b: 26}, rate: {t:10, b: 4}},
     {name: 'Warrior', code: 'w', symbol: '¥', color: 'F5F2E8', cost: {t: 99, b: 40}, rate: {t: 120, b: 40}},
     {name: 'Champ', code: 'c', symbol: '⨳', color: 'ACA287', cost: {t: 90, b: 34}, rate: {t: 140, b: 40}},
-    {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:390, b: 190}, rate: {t: 300, b: 100}},
-    {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 290, b: 150}, rate: {t: 340, b: 160}}
+    {name: 'Dragon', code: 'd', symbol: '&', color: 'FF0000', cost: {t:390, b: 190}, rate: {t: 190, b: 100}},
+    {name: 'Imp', code: 'i', symbol: '?', color: 'EE1111', cost: {t: 290, b: 150}, rate: {t: 210, b: 120}}
   ],
   GetEnemy: function(code) {
     var e;
@@ -645,7 +645,7 @@ global.E = {
       if(c.l.b <= lvl)
         h.push(c)
     })
-    return new Hero(UI.spawn_point.x, UI.spawn_point.y, H.RE(h)); //H.RE(h));
+    return new Hero(UI.sp.x, UI.sp.y, H.RE(h)); //H.RE(h));
   }
 };
 
@@ -662,35 +662,3 @@ GAME.addEventListener('click', function(event) {
   H.MouseCoords = getMousePos(GAME, event);
   H.MouseClick = true;
 })
-
-// GAME.addEventListener('mousemove', function(event) {
-//   H.MouseCoords = getMousePos(GAME, event);
-// });
-
-// GAME.addEventListener('mouseout', function(event) {
-//   H.MouseCoords = null;
-//   H.MouseDown = false;
-// });
-
-// GAME.addEventListener('touchstart', function(event){
-//   H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
-//   onDown();
-// });
-
-// GAME.addEventListener('touchend', function(event){
-//   H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
-//   onUp();
-// })
-
-// GAME.addEventListener('touchcancel', function(event){
-//   H.MouseCoords = getMousePos(GAME, event.targetTouches[0]);
-//   onUp();
-// })
-
-// GAME.addEventListener('mousedown', function(event) {
-//   onDown();
-// });
-
-// GAME.addEventListener('mouseup', function(event) {
-//   onUp();
-// });
