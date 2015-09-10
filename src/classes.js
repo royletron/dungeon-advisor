@@ -261,7 +261,7 @@ global.Particle = function(char, x, y, kill) {
   }
   t.cb = PUSH_CALLBACK(function(dt){
     dt = dt * this.rate;
-    this.alpha += -dt/3;
+    this.alpha += -dt/5;
     if(this.alpha < 0) {
       POP_CALLBACK(this.cb);
       this.destroy();
@@ -270,7 +270,12 @@ global.Particle = function(char, x, y, kill) {
       g_ctx.globalAlpha = this.alpha;
       this.y += -dt;
       this.x += (this.ux * dt)
-      this.char.stamp(g_ctx, this.x, this.y);
+      g_ctx.save();
+      var c = H.BufferToCoords(this.x || 0, this.y || 0, false);
+      g_ctx.translate(c.x, c.y);
+      g_ctx.scale(this.alpha, this.alpha);
+      this.char.stamp(g_ctx, 0, 0);
+      g_ctx.restore();
       g_ctx.globalAlpha = 1;
     }
   }.bind(this));
@@ -453,7 +458,7 @@ global.Hero = function(x, y, type) {
           return true;
         else
           return null;
-      });   
+      });
       if(n.length == 0)
         t.experience.push(exp);
     }
