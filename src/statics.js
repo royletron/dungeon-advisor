@@ -48,11 +48,11 @@ global.H = {
       score += exp.n;
       if(exp.n > 0.5){
         if(!H.InArray(_tmp.p, exp.t, 't'))
-          _tmp.p.push(H.RE(['I liked it', 'It was good', 'I enjoyed it']) + ' because '+ exp.r);
+          _tmp.p.push(H.RE(['I liked it', 'it was good', 'I enjoyed it']) + ' because '+ exp.r);
       }
       else
         if(!H.InArray(_tmp.n, exp.t, 't'))
-          _tmp.n.push(H.RE(['I hated it', 'It was terrible', 'I didn\'t enjoy it']) + ' because '+ exp.r);
+          _tmp.n.push(H.RE(['I hated it', 'it was terrible', 'I didn\'t enjoy it']) + ' because '+ exp.r);
     });
     if(hero.experience.length === 0){
       return {r: 0, s: 'Terrible'};
