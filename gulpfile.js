@@ -23,14 +23,14 @@ gulp.task('gzip', function() {
 });
 
 gulp.task('tar', function() {
-  return gulp.src(['index.html', 'game.min.js'])
+  return gulp.src(['dist.html', 'game.min.js'])
     .pipe(tar('dist.tar'))
     .pipe(gzip())
     .pipe(gulp.dest('./'));
 });
 
 gulp.task('zip', ['concat'], function() {
-  return gulp.src(['./index.html', './game.min.js'])
+  return gulp.src(['./dist.html', './game.min.js'])
     .pipe(zip('dist.zip'))
     .pipe(gulp.dest('./'));
 });
